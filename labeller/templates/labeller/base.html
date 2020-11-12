@@ -1,5 +1,12 @@
-<p>
-	<a href="{% url 'labeller:index' %}">UCSF Hemepath Labeller</a>
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'labeller/style.css' %}">
+
+<h1> UCSF Hematopathology Cell Labeller </h1>
+
+<p class="row_menu">
+	<a href="{% url 'labeller:index' %}">UCSF Hemepath Labeller</a> - 
+	<a href="{% url 'labeller:regions' %}">Regions</a>
 </p>
 
 {% block content %} {% endblock content %}

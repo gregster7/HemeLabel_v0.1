@@ -1,0 +1,32 @@
+{% extends "labeller/base.html" %}
+
+
+{% block content %}
+
+	<h2>Regions</h2>
+
+	</p><a href="{% url 'labeller:new_region' %}">Add a new region:</a>
+	</p>
+	
+	<p>
+	<u1>
+		{% for region in regions %}
+
+
+			<p> 
+				RID: {{region.rid}} &nbsp &nbsp &nbsp &nbsp  
+				<a href={% url 'labeller:label_region' region.id %}>
+					<img src="{{region.image.url}}" href={% url 'labeller:label_region' region.id %}>
+				</a>
+			</p>			
+
+
+		{% empty %}
+			<li>No regions have been added yet</li>
+		{% endfor %}
+
+	</u1></p>
+
+
+
+{% endblock content %}

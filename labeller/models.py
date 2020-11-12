@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 # Create your models here.
 
@@ -35,7 +36,7 @@ class Region(models.Model):
 	rid = models.IntegerField(unique=True)
 	date_added = models.DateTimeField(auto_now_add=True)	
 	slide = models.ForeignKey('Slide', on_delete=models.RESTRICT)
-	image = models.ImageField()
+	image = models.ImageField(upload_to='regions')
 
 	class Meta:
 		verbose_name_plural = 'regions'
@@ -43,13 +44,13 @@ class Region(models.Model):
 	def __str__(self):
 		"""Return a string representation of the model."""
 		return str(self.rid)
-	
+
 class Cell(models.Model):
 	"""A cell comes from a region and has a label"""
 	cid = models.IntegerField(unique=True)
 	date_added = models.DateTimeField(auto_now_add=True)	
 	region = models.ForeignKey('Region', on_delete=models.RESTRICT)
-	image = models.ImageField()
+	image = models.ImageField(upload_to='cells')
 	label = models.CharField(max_length=200, default='unlabelled')
 
 	class Meta:
@@ -57,7 +58,13 @@ class Cell(models.Model):
 
 	def __str__(self):
 		"""Return a string representation of the model."""
-		return str(self.cid) + ' ' + label
+		return str(self.cid) + ':' + self.label
+
+	def show_image(self):
+		"""Return image of cell"""
+		if self.image:
+			return mark_safe('<img src="{}"/>'.format(self.image.url))
+		return ""
 
 # class CellImage (model.Model):
 # 	"""An image of a single cell with annotation"""

@@ -1,0 +1,25 @@
+body {
+	/*background: white url("images/JanisJoplin.jpeg") no-repeat;*/
+	padding: 10px;
+	background-color: #F2F2F2FF;
+}
+
+h1 {
+	background-color: #663399FF ;
+	padding: 10px;
+	color: white;
+}
+
+.row_menu {
+	background-color: white;
+	padding:10px;
+	color:black;
+
+}
+
+a {
+	color:black;
+}
+/*ul#horizontal_list li {
+	display:inline;
+}*/

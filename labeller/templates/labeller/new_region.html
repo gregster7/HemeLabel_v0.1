@@ -1,0 +1,10 @@
+{% extends "labeller/base.html" %}
+
+{% block content %}
+	<p>Add a new region:</p>
+	<form action="{% url 'labeller:new_region' %}" method='post'>
+		{% csrf_token %}
+		{{ form.as_p }}
+		<button name="submit">add region</button>
+	</form>
+{% endblock content %}
