@@ -25,9 +25,15 @@ urlpatterns = [
 	# Show all regions
 	re_path(r'^regions/$', views.regions, name='regions'),
 
+	# Show all cells
+	re_path(r'^cells/$', views.cells, name='cells'),
+
 	re_path(r'^new_region/$', views.new_region, name='new_region'),
 
 	# Page for labelling a region of interest
 	re_path(r'^label_region/(?P<region_id>\d+)/$', views.label_region, name='label_region'),
+
+	# Page for labelling individual cell
+	re_path(r'^label_cell/(?P<cell_id>\d+)/$', views.label_cell, name='label_cell'),
 
 ]

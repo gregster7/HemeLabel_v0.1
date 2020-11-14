@@ -6,16 +6,9 @@
 	
 	<p class="column1" id="region"><img src="{{region.image.url}}"></p>
 
-	<div class="column2" id="cells">
-		{% for cell in cells %}
-	
-			<p class='cell_image' > <img src="{{cell.image.url}}">	</p>{{cell.id}}			
-			
-	
-		{% empty %}
-			<li>No cells have been added yet</li>
-		{% endfor %}
-	</div>
+	<div class="column2" id="cells">	
+		<p class='cell_image' > <img src="{{cell.image.url}}">	</p>
+	</div>	
 
 </div>
 

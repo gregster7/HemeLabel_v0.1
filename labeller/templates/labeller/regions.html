@@ -14,9 +14,10 @@
 
 
 			<p> 
+				ID: {{region.id}} &nbsp &nbsp &nbsp &nbsp
 				RID: {{region.rid}} &nbsp &nbsp &nbsp &nbsp  
 				<a href={% url 'labeller:label_region' region.id %}>
-					<img src="{{region.image.url}}" href={% url 'labeller:label_region' region.id %}>
+					<img src="{{region.image.url}}" >
 				</a>
 			</p>			
 
