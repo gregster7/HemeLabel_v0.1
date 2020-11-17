@@ -11,7 +11,7 @@ class Patient (models.Model):
 	name = models.CharField(max_length=200)
 
 	class Meta:
-		verbose_name_plural = models.BooleanField(default=False)
+		verbose_name_plural = 'Patients'
 
 	def __str__(self):
 		"""Return a string representation of the model."""
@@ -25,7 +25,7 @@ class Slide (models.Model):
 	date_added = models.DateTimeField(auto_now_add=True)
 
 	class Meta:
-		verbose_name_plural = models.BooleanField(default=False)
+		verbose_name_plural = 'Slides'
 
 	def __str__(self):
 		"""Return a string representation of the model."""
@@ -39,7 +39,7 @@ class Region(models.Model):
 	image = models.ImageField(upload_to='regions')
 
 	class Meta:
-		verbose_name_plural = models.BooleanField(default=False)
+		verbose_name_plural = 'Regions'
 
 	def __str__(self):
 		"""Return a string representation of the model."""
@@ -51,9 +51,6 @@ class Cell(models.Model):
 	date_added = models.DateTimeField(auto_now_add=True, editable=False)	
 	region = models.ForeignKey('Region', on_delete=models.RESTRICT, editable=False)
 	image = models.ImageField(upload_to='cells', editable=False)
-
-	label = "Cell"
-	# label = models.CharField(max_length=4, choices=cell_label_choices, default=UNLABELLED)
 
 	labelled = models.BooleanField(default=False)
 	BLAST = models.BooleanField(default=False)
@@ -145,12 +142,12 @@ class Cell(models.Model):
 	# ]
 
 	class Meta:
-		verbose_name_plural = models.BooleanField(default=False)
+		verbose_name_plural = 'Cells'
 
 	def __str__(self):
 		"""Return a string representation of the model."""
-		return str(self.cid) + ':' + self.label
-
+		return str(self.cid)
+		
 # 	def show_image(self):
 # 		"""Return image of cell"""
 # 		if self.image:
