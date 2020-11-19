@@ -1,7 +1,31 @@
 {% extends "labeller/base.html" %}
 
+{% block title %}Labeller{% endblock %}
+{% block head %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+	i = 0;
+	$(document).ready(function(){
+		$("input").keypress(function(){
+			$("id_BLAST").checked = true;
+		});
+	});
+</script>
+<script> 
+	var loaded = false; 
+</script> 
+{% load static %}
+<script src="{% static 'labeller/labeller.js' %}" onload="loaded=true;"></script>   
+
+
+{% endblock head %}
 
 {% block content %}
+{% load static %}
+
+<div id="test_keyboard">keycode = 0</div>
+
 <div id='labeller'>
 	
 	<p class="column1" id="region"><img src="{{region.image.url}}"></p>
@@ -12,6 +36,8 @@
 
 </div>
 
+
+
 <table id="classification_table">
 	<tr>
 		<th>Neutrophilic</th>
@@ -21,21 +47,21 @@
 		<th>Misc</th>
 	</tr>
 	<tr>
-		<td>Blast: {{ form.BLAST }}</td>
+		<td>Blast (1): {{ form.BLAST }}</td>
 		<td>Immature Eo: {{ form.IMM_EO }}</td>
 		<td>Lymphobast: {{ form.LYMPHOBLAST }}</td>
 		<td>Pronormoblast: {{ form.ER_PRONORM }}</td>						
 		<td>Artifact: {{ form.ARTIFACT }}</td>
 	</tr>
 	<tr>
-		<td>Myelocyte: {{ form.MYELOCYTE }}</td>
+		<td>Myelocyte (2): {{ form.MYELOCYTE }}</td>
 		<td>Eosinophil: {{ form.EO }}</td>
 		<td>Hematogone: {{ form.HEMATOGONE }}</td>
 		<td>Basophilic normoblast: {{ form.ER_BASO_NORMO }}</td>						
 		<td>Unknown: {{ form.UNKNOWN }}</td>
 	</tr>
 	<tr>
-		<td>Promyelocyte: {{ form.PROMYELOCYTE }}</td>
+		<td>Promyelocyte (3): {{ form.PROMYELOCYTE }}</td>
 		<td>Immature Baso: {{ form.IMM_BASO }}</td>
 		<td>Mature Lymphocyte: {{ form.LYMPHOCYTE }}</td>
 		<td>Polychromatophilic: {{ form.ER_POLYCHROM }}</td>						
@@ -43,21 +69,21 @@
 	</tr>
 
 	<tr>
-		<td>Metamyelocyte: {{ form.METAMYELOCYTE }}</td>
+		<td>Metamyelocyte (4): {{ form.METAMYELOCYTE }}</td>
 		<td>Basophile: {{ form.BASO }}</td>
 		<td>LGL: {{ form.LGL }}</td>
 		<td>Orthochromic (nuc red): {{ form.ER_ORTHO }}</td>						
 		<td>Histiocyte: {{ form.HISTIOCYTE }}</td>
 	</tr>
 	<tr>
-		<td>Band: {{ form.BAND }}</td>
+		<td>Band (5): {{ form.BAND }}</td>
 		<td>Monoblast: {{ form.MONOBLAST }}</td>
 		<td>Plasma cell: {{ form.PLASMA }}</td>
 		<td>Reticulocyte: {{ form.ER_RETIC }}</td>						
 		<td></td>
 	</tr>
 	<tr>
-		<td>Seg: {{ form.SEG }}</td>
+		<td>Seg (6): {{ form.SEG }}</td>
 		<td>Monocyte: {{ form.MONOCYTE }}</td>
 		<td></td>
 		<td>Mature RBC: {{ form.ER_MATURE }}</td>		
@@ -66,5 +92,38 @@
 
 
 </table>
+
+
+<!-- <p id = "GFG_UP" style =  
+"font-size: 15px; font-weight: bold;"> 
+</p> 
+
+<button onclick = "gfg_Run()">  
+	Click here 
+</button> 
+
+<p id = "GFG_DOWN" style = 
+"font-size: 23px; font-weight: bold; color: green; "> 
+</p> 
+
+<script> 
+	var el_up = document.getElementById("GFG_UP"); 
+	var el_down = document.getElementById("GFG_DOWN"); 
+
+	el_up.innerHTML = "Click on the button to check " 
+	+ "whether script is loaded or not.";  
+
+	function gfg_Run() { 
+		if(loaded) { 
+			el_down.innerHTML = "Loaded Successfully!"; 
+		} 
+		else { 
+			el_down.innerHTML = "Not loaded!"; 
+		} 
+	}          
+</script>
+
+Enter your name: <input type="text">
+<p>Keypresses: <span>0</span></p> -->
 
 {% endblock content %}

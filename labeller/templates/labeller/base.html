@@ -1,7 +1,11 @@
-{% load static %}
+<head>
+	{% load static %}
+	<link rel="stylesheet" type="text/css" href="{% static 'labeller/style.css' %}">
 
-<link rel="stylesheet" type="text/css" href="{% static 'labeller/style.css' %}">
+	<title>{% block title %}Hemepath{% endblock %}</title>
+</head>
 
+<body>
 <h1> UCSF Hematopathology Cell Labeller </h1>
 
 <p class="row_menu">
@@ -12,3 +16,4 @@
 </p>
 
 {% block content %} {% endblock content %}
+</body>

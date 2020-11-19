@@ -47,10 +47,10 @@ class Region(models.Model):
 
 class Cell(models.Model):
 	"""A cell comes from a region and has a label"""
-	cid = models.IntegerField(unique=True, editable=False)
-	date_added = models.DateTimeField(auto_now_add=True, editable=False)	
-	region = models.ForeignKey('Region', on_delete=models.RESTRICT, editable=False)
-	image = models.ImageField(upload_to='cells', editable=False)
+	cid = models.IntegerField(unique=True)
+	date_added = models.DateTimeField(auto_now_add=True)	
+	region = models.ForeignKey('Region', on_delete=models.RESTRICT)
+	image = models.ImageField(upload_to='cells')
 
 	labelled = models.BooleanField(default=False)
 	BLAST = models.BooleanField(default=False)
@@ -147,7 +147,7 @@ class Cell(models.Model):
 	def __str__(self):
 		"""Return a string representation of the model."""
 		return str(self.cid)
-		
+
 # 	def show_image(self):
 # 		"""Return image of cell"""
 # 		if self.image:

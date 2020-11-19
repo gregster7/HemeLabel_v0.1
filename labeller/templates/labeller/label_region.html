@@ -1,23 +1,47 @@
 {% extends "labeller/base.html" %}
-
+{% block title %}Label Region{% endblock %}
 
 {% block content %}
+
+<script>
+   window.addEventListener('keyup', (e) => {
+   	code = e.code;
+  	document.getElementById('test_keyboard').innerHTML = 'code = ' + code;
+  	if (code === "ArrowRight")       
+  		document.getElementById('current_cell')
+	else if (code === "ArrowLeft") playerSpriteX -= 10;
+});
+
+</script>
+
+<div id="test_keyboard">keycode = 0</div>
+
+
 <div id='labeller'>
 	
-	<p class="column1" id="region"><img src="{{region.image.url}}"></p>
-
-	<div class="column2" id="cells">
-		{% for cell in cells %}
-	
-			<p class='cell_image' > <img src="{{cell.image.url}}">	</p>{{cell.id}}			
-			
-	
-		{% empty %}
-			<li>No cells have been added yet</li>
-		{% endfor %}
+	<div class="column1">
+		<p id="region"><img src="{{region.image.url}}"></p>
+		<div id='current_cell'>
+				<div>
+					<p> <img src="{{current_cell.image.url}}"></p>
+					<p>{{current_cell.cid}}</p>
+				</div>
+		</div>
 	</div>
 
+	<div class="column2">
+		<p>
+			{% load static %}
+			<img id='reference_maturation' src="{% static 'labeller/images/Reference_maturation.png' %}">
+		</p>
+
+
+	</div>
+
+
+
 </div>
+
 
 <table id="classification_table">
 	<tr>
@@ -73,5 +97,17 @@
 
 
 </table>
+
+<div id="inline_cells">
+	{% for cell in cells %}
+	<div>
+		<p><img src="{{cell.image.url}}">	</p>
+		<p>{{cell.cid}}</p>
+	</div>
+	{% empty %}
+	<li>No cells have been added yet</li>
+	{% endfor %}
+</div>
+
 
 {% endblock content %}

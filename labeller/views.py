@@ -44,7 +44,8 @@ def label_region(request, region_id):
 
 	region = Region.objects.get(id=region_id)
 	cells = region.cell_set.all()
-	context = {'region': region, 'cells':cells, 'form':form}
+	current_cell = cells[0]
+	context = {'region': region, 'cells':cells, 'form':form, 'current_cell':current_cell}
 	return render(request, 'labeller/label_region.html', context)
 
 def new_region(request):
