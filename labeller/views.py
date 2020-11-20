@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 
 from .models import Region, Cell, Patient, Slide
-from .forms import RegionForm, CellLabelForm
+from .forms import RegionForm, CellLabelForm, CellLabelForm2
 
 def index(request):
 	"""The home page for labeller"""
@@ -44,8 +44,11 @@ def label_region(request, region_id):
 
 	region = Region.objects.get(id=region_id)
 	cells = region.cell_set.all()
+	forms = []
+	for cell in cells:
+		forms += CellLabelForm2(instance=cell)
 	current_cell = cells[0]
-	context = {'region': region, 'cells':cells, 'form':form, 'current_cell':current_cell}
+	context = {'region': region, 'cells':cells, 'form':form, 'forms':forms,}
 	return render(request, 'labeller/label_region.html', context)
 
 def new_region(request):

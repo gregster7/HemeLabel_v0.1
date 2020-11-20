@@ -1,20 +1,12 @@
 {% extends "labeller/base.html" %}
+
+{% block head %} {% endblock head %}
 {% block title %}Label Region{% endblock %}
 
 {% block content %}
 
-<script>
-   window.addEventListener('keyup', (e) => {
-   	code = e.code;
-  	document.getElementById('test_keyboard').innerHTML = 'code = ' + code;
-  	if (code === "ArrowRight")       
-  		document.getElementById('current_cell')
-	else if (code === "ArrowLeft") playerSpriteX -= 10;
-});
 
-</script>
-
-<div id="test_keyboard">keycode = 0</div>
+{% load static %}
 
 
 <div id='labeller'>
@@ -23,8 +15,19 @@
 		<p id="region"><img src="{{region.image.url}}"></p>
 		<div id='current_cell'>
 				<div>
+					{% with cells.0 as current_cell %}
+					{% with forms.0 as current_form %}
 					<p> <img src="{{current_cell.image.url}}"></p>
 					<p>{{current_cell.cid}}</p>
+					<p>{{current_form.image}}</p>
+					<p>{{current_cell.cell_type}}</p>
+					<p>{{current_form}}</p>
+					<p>
+						hello kitty
+						{{current_form.instance.image.url}}
+					</p>
+					{% endwith %}
+					{% endwith %}
 				</div>
 		</div>
 	</div>
@@ -34,11 +37,7 @@
 			{% load static %}
 			<img id='reference_maturation' src="{% static 'labeller/images/Reference_maturation.png' %}">
 		</p>
-
-
 	</div>
-
-
 
 </div>
 
@@ -52,21 +51,21 @@
 		<th>Misc</th>
 	</tr>
 	<tr>
-		<td>Blast: {{ form.BLAST }}</td>
+		<td>Blast (1): {{ form.BLAST }}</td>
 		<td>Immature Eo: {{ form.IMM_EO }}</td>
 		<td>Lymphobast: {{ form.LYMPHOBLAST }}</td>
 		<td>Pronormoblast: {{ form.ER_PRONORM }}</td>						
 		<td>Artifact: {{ form.ARTIFACT }}</td>
 	</tr>
 	<tr>
-		<td>Myelocyte: {{ form.MYELOCYTE }}</td>
+		<td>Myelocyte (2): {{ form.MYELOCYTE }}</td>
 		<td>Eosinophil: {{ form.EO }}</td>
 		<td>Hematogone: {{ form.HEMATOGONE }}</td>
 		<td>Basophilic normoblast: {{ form.ER_BASO_NORMO }}</td>						
 		<td>Unknown: {{ form.UNKNOWN }}</td>
 	</tr>
 	<tr>
-		<td>Promyelocyte: {{ form.PROMYELOCYTE }}</td>
+		<td>Promyelocyte (3): {{ form.PROMYELOCYTE }}</td>
 		<td>Immature Baso: {{ form.IMM_BASO }}</td>
 		<td>Mature Lymphocyte: {{ form.LYMPHOCYTE }}</td>
 		<td>Polychromatophilic: {{ form.ER_POLYCHROM }}</td>						
@@ -74,29 +73,34 @@
 	</tr>
 
 	<tr>
-		<td>Metamyelocyte: {{ form.METAMYELOCYTE }}</td>
+		<td>Metamyelocyte (4): {{ form.METAMYELOCYTE }}</td>
 		<td>Basophile: {{ form.BASO }}</td>
 		<td>LGL: {{ form.LGL }}</td>
 		<td>Orthochromic (nuc red): {{ form.ER_ORTHO }}</td>						
 		<td>Histiocyte: {{ form.HISTIOCYTE }}</td>
 	</tr>
 	<tr>
-		<td>Band: {{ form.BAND }}</td>
+		<td>Band (5): {{ form.BAND }}</td>
 		<td>Monoblast: {{ form.MONOBLAST }}</td>
 		<td>Plasma cell: {{ form.PLASMA }}</td>
 		<td>Reticulocyte: {{ form.ER_RETIC }}</td>						
 		<td></td>
 	</tr>
 	<tr>
-		<td>Seg: {{ form.SEG }}</td>
+		<td>Seg (6): {{ form.SEG }}</td>
 		<td>Monocyte: {{ form.MONOCYTE }}</td>
 		<td></td>
 		<td>Mature RBC: {{ form.ER_MATURE }}</td>		
 		<td></td>
 	</tr>
-
-
 </table>
+
+<div id="test_keyboard">keycode = 0</div>
+
+{{forms|first}}
+<button>
+save and view next cell
+</button>
 
 <div id="inline_cells">
 	{% for cell in cells %}
@@ -108,6 +112,36 @@
 	<li>No cells have been added yet</li>
 	{% endfor %}
 </div>
+
+
+<div id="inline_cells">
+	{% for current_form in forms %}
+	<div>
+		{{current_form}}
+	</div>
+	{% empty %}
+	<li>No cells have been added yet</li>
+	{% endfor %}
+</div>
+
+{% if cells %}
+    Number of cells: {{ cells|length }}
+{% else %}
+    No cells.
+{% endif %}
+
+<div id="greg_counter">blank</div>
+
+
+{% with forms|first as current_form %}
+	{{current_form.image}}
+	{{current_form.label}}
+	{{current_form.cid}}
+	hello kitty
+{% endwith %%}
+
+<script src="{% static 'labeller/testing.js' %}" onload="loaded=true;"></script>
+
 
 
 {% endblock content %}

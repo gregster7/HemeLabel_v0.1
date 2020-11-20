@@ -52,6 +52,12 @@ class Cell(models.Model):
 	region = models.ForeignKey('Region', on_delete=models.RESTRICT)
 	image = models.ImageField(upload_to='cells')
 
+	# def image_tag(self):
+	# 	return u'<img src="%s" />' % self.photo.url
+
+	# image_tag.short_description = 'Image'
+	# image_tag.allow_tags = True
+
 	labelled = models.BooleanField(default=False)
 	BLAST = models.BooleanField(default=False)
 	MYELOCYTE = models.BooleanField(default=False)
@@ -82,64 +88,73 @@ class Cell(models.Model):
 	OTHER = models.BooleanField(default=False)
 
 
-	# BLAST = 'BL'
-	# MYELOCYTE = 'M1'
-	# PROMYELOCYTE = 'M2'
-	# METAMYELOCYTE = 'M3'
-	# BAND = 'N1'
-	# SEG = 'N2'
-	# IMM_EO = 'E1'
-	# EO = 'E2'
-	# IMM_BASO = 'B1'
-	# BASO = 'B2'
-	# HEMATOGONE = 'L1'
-	# LYMPHOBLAST = 'L0'
-	# LYMPHOCYTE = 'L2'
-	# LGL = 'LGL'
-	# PLASMA = 'PC'
-	# ER_PRONORM = 'E1'
-	# ER_BASO_NORMO = 'E2'
-	# ER_POLYCHROM = 'E3'
-	# ER_ORTHO = 'E4'
-	# ER_RETIC = 'E5'
-	# ER_MATURE = 'E6'
-	# MONOBLAST = 'M1'
-	# MONOCYTE = 'M2'
-	# HISTIOCYTE = 'H1'
-	# UNKNOWN = 'U1'
-	# ARTIFACT = 'ART'
 
+	M1_BLAST = 'M1'
+	M2_MYELOCYTE = 'M2'
+	M3_PROMYELOCYTE = 'M3'
+	M4_METAMYELOCYTE = 'M4'
+	M5_BAND = 'M5'
+	M6_SEG = 'M6'
+	E1_IMM_EO = 'E1'
+	E2_EO = 'E2'
+	B1_IMM_BASO = 'B1'
+	B2_BASO = 'B2'
+	M1_MONOBLAST = 'M1'
+	M2_MONOCYTE = 'M2'
+	L0_LYMPHOBLAST = 'L0'
+	L1_HEMATOGONE = 'L1'
+	L2_LYMPHOCYTE = 'L2'
+	L3_LGL = 'L3'
+	L4_PLASMA = 'L4'
+	E1_PRONORM = 'E1'
+	E2_BASO_NORMO = 'E2'
+	E3_POLYCHROM = 'E3'
+	E4_ORTHO = 'E4'
+	E5_RETIC = 'E5'
+	E6_RBC = 'E6'
+	U1_ARTIFACT = 'U1'
+	U2_UKNOWN = 'U2'
+	U3_OTHER = 'U3'
+	U4_HISTIOCYTE = 'U4'
+	UL_UNLABELLED = 'UL'
 
+	cell_label_choices = [
+		(M1_BLAST, 'blast (1)'),
+		(M2_MYELOCYTE, 'myelocyte (2)'),
+		(M3_PROMYELOCYTE, 'promyelocyte (3)'),
+		(M4_METAMYELOCYTE, 'metamyelocyte (4)'),
+		(M5_BAND, 'band (5)'),
+		(M6_SEG, 'seg (6)'),
+		(E1_IMM_EO, 'immature eo (q)'),
+		(E2_EO, 'eo (w)'),
+		(B1_IMM_BASO, 'imm base (e)'),
+		(B2_BASO, 'baso (r)'),
+		(M1_MONOBLAST, 'monoblast (t)'),
+		(M2_MONOCYTE, 'monocyte'),
+		(L0_LYMPHOBLAST, 'lymphoblast'),
+		(L1_HEMATOGONE, 'hematogone'),
+		(L2_LYMPHOCYTE, 'lymphocyte'),
+		(L3_LGL, 'lgl'),
+		(L4_PLASMA, 'plasma cell'),
+		(E1_PRONORM, 'pronormoblast'),
+		(E2_BASO_NORMO, 'basophilic normoblast'),
+		(E3_POLYCHROM, 'polychromatic'),
+		(E4_ORTHO, 'orthochromic'),
+		(E5_RETIC, 'retic'),
+		(E6_RBC, 'rbc'),
+		(U1_ARTIFACT, 'artifact'),
+		(U2_UKNOWN, 'unknown'),
+		(U3_OTHER, 'other'),
+		(U4_HISTIOCYTE, 'histiocyte'),	
+		(UL_UNLABELLED, 'unlabelled')
+	]
 
-	# cell_label_choices = [
-	# 	(UNLABELLED, 'unlabelled'),
-	# 	(BLAST, 'blast'),
-	# 	(MYELOCYTE, 'M1: myelocyte'),
-	# 	(PROMYELOCYTE, 'M2: promyelocyte'),
-	# 	(METAMYELOCYTE, 'M3: metamyelocyte'),
-	# 	(BAND, 'M4: band'),
-	# 	(SEG, 'M5: seg'),
-	# 	(IMM_EO, 'E1: immature eosinophil'),
-	# 	(EO, 'E2: eosinophil'),
-	# 	(IMM_BASO, 'B1: immature basophil'),
-	# 	(BASO, 'B2: basophil'),
-	# 	(LYMPHOBLAST, 'L0: lymphoblast'),
-	# 	(HEMATOGONE, 'L1: hematogone'),
-	# 	(LYMPHOCYTE, 'L2: mature lymphocyte'),
-	# 	(LGL, 'L3: LGL'),
-	# 	(PLASMA, 'L4: plasma cell'),
-	# 	(ER_PRONORM, 'E1: pronormoblast'),
-	# 	(ER_BASO_NORMO, 'E2: basophilic normoblsat'),
-	# 	(ER_POLYCHROM, 'E3: polychrmoatic normoblast'),
-	# 	(ER_ORTHO, 'E4: orthocrhomic normoblast (nucleated red)'),
-	# 	(ER_RETIC, 'E5: polychromatic erythrocyte (reticulocyte)'),
-	# 	(ER_MATURE, 'E6: mature erythrocyte'),
-	# 	(MONOBLAST, 'M1: monoblast equivalent'),
-	# 	(MONOCYTE, 'M2: mature monocyte'),
-	# 	(HISTIOCYTE, 'H1: histiocyte'),
-	# 	(UNKNOWN, 'Unknown intact cell'),
-	# 	(ARTIFACT, 'Artifact (crush or other)')
-	# ]
+	cell_type = models.CharField(
+		max_length=2,
+		choices=cell_label_choices,
+		default = UL_UNLABELLED,
+	)
+
 
 	class Meta:
 		verbose_name_plural = 'Cells'

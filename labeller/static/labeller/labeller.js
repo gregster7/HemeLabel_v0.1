@@ -24,3 +24,5 @@ window.addEventListener('keyup', (e) => {
   console.log(blast);
   console.log(blast.value);
 });
+
+
