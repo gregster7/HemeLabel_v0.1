@@ -1,9 +1,12 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
+from django.core import serializers
+from django.http import JsonResponse
+import json
 
 from .models import Region, Cell, Patient, Slide
-from .forms import RegionForm, CellLabelForm, CellLabelForm2
+from .forms import RegionForm
 
 def index(request):
 	"""The home page for labeller"""
@@ -24,32 +27,38 @@ def cells(request):
 def label_cell(request, cell_id):
 	"""label inidivudal cell"""
 	cell = Cell.objects.get(id=cell_id)
-	if request.method != 'POST':
-		form = CellLabelForm(instance=cell)
-	else:
-		# Post data submitted; process data
-		form = CellLabelForm(request.POST, instance=cell)
-		if form.is_valid():
-			form.save(update_fields['label', ''])
+	# if request.method != 'POST':
+	# 	form = CellLabelForm(instance=cell)
+		
+	# else:
+	# 	# Post data submitted; process data
+	# 	form = CellLabelForm(request.POST, instance=cell)
+	# 	if form.is_valid():
+	# 		form.save(update_fields['label', ''])
 	region = cell.region
 	other_cells = region.cell_set.all()
-	context = {'region': region, 'cell':cell, 'form':form, 'other_cells': other_cells}
+	context = {'region': region, 'cell':cell, 'other_cells': other_cells}
 	return render(request, 'labeller/label_cell.html', context)
+
+
+def update_cell_class(request):
+	POST = request.POST
+	cell = Cell.objects.get(cid=int(POST['cid']))
+	cell.cell_type = POST['cell_label']
+	cell.save()
+	results = {'success':True}
+	return JsonResponse(results)
 
 
 def label_region(request, region_id):
 	"""label cells on a region"""
-	if request.method != 'POST':
-		form = CellLabelForm()
-
 	region = Region.objects.get(id=region_id)
 	cells = region.cell_set.all()
-	forms = []
-	for cell in cells:
-		forms += CellLabelForm2(instance=cell)
-	current_cell = cells[0]
-	context = {'region': region, 'cells':cells, 'form':form, 'forms':forms,}
+	cells_json = serializers.serialize("json", cells)
+
+	context = {'region': region, 'cells':cells, 'cells_json': cells_json}
 	return render(request, 'labeller/label_region.html', context)
+	
 
 def new_region(request):
 	"""Add a new region"""
@@ -65,6 +74,36 @@ def new_region(request):
 
 	context = {'form': form}
 	return render(request, 'labeller/new_region.html', context)
+
+
+
+
+# def update_cell_class(request):
+# 	results = {'success':False}
+# 	if request.method == 'GET':
+# 		GET = request.GET
+# 		if 'cid' in GET and 'cell_label' in GET:
+# 			cid = int(GET['cid'])
+# 			cell_label = GET['cell_label']
+# 			cell = Cell.objects.get(cid=cid)
+# 			form = CellLabelFormChoices(request.POST, instance=cell)
+
+# 			form.save(update_fields['cell_label', cell_label])
+# 			results = {'success': True}
+# 	json_response = json.dumps(results)
+# 	return HttpResponse(json_response)
+
+
+#def update_cell_class(request, cell_id):
+	# if request.method=='POST': and request.is_ajax():
+	# 	try:
+	# 		cell = Cell.objects.get(id=cell_id)
+	# 		cell.cell_label = request.POST['cell_label']
+	# 		cell.save()
+	# 		return JsonResponse({'status':'Success', 'msg':'save successfully'})
+	# 	except Cell.DoesNotExist:
+	# 		return JsonResponse({'status':'Fail', 'msg':'Not a valid request'})
+
 
 # def region_images(request):
 # 	"""show all region images"""

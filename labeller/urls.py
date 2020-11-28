@@ -18,6 +18,8 @@ from django.conf.urls import re_path
 
 from . import views 
 
+#cells = Cell.objects.all()
+
 urlpatterns = [
 	# Home page
 	re_path(r'^$', views.index, name='index'),
@@ -35,5 +37,12 @@ urlpatterns = [
 
 	# Page for labelling individual cell
 	re_path(r'^label_cell/(?P<cell_id>\d+)/$', views.label_cell, name='label_cell'),
+
+
+	# Page for labelling individual cell (used with AJAX)
+	re_path(r'^update_cell_class/', views.update_cell_class, name='update_cell_class'),
+
+	# # Page for AJAX updates to cell
+	# re_path(r'^ajax/update_cell_class/$', views.update_cell_class.as_view(), name='update_cell_class'),
 
 ]
