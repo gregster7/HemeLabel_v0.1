@@ -11,8 +11,11 @@ function labelCurrentCell(label) {
 			console.log("Was successful?: " + json['success']);
 	});
 
-	//Update current cell classification on page
-	$('.cell_type').html("Classification: "+label);
+	//Update current cell classification in column2
+	$('#currentCellClassification').html("Classification: "+label);
+	//Update current cell on cell list
+	$('#cellClassification_'+currentCellCID()).html("Classification: "+label);
+
 }
 
 function nextCell(offset) {

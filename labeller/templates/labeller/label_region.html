@@ -81,9 +81,9 @@
 <div id="inline_cells">
 	{% for current_cell in cells %}
 	<div class="cell_list_item" id="celllistCID_{{current_cell.cid}}">
-		<p><img class='center' id='currentCellImage' src="{{current_cell.image.url}}"></p>
-		<p class='center' id='currentCellId'>Cell ID: {{current_cell.cid}}</p>
-		<p class='center cell_type' id='currentCellClassification'>Classification: {{current_cell.cell_type}}</p>
+		<p><img class='center' id='cellImage' src="{{current_cell.image.url}}"></p>
+		<p class='center' id='cellId_{{current_cell.cid}}'>Cell ID: {{current_cell.cid}}</p>
+		<p class='center cell_type' id='cellClassification_{{current_cell.cid}}'>Classification: {{current_cell.cell_type}}</p>
 	</div>
 	{% empty %}
 	<li>No cells have been added yet</li>
