@@ -18,6 +18,34 @@ function labelCurrentCell(label) {
 
 }
 
+//offset should be +1 or -1
+function nextRegion(direction) {
+	if (direction != 1 && direction != -1) {
+		console.log ("Error in nextRegion offset");
+		return
+	}
+
+	current_region = document.getElementsByClassName('region')[0];
+	rid = current_region.id.substr(1, current_region.length)
+	console.log(rid);
+	console.log(current_region)
+	$.post("/next_region/", {'rid':rid, 'direction':direction}, function(json){
+		console.log("Was successful?: " + json['success']);
+		console.log('next region:: ' + json['rid']);
+
+		//Reload page with new region
+		if (json['success']) {
+			current_url = window.location.href;
+			current_url=current_url.substr(0, current_url.length-1)
+			current_url=current_url.substr(0, current_url.lastIndexOf('/')+1)+json['rid']+'/'
+			console.log(current_url);
+			window.location.assign(current_url)
+
+		}
+	});
+}
+
+// Offset for now should be +1 or -1
 function nextCell(offset) {
 	cellListItems = document.getElementsByClassName('cell_list_item');
 	for (i=0; i<cellListItems.length; i++) {
@@ -25,11 +53,24 @@ function nextCell(offset) {
 		//'highlight indicates it is the current cell'
 		if (cellListItems[i].classList.contains('highlight')) {
 
-			//calculate position of next cell using modulo (since can take positive or negative)
-			new_position = (i+offset+cellListItems.length)%cellListItems.length
+			console.log(i, offset, cellListItems.length);
+			if (i+offset >= cellListItems.length){
+				//Go to next region
+				nextRegion(1);
+			}
 
-			//make it the new current cell
-			updateCurrentCell(cellListItems[new_position]);
+			else if (i+offset < 0){
+				// Go to previous region
+				nextRegion(-1);
+			}
+
+			else {
+				//calculate position of next cell using modulo (since can take positive or negative)
+				new_position = (i+offset+cellListItems.length)%cellListItems.length;
+
+				//make it the new current cell
+				updateCurrentCell(cellListItems[new_position]);
+			}
 			break;
 		}
 	}	
