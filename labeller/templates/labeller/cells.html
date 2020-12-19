@@ -13,7 +13,7 @@
 			<p> 
 				ID: {{cell.id}} &nbsp &nbsp &nbsp &nbsp
 				CID: {{cell.cid}} &nbsp &nbsp &nbsp &nbsp  
-				<a href={% url 'labeller:label_cell' cell.id %}>
+				<a href={% url 'labeller:label_cell' cell.cid %}>
 					<img src="{{cell.image.url}}" >
 				</a>
 				

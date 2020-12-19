@@ -24,9 +24,12 @@ def cells(request):
 	context = {'cells': cells}
 	return render(request, 'labeller/cells.html', context)	
 
-def label_cell(request, cell_id):
+def slide_viewer(request):
+	return render(request, 'labeller/slide_viewer.html')
+
+def label_cell(request, cell_cid):
 	"""label inidivudal cell"""
-	cell = Cell.objects.get(id=cell_id)
+	cell = Cell.objects.get(cid=cell_cid)
 	# if request.method != 'POST':
 	# 	form = CellLabelForm(instance=cell)
 		
@@ -41,6 +44,34 @@ def label_cell(request, cell_id):
 	return render(request, 'labeller/label_cell.html', context)
 
 
+
+# Needs to be udpated to support changing slide and patient as well
+def next_region(request):
+	POST = request.POST
+	rid = int(POST['rid'])
+	direction = int(POST['direction'])
+	region = Region.objects.get(rid=rid)
+	results = {'rid': rid, 'success':False}
+
+	print(direction)
+	print(rid)
+	print(region)
+	print(region.slide)
+	# #regions = Region.objects.filter(slide=region.slide)
+
+	if (direction == 1):
+		next_region = Region.objects.filter(slide=region.slide, rid__gt=rid).order_by('rid').first()
+	elif (direction == -1):
+		next_region = Region.objects.filter(slide=region.slide, rid__lt=rid).order_by('rid').last()
+
+	if (next_region != None):
+		results = {'rid': next_region.rid, 'success':True}
+
+	# else :
+	# 	print(next_region)
+
+	return JsonResponse(results)
+
 def update_cell_class(request):
 	POST = request.POST
 	cell = Cell.objects.get(cid=int(POST['cid']))
@@ -50,9 +81,11 @@ def update_cell_class(request):
 	return JsonResponse(results)
 
 
+
+
 def label_region(request, region_id):
 	"""label cells on a region"""
-	region = Region.objects.get(id=region_id)
+	region = Region.objects.get(rid=region_id)
 	cells = region.cell_set.all()
 	cells_json = serializers.serialize("json", cells)
 

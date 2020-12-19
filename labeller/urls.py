@@ -35,12 +35,19 @@ urlpatterns = [
 	# Page for labelling a region of interest
 	re_path(r'^label_region/(?P<region_id>\d+)/$', views.label_region, name='label_region'),
 
+	# Label next region
+	re_path(r'^next_region/', views.next_region, name='next_region'),
+
 	# Page for labelling individual cell
 	re_path(r'^label_cell/(?P<cell_id>\d+)/$', views.label_cell, name='label_cell'),
 
-
 	# Page for labelling individual cell (used with AJAX)
 	re_path(r'^update_cell_class/', views.update_cell_class, name='update_cell_class'),
+
+	# Page for viewing Whole Slide IMages
+	re_path(r'^slide_viewer/$', views.slide_viewer, name= 'slide_viewer'),
+
+
 
 	# # Page for AJAX updates to cell
 	# re_path(r'^ajax/update_cell_class/$', views.update_cell_class.as_view(), name='update_cell_class'),
