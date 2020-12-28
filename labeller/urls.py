@@ -30,7 +30,14 @@ urlpatterns = [
 	# Show all cells
 	re_path(r'^cells/$', views.cells, name='cells'),
 
+	# Show all slides
+	re_path(r'^slides/$', views.slides, name='slides'),
+
+	# Add new region
 	re_path(r'^new_region/$', views.new_region, name='new_region'),
+
+	# Page for labelling a slide
+	re_path(r'^label_slide/(?P<slide_id>\d+)/$', views.label_slide, name='label_slide'),
 
 	# Page for labelling a region of interest
 	re_path(r'^label_region/(?P<region_id>\d+)/$', views.label_region, name='label_region'),

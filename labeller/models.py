@@ -23,6 +23,7 @@ class Slide (models.Model):
 	sid = models.IntegerField(unique=True)
 	patient = models.ForeignKey('Patient', on_delete=models.RESTRICT)
 	date_added = models.DateTimeField(auto_now_add=True)
+	dzi_path = models.CharField(max_length=300, default='')
 
 	class Meta:
 		verbose_name_plural = 'Slides'
@@ -37,6 +38,8 @@ class Region(models.Model):
 	date_added = models.DateTimeField(auto_now_add=True)	
 	slide = models.ForeignKey('Slide', on_delete=models.RESTRICT)
 	image = models.ImageField(upload_to='regions')
+	x = models.IntegerField(default=-1)
+	y = models.IntegerField(default=-1)
 
 	class Meta:
 		verbose_name_plural = 'Regions'
@@ -47,6 +50,7 @@ class Region(models.Model):
 
 class Cell(models.Model):
 	"""A cell comes from a region and has a label"""
+	readonly_fields=('id',)
 	cid = models.IntegerField(unique=True)
 	date_added = models.DateTimeField(auto_now_add=True)	
 	region = models.ForeignKey('Region', on_delete=models.RESTRICT)

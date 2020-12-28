@@ -7,18 +7,38 @@
 <div id="openseadragon1" style="width: 1200px; height: 800px;"></div>
 
 
+
+<div id="regions">
+<u1>
+	{% for region in regions %}
+	<p> 
+		ID: {{region.id}} &nbsp &nbsp &nbsp &nbsp
+		RID: {{region.rid}} &nbsp &nbsp &nbsp &nbsp  
+		<img src="{{region.image.url}}" >
+	</p>			
+
+
+	{% empty %}
+		<li>No regions have been added yet</li>
+	{% endfor %}
+
+</u1></div>
+
+
 <script src="{% static 'labeller/openseadragon/openseadragon.min.js' %}"></script>
 
-
 <script type="text/javascript">
+
+    var dzi_path = "{% static 'labeller/images/zoom/' %}" + '{{slide.dzi_path}}' + '.dzi'
+    console.log(dzi_path)
+
     var viewer = OpenSeadragon({
         id: "openseadragon1",
         showNavigator:  true,
         debugMode: false,
         visibilityRatio: 1.0,
-
         prefixUrl: "{% static 'labeller/openseadragon/images/' %}",
-        tileSources: "{% static 'labeller/images/zoom/23.dzi' %}"
+        tileSources: dzi_path
     });
 
     var drag;
@@ -65,11 +85,39 @@
 	      viewer.updateOverlay(drag.overlayElement, location);
 	    },
     
-    	releaseHandler: function(event) {      
-		      drag = null;
-		      selectionMode = false;
-		      viewer.setMouseNavEnabled(true);
-		    }
+    	releaseHandler: function(event) {
+    		
+			// The canvas-click event gives us a position in web coordinates.
+		    var webPoint = event.position;
+
+		    // Convert that to viewport coordinates, the lingua franca of OpenSeadragon coordinates.
+		    var viewportPoint = viewer.viewport.pointFromPixel(webPoint);
+
+		    // Convert from viewport coordinates to image coordinates.
+		    var imagePoint = viewer.viewport.viewportToImageCoordinates(viewportPoint);
+
+		    // Show the results.
+		    console.log(webPoint.toString(), viewportPoint.toString(), imagePoint.toString());
+
+			// The canvas-click event gives us a position in web coordinates.
+		    var webPoint = event.position;
+
+		    // Convert that to viewport coordinates, the lingua franca of OpenSeadragon coordinates.
+		    var viewportPoint = viewer.viewport.pointFromPixel(webPoint);
+
+		    // Convert from viewport coordinates to image coordinates.
+		    var imagePoint = viewer.viewport.viewportToImageCoordinates(viewportPoint);
+
+		    // Show the results.
+		    console.log(webPoint.toString(), viewportPoint.toString(), imagePoint.toString());
+
+			console.log(viewer.getOverlayById("box1"))
+
+		    drag = null;
+		    selectionMode = false;
+		    viewer.setMouseNavEnabled(true);
+		}
+	
 	});
 
 document.getElementById('button').addEventListener('click', function() {

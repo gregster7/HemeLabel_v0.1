@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block title %}Label Region{% endblock %}
+
 {% block content %}
 
 <div id='labeller'>
@@ -97,5 +98,8 @@
 </p>
 
 
-
 {% endblock content %}
+
+{% block scripts %} 
+<script src="{% static 'labeller/testing.js' %}" onload="loaded=true;"></script>
+{% endblock scripts %}

@@ -24,12 +24,18 @@ def cells(request):
 	context = {'cells': cells}
 	return render(request, 'labeller/cells.html', context)	
 
+def slides(request):
+	"""Show all regions."""
+	slides = Slide.objects.order_by('sid')
+	context = {'slides': slides}
+	return render(request, 'labeller/slides.html', context)	
+
 def slide_viewer(request):
 	return render(request, 'labeller/slide_viewer.html')
 
-def label_cell(request, cell_cid):
+def label_cell(request, cell_id):
 	"""label inidivudal cell"""
-	cell = Cell.objects.get(cid=cell_cid)
+	cell = Cell.objects.get(cid=cell_id)
 	# if request.method != 'POST':
 	# 	form = CellLabelForm(instance=cell)
 		
@@ -43,6 +49,11 @@ def label_cell(request, cell_cid):
 	context = {'region': region, 'cell':cell, 'other_cells': other_cells}
 	return render(request, 'labeller/label_cell.html', context)
 
+def label_slide(request, slide_id):
+	slide = Slide.objects.get(sid=slide_id)
+	regions = slide.region_set.all()
+	context = {'slide': slide, 'regions': regions}
+	return render(request, 'labeller/label_slide.html', context)
 
 
 # Needs to be udpated to support changing slide and patient as well
@@ -79,7 +90,6 @@ def update_cell_class(request):
 	cell.save()
 	results = {'success':True}
 	return JsonResponse(results)
-
 
 
 
