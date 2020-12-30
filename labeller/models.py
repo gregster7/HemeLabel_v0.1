@@ -23,7 +23,9 @@ class Slide (models.Model):
 	sid = models.IntegerField(unique=True)
 	patient = models.ForeignKey('Patient', on_delete=models.RESTRICT)
 	date_added = models.DateTimeField(auto_now_add=True)
-	dzi_path = models.CharField(max_length=300, default='')
+	dzi_path = models.FileField(upload_to="slides", max_length=300)
+	svs_path = models.FileField(upload_to="slides", max_length=300)
+
 
 	class Meta:
 		verbose_name_plural = 'Slides'
@@ -38,8 +40,10 @@ class Region(models.Model):
 	date_added = models.DateTimeField(auto_now_add=True)	
 	slide = models.ForeignKey('Slide', on_delete=models.RESTRICT)
 	image = models.ImageField(upload_to='regions')
-	x = models.IntegerField(default=-1)
-	y = models.IntegerField(default=-1)
+	x = models.FloatField(default=-1)
+	y = models.FloatField(default=-1)
+	width = models.FloatField(default=-1)
+	height = models.FloatField(default=-1)
 
 	class Meta:
 		verbose_name_plural = 'Regions'

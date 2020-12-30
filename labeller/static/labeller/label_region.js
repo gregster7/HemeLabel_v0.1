@@ -1,4 +1,4 @@
-console.log('entering testing.js');
+console.log('entering label_region.js');
 
 function currentCellCID(){
 	return $('.current_cell')[0].id
@@ -158,4 +158,4 @@ $ (document).ready(function() {
  	console.log("ready");
  });
 
-console.log('exiting testing.js');
+console.log('exiting label_region.js');

@@ -4,9 +4,17 @@ from django.urls import reverse
 from django.core import serializers
 from django.http import JsonResponse
 import json
+import os
+from datetime import datetime
+from django.db import models
 
 from .models import Region, Cell, Patient, Slide
 from .forms import RegionForm
+
+from django.conf import settings
+from django.conf.urls.static import static
+from django.core.files import File
+
 
 def index(request):
 	"""The home page for labeller"""
@@ -54,6 +62,46 @@ def label_slide(request, slide_id):
 	regions = slide.region_set.all()
 	context = {'slide': slide, 'regions': regions}
 	return render(request, 'labeller/label_slide.html', context)
+
+def add_new_region(request):
+	POST = request.POST
+	sid = int(POST['sid'])
+	x1 = float(POST['x1'])
+	y1 = float(POST['y1'])
+	x2 = float(POST['x2'])
+	y2 = float(POST['y2'])
+
+
+	x = min(x1, x2)
+	y = min(y1, y2)
+	width = abs(x1-x2)
+	height = abs(y1-y2)
+
+	slide = Slide.objects.get(sid=sid)
+	svs_path = settings.MEDIA_ROOT + slide.svs_path.url
+	now = datetime.now()
+	date_time = now.strftime("%m%d%Y%H%M%S")
+	region_path = settings.MEDIA_ROOT + '/regions/' + date_time + '.jpg'
+	command = "vips crop "+ svs_path + " " + region_path + " " + str(x) + " " + str(y) + " " + \
+		str(width) + " " + str(height) 
+	print(command)
+	os.system(command)
+#	image =	image_model.image_field(region_path, File().read())
+
+	region_path = '/regions/' + date_time + '.jpg'
+	new_region = Region.objects.create(slide = slide, image=region_path, rid=date_time, x=x, y=y, width=width, height=height)
+	new_region.save()
+#	new_region.image.save(os.path.basename(.url))
+
+#	new_region.image.url = region_path
+
+#	file = open(region_path)
+#	myfile = File(f)
+#	new_region.image.
+##	print(MEDIA_ROOT)
+
+	results = {'success':True}
+	return JsonResponse(results)
 
 
 # Needs to be udpated to support changing slide and patient as well
