@@ -60,6 +60,9 @@ class Cell(models.Model):
 	region = models.ForeignKey('Region', on_delete=models.RESTRICT)
 	image = models.ImageField(upload_to='cells')
 
+	center_x = models.FloatField(default=-1)
+	center_y = models.FloatField(default=-1)
+
 	cell_type = models.CharField(max_length=50, default = 'UL')
 
 	class Meta:
