@@ -14,6 +14,7 @@ from .forms import RegionForm
 from django.conf import settings
 from django.conf.urls.static import static
 from django.core.files import File
+from django.core.files.images import ImageFile
 
 
 def index(request):
@@ -62,6 +63,53 @@ def label_slide(request, slide_id):
 	regions = slide.region_set.all()
 	context = {'slide': slide, 'regions': regions}
 	return render(request, 'labeller/label_slide.html', context)
+
+
+def add_new_cell(request):
+	POST = request.POST
+	rid = int(POST['rid'])
+	center_x = float(POST['center_x'])
+	center_y = float(POST['center_y'])
+	box_dim = 90 # Box dimension (it is a square)
+
+	region = Region.objects.get(rid=rid)
+
+
+	region_path = settings.MEDIA_ROOT + region.image.url
+	print(region_path)
+
+	# Make sure not too lose to edge
+	if (center_x-box_dim/2 > 0 and center_y-box_dim/2 > 0 and \
+		center_x+box_dim/2 < region.width and center_y+box_dim/2 < region.height):
+		now = datetime.now()
+		date_time = now.strftime("%m%d%Y%H%M%S")
+		cell_path = settings.MEDIA_ROOT + '/cells/' + date_time + '.jpg'
+		command = "vips crop "+ region_path + " " + cell_path + " " + \
+			str(center_x-box_dim/2) + " " + str(center_y-box_dim/2) + " " + \
+			str(box_dim) + " " + str(box_dim) 
+		os.system(command)
+
+		cell_path = '/cells/' + date_time + '.jpg'
+		new_cell = Cell.objects.create(region = region, image=cell_path, cid=date_time, \
+			center_x=center_x, center_y=center_y, width=box_dim, height=box_dim)
+		new_cell.save()
+		# cells = region.cell_set.all()
+		new_cell_json = serializers.serialize("json", [new_cell])
+		results = {'success':True, 'new_cell_json':new_cell_json}
+	else:
+		results = {'success':False, 'error':'too close to boundary'}
+	
+	return JsonResponse(results)
+
+
+def delete_cell(request):
+	POST = request.POST
+	cid = int(POST['cid'])
+	print('deleting cell %s' %cid)
+	cell = Cell.objects.filter(cid=cid).delete()
+	results = {'success':True}
+	return JsonResponse(results)
+
 
 def add_new_region(request):
 	POST = request.POST

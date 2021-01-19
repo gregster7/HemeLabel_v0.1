@@ -48,6 +48,12 @@ urlpatterns = [
 	# Add new region (AJAX)
 	re_path(r'^add_new_region/', views.add_new_region, name='add_new_region'),
 
+	# Add new region (AJAX)
+	re_path(r'^add_new_cell/', views.add_new_cell, name='add_new_cell'),
+
+	# Delete cell (AJAX)
+	re_path(r'^delete_cell/', views.delete_cell, name='delete_cell'),
+
 	# Page for labelling individual cell
 	re_path(r'^label_cell/(?P<cell_id>\d+)/$', views.label_cell, name='label_cell'),
 

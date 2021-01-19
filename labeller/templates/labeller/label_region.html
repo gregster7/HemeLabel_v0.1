@@ -8,7 +8,8 @@
 <div id='labeller'>
 	
 	<div class="column1 center">
-		<p class="region", id="r{{region.rid}}"><img src="{{region.image.url}}"></p>
+		<p class="region" id="r{{region.rid}}"><img id="region_image" src="{{region.image.url}}"></p>
+		<canvas id="regionCanvas" height="{{region.ceil_height}}" width="{{region.ceil_width}}"></canvas>
 	</div>
 
 	<div class="column2">
@@ -17,8 +18,8 @@
  		{% with cells.0 as current_cell %}
 		<div class='current_cell' id="{{current_cell.cid}}">
 			<img class='center' id='currentCellImage' src="{{current_cell.image.url}}">
-			<p class='center' id='currentCellId'>Cell ID: {{current_cell.cid}}</p>
-			<p class='center cell_type' id='currentCellClassification'>Classification: {{current_cell.cell_type}}</p>
+			<p class='center' id='currentCellId_{{current_cell.cid}}'>Cell ID: {{current_cell.cid}}</p>
+			<p class='center cell_type' id='cellClass_{{current_cell.cid}}'>{{current_cell.cell_type}}</p>
 		</div> 
 		{% endwith %}
 	
@@ -84,22 +85,30 @@
 	<div class="cell_list_item" id="celllistCID_{{current_cell.cid}}">
 		<p><img class='center' id='cellImage' src="{{current_cell.image.url}}"></p>
 		<p class='center' id='cellId_{{current_cell.cid}}'>Cell ID: {{current_cell.cid}}</p>
-		<p class='center cell_type' id='cellClassification_{{current_cell.cid}}'>Classification: {{current_cell.cell_type}}</p>
+		<p class='center cell_type' id='cellClass_{{current_cell.cid}}'>{{current_cell.cell_type}}</p>
 	</div>
 	{% empty %}
-	<li>No cells have been added yet</li>
+	<!-- <li>No cells have been added yet</li> -->
 	{% endfor %}
 </div>
 
 
-<h2>Reference</h2>
+<!-- <h2>Reference</h2>
 <p>
 	<img id='reference_maturation' src="{% static 'labeller/images/Reference_maturation.png' %}">
 </p>
-
+ -->
 
 {% endblock content %}
 
 {% block scripts %} 
+
+<script type="text/javascript">
+	var region_img_url = '{{region.image.url}}';
+	var region_rid = '{{region.rid}}';
+</script>
+
+
 <script src="{% static 'labeller/label_region.js' %}" onload="loaded=true;"></script>
+
 {% endblock scripts %}

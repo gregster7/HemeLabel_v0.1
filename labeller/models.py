@@ -1,5 +1,8 @@
 from django.db import models
 from django.conf import settings
+from math import ceil
+
+
 
 # Create your models here.
 
@@ -45,6 +48,12 @@ class Region(models.Model):
 	width = models.FloatField(default=-1)
 	height = models.FloatField(default=-1)
 
+	def ceil_width (self):
+		return ceil(self.width)
+	
+	def ceil_height (self):
+		return ceil(self.height)
+	
 	class Meta:
 		verbose_name_plural = 'Regions'
 
@@ -52,7 +61,11 @@ class Region(models.Model):
 		"""Return a string representation of the model."""
 		return str(self.rid)
 
+
+
+
 class Cell(models.Model):
+
 	"""A cell comes from a region and has a label"""
 	readonly_fields=('id',)
 	cid = models.IntegerField(unique=True)
@@ -63,7 +76,49 @@ class Cell(models.Model):
 	center_x = models.FloatField(default=-1)
 	center_y = models.FloatField(default=-1)
 
+	width = models.FloatField(default=-1)
+	height = models.FloatField(default=-1)
+
 	cell_type = models.CharField(max_length=50, default = 'UL')
+	
+
+	# def getCellTypeName(self):
+	# 	classLabelDict = {
+	# 		"M1": "Blast",
+	# 		"M2": "Myelocyte",
+	# 		"M3": "Promyelocyte",
+	# 		"M4": "Metamyelocyte",
+	# 		"M5": "Band neutrophil",
+	# 		"M6": "Segmented netrophil",
+
+	# 		"E1": "Immature Eosinophil",
+	# 		"E2": "Mature Eosinophil",
+	# 		"B1": "Immature Basophil",
+	# 		"B2": "Mature Basophil",
+	# 		"M1": "Monoblast",
+	# 		"M2": "Monocyte",
+
+	# 		"L0": "Lymphoblast",
+	# 		"L1": "Hematagone",
+	# 		"L2": "Small Mature Lymphocyte",
+	# 		"L3": "Large Grancular lymphocyte",
+	# 		"L4": "Plasma Cell",
+
+	# 		"ER1": "Pronormoblast",
+	# 		"ER2": "Basophilic normoblast",
+	# 		"ER3": "Polychromatophilic",
+	# 		"ER4": "Orthochromic (nuc red)",
+	# 		"ER5": "Reticulocyte",
+	# 		"ER6": "Mature RBC",
+
+	# 		"U1": "Artifact",
+	# 		"U2": "Unknown",
+	# 		"U3": "Other",
+	# 		"U4": "Histiocyte",
+	# 	}
+	# 	return classLabelDict[self.cell_type]	
+	
+
 
 	class Meta:
 		verbose_name_plural = 'Cells'
