@@ -101,37 +101,33 @@ function deleteCurrentCell() {
 	$.post("/delete_cell/", {'cid':cell_cid}, function(json){
 		console.log("Was successful?: " + json['success']);
 	});
+
 	
 	// // This should return a single cell
 	cell = $('.highlight');
-	if (cell.length  != 1) {
-		console.log("error in deleteCurrentCell - more than one highlighted cell returned");
-		return;
-	}
+	highlight_dot = $('.highlight_dot');
 
 	if (nextCell(1) || nextCell(-1)) {
 		cell.remove();
-		return;
+		highlight_dot.remove();
 	} else {
 		//Reload page now that all cells are gone
 		console.log("no cells left");
-		noCellsLeft();
+		$('.highlight').remove();	
+		$('.current_cell').remove();	
+		$('.highlight_dot').remove();
 	}
 
 }
 
-function noCellsLeft(){
-	cell = $('.highlight');	
-	cell.remove();
-	cell = $('.current_cell');	
-	cell.remove();	
-}
 
 function updateCurrentCell(current_cell){
 	console.log("Entering updateCurrentCell");
 	console.log("current cell", current_cell, typeof current_cell);
 	// Unhighlight all cells in cell list
 	$('.highlight').removeClass('highlight');
+	$('.highlight_dot').removeClass('highlight_dot').addClass('no_highlight_dot');
+
 
 	// Clone unhighlighted current cell to put in column2 box
 	clonedCell = current_cell.clone();
@@ -145,6 +141,12 @@ function updateCurrentCell(current_cell){
 	$('.current_cell').remove()
 	clonedCell.attr('class', 'current_cell')
 	clonedCell.appendTo('.column2');
+
+	id = '#centroid'+current_cell_cid;
+	console.log("centroid: ", id);
+//	$('#centroid01202021190611').addClass('highlight_dot');
+	$(id).removeClass('no_highlight_dot').addClass('highlight_dot');
+	console.log($(id));
 }
 
 
@@ -288,9 +290,31 @@ window.addEventListener('keyup', (e) => {
 	}
 });
 
+
+function addCellCentroids() {
+	console.log("Entering addCellCentroids")
+	// console.log(cells_json);
+	// console.log(cells_json.replace(/&quot;/ig,'"'));
+
+	var cells = $.parseJSON(cells_json.replace(/&quot;/ig,'"'));
+	for (i=0; i<cells.length; i++) {
+	//	console.log(cells[i], cells[i].fields.center_x);
+		addNewCircle(cells[i].fields.center_x, cells[i].fields.center_y, cells[i].fields.cid);
+	}
+}
+
+
 //Set the initial current cell
 $('#celllistCID_'+currentCellCID()).addClass('highlight')
 
+function addNewCircle(x, y, cid) {
+	var newDiv1 = '<span class="dot no_highlight_dot" id="centroid'+cid+ '" style=" display: inline-block; ';
+	newDiv1 = newDiv1 + 'position: absolute; top: ' + (y-10) +'px; left: ' + (x-10) + 'px; z-index: 100">';				
+	newDiv1 = newDiv1 + '</span>';
+//	var $newdiv1 = $( newDiv1 );
+	$( ".column1" ).append ($(newDiv1));
+//	console.log("AddNewCircle", x, y, newDiv1, $(newDiv1))
+}
 
 $('#regionCanvas').on('click', function(e) {
 	// console.log('clicked');
@@ -299,13 +323,10 @@ $('#regionCanvas').on('click', function(e) {
 	// console.log($(this).offset().left)
 //	console.log("x: ", e.clientX-$(this).offset().left, "y: ", e.clientY-$(this).offset().top)
 	ctx = this.getContext('2d');
-
 	var BB=this.getBoundingClientRect();
 
 	var X=e.clientX-BB.left;
 	var Y=e.clientY-BB.top;
-	console.log("x: ", X, "y: ", Y)
-	var R = 5;
 
 
 	$.post("/add_new_cell/", {'rid':region_rid, 'center_x':X, 'center_y':Y}, function(json){
@@ -315,11 +336,12 @@ $('#regionCanvas').on('click', function(e) {
  			alert('Warning: Cell too close to boundary')
  		}
  		else if(json['success'] == true) {
-		 	ctx.beginPath();
-			ctx.arc(X, Y, R, 0, 2 * Math.PI, false);
-			ctx.lineWidth = 3;
-			ctx.strokeStyle = '#FF0000';
-			ctx.stroke();
+		 // 	ctx.beginPath();
+	 	// 	var R = 5;
+			// ctx.arc(X, Y, R, 0, 2 * Math.PI, false);
+			// ctx.lineWidth = 3;
+			// ctx.strokeStyle = '#FF0000';
+			// ctx.stroke();
 			var cell = JSON.parse(json['new_cell_json'])[0];	
 
 			new_cell_div = '<div class="cell_list_item" id="celllistCID_' + cell.fields.cid +'">'
@@ -339,41 +361,46 @@ $('#regionCanvas').on('click', function(e) {
 			});
 
 			updateCurrentCell(current_cell);
+			addNewCircle(X, Y, cell.fields.cid);
+			console.log("x: ", X, "y: ", Y)
  		}
-
 	});
-
-
 });
 
 
-//Select a cell to annotate by clicking
-$('.cell_list_item').on('click', function() {
-	console.log("this item was clicked on", $(this))
-	updateCurrentCell($(this))
-});
+
+
 
 $ (document).ready(function() {
  	console.log("ready");
  	// window.addEventListener('mousemove', function(e) {
  	// 	//console.log(e);
  	// });
- 	var c = $("#regionCanvas"), 
-	 	ctx = c[0].getContext('2d');
 
-	img= document.getElementById("region_image")
-	console.log('canvas drawing', img, img.height, img.width)
-	ctx.drawImage(img, 0, 0)
-
-	$('p.region').remove()
-
+//***************** Old version of canvas not needed *****************
+ 	// var c = $("#regionCanvas"), 
+	// ctx = c[0].getContext('2d');
+	// img= document.getElementById("region_image");
+	// console.log('canvas drawing', img, img.height, img.width);
+	// ctx.drawImage(img, 0, 0);
+	// $('p.region').remove();
+//*****************  ***************** ***************** *************
 //	cell_classifications = $('.cell_type').text(this);
 
 	elements = document.getElementsByClassName('cell_type');
+
 	for (e of elements) {
 		e.textContent = cellClassNameFromCode(e.textContent);
 	}
 
- });
+	addCellCentroids();
+
+	//Select a cell to annotate by clicking
+	$('.cell_list_item').on('click', function() {
+		console.log("this item was clicked on", $(this))
+		updateCurrentCell($(this))
+	});
+
+});
 
 console.log('exiting label_region.js');

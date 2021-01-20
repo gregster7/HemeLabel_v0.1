@@ -128,3 +128,4 @@ STATIC_URL = '/static/'
 
 # Media file handling
 MEDIA_ROOT = path.join(BASE_DIR, 'media')
+

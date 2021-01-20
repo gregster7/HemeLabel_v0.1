@@ -5,11 +5,15 @@
 
 {% block content %}
 
+
 <div id='labeller'>
-	
-	<div class="column1 center">
-		<p class="region" id="r{{region.rid}}"><img id="region_image" src="{{region.image.url}}"></p>
-		<canvas id="regionCanvas" height="{{region.ceil_height}}" width="{{region.ceil_width}}"></canvas>
+
+
+	<div class="column1" style="position: relative">
+
+		<img class="region region_image" id="r{{region.rid}}" style="position: absolute" src="{{region.image.url}}">
+		<canvas style="position: relative; top: 0; left: 0; z-index: 0" id="regionCanvas" height="{{region.ceil_height}}" width="{{region.ceil_width}}"></canvas>
+
 	</div>
 
 	<div class="column2">
@@ -106,6 +110,7 @@
 <script type="text/javascript">
 	var region_img_url = '{{region.image.url}}';
 	var region_rid = '{{region.rid}}';
+	var cells_json = '{{cells_json}}';
 </script>
 
 

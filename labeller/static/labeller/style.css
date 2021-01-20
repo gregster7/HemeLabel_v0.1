@@ -62,6 +62,14 @@ h2 {
 
 }
 
+.dot {
+  height: 10px;
+  width: 10px;
+  background-color: red;
+  border-radius: 50%;
+  display: inline-block;
+}
+
 #reference_maturation {
 	width:100%;
 }
@@ -76,6 +84,24 @@ h2 {
 .highlight {
 	background: yellow;
 }
+
+.highlight_dot {
+	background-color: yellow;
+	border: solid 5px yellow;
+
+}
+
+.no_highlight_dot {
+	background-color: transparent;
+	border: solid 3px red;
+}
+
+.dot {
+	border-radius: 10px/10px;
+	width: 10px;
+	height: 10px;	
+}
+
 
 .cell_list_item {
 	padding-left: 20px;
