@@ -47,6 +47,7 @@ class Region(models.Model):
 	y = models.FloatField(default=-1)
 	width = models.FloatField(default=-1)
 	height = models.FloatField(default=-1)
+	
 
 	def ceil_width (self):
 		return ceil(self.width)
