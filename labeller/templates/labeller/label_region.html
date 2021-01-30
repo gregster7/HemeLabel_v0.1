@@ -44,7 +44,7 @@
 		<div class="column2" id="current_cell_column2">
 	 		<h2 id='current_cell_title'>Current Cell</h2>
 	 		{% with cells.0 as current_cell %}
-			<div class='current_cell' id="{{current_cell.cid}}">
+			<div class='current_cell' id="currentCell_{{current_cell.cid}}">
 				<img class='center' id='currentCellImage' src="{{current_cell.image.url}}">
 				<p class='center' id='currentCellId_{{current_cell.cid}}'>Cell ID: {{current_cell.cid}}</p>
 				<p class='center cell_type' id='cellClass_{{current_cell.cid}}'>{{current_cell.cell_type}}</p>
@@ -61,11 +61,11 @@
 
 <table id="classification_table">
 	<tr class="class_table_row">
-		<th>Neutrophilic
-		<th>Other granulocytic
-		<th>Lymphoid
-		<th>Erythroid
-		<th>Misc
+		<th class="class_table_td">Neutrophilic
+		<th class="class_table_td">Other granulocytic
+		<th class="class_table_td">Lymphoid
+		<th class="class_table_td">Erythroid
+		<th class="class_table_td">Misc
 	<tr class="class_table_row">
 		<td class="class_table_td" id="count_M1">Blast (1):
 		<td class="class_table_td" id="count_E1">Immature Eo (q):
@@ -73,13 +73,13 @@
 		<td class="class_table_td" id="count_ER1">Pronormoblast (z):						
 		<td class="class_table_td" id="count_U1">Artifact (7):
 	<tr class="class_table_row">
-		<td class="class_table_td" id="count_M2">Myelocyte (2):
+		<td class="class_table_td" id="count_M2">Promyelocyte (2):
 		<td class="class_table_td" id="count_E2">Eosinophil (w):
 		<td class="class_table_td" id="count_L1">Hematogone (s):
 		<td class="class_table_td" id="count_ER2">Basophilic normoblast (x):						
 		<td class="class_table_td" id="count_U2">Unknown (8):
 	<tr class="class_table_row">
-		<td class="class_table_td" id="count_M3">Promyelocyte (3):
+		<td class="class_table_td" id="count_M3">Myelocyte (3):
 		<td class="class_table_td" id="count_B1">Immature Baso (e):
 		<td class="class_table_td" id="count_L2">Mature Lymphocyte (d):
 		<td class="class_table_td" id="count_ER3">Polychromatophilic (c):						
@@ -101,6 +101,8 @@
 		<td class="class_table_td" id="count_MO2">Monocyte (y):
 		<td class="class_table_td">
 		<td class="class_table_td" id="count_ER6">Mature RBC (n):	
+		<td class="class_table_td">
+
 </table>
 
 
@@ -133,17 +135,22 @@
 <h2>Miscelaneous Cells</h2>
 <div id="misc_cells_inline" class="inline_cells"></div>
 
-<h2>All Cells in Region</h2>
+<!-- <h2>All Cells in Region</h2>
 <div id="all_cells_inline" class="inline_cells"></div>
 
-
-
-
+ -->
+<!-- 
+<div  class="help"> -->
+<img id="helpscreen" style="display:none;" src="{% static 'labeller/images/Reference_maturation.png' %}" />
+<!-- </div>
+ -->
 <!-- <h2>Reference</h2>
 <p>
 	<img id='reference_maturation' src="{% static 'labeller/images/Reference_maturation.png' %}">
 </p>
  -->
+
+
 
 {% endblock content %}
 
@@ -154,9 +161,12 @@
 	console.log('region image path = ', region_img_url)
 	var region_rid = '{{region.rid}}';
 	var cells_json = '{{cells_json}}';
+//	var static_path = '{% static ""%}';
+	var static_image_path = "{% static 'labeller/images/' %}";
+	console.log("static", static_image_path);
 </script>
-
-
+<script src="{% static 'labeller/Cell.js' %}"></script>
+<script src="{% static 'labeller/CellCounter.js' %}"></script>
 <script src="{% static 'labeller/label_region.js' %}" onload="loaded=true;"></script>
 
 {% endblock scripts %}
