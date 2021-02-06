@@ -2,7 +2,16 @@ console.log('entering label_region.js');
 
 
 function currentCellCID(){
-	return $('.current_cell')[0].id
+	console.log("Current cell", $('.current_cell'));
+	id = $('.current_cell')[0].id;
+	index = id.lastIndexOf('_');
+	if (index != '-1' ){
+		cid = id.substr(index+1, id.length-index+1);
+		console.log("Cid", cid);
+		console.log("index", index)
+		return cid;
+	}
+	else return $('.current_cell')[0].id;
 }
 
 
@@ -145,7 +154,7 @@ function updateCurrentCell(current_cell){
 	console.log("centroid: ", id);
 	$(id).removeClass('no_highlight_dot').addClass('highlight_dot');
 	console.log($(id));
-	cell_counter.updateCountsOnPage();
+
 }
 
 
