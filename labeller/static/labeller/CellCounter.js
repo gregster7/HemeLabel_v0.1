@@ -3,10 +3,10 @@ class CellCounter {
 	constructor(cells) {
 		this.count = {}
 		this.count['total'] = 0;
-		for (key in Cell.classLabelDict) { this.count[key] = 0;}
+		for (var key in Cell.classLabelDict) { this.count[key] = 0;}
 		for (var i=0; i<Cell.lineage_labels.length; i++) { this.count[Cell.lineage_labels[i]] = 0;}
-		for (key in cells) {
-			cell = cells[key];
+		for (var key in cells) {
+			var cell = cells[key];
 			this.count[cell.cell_type] += 1;
 			this.count[cell.getLineage()] += 1;
 			this.count['total'] += 1;
@@ -27,7 +27,7 @@ class CellCounter {
 		// 	lineage_divs[Cell.getLineage(key)] += "<TR class='counter row' id='"+key+"'>"+ classLabelDict[key]+"</TR>";
 		// }
 		$('#counter').append("<H3 class='counter header' id='total'>Total:</H3>");
-		for (key in lineage_divs) {
+		for (var key in lineage_divs) {
 			//console.log("buildpagecounter", key, lineage_divs[key]);
 			$("#counter").append($(lineage_divs[key]));
 		}

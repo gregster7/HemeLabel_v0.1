@@ -42,8 +42,21 @@ class Cell {
 
 	}
 
-	addEventListener = function (){
 
+
+	static LoadCellsFromJson(cells_json){
+	//	var cells_json_reformat = $.parseJSON(cells_json);
+		var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig,'"'));
+
+		var all_cells = {};
+		for (var c of cells_json_reformat){
+	//		console.log('c=', c);
+			var cell = new Cell(c);
+			all_cells[cell.cid] = cell;
+	//		console.log("new cell class", cell);
+		}
+	//	console.log(all_cells);
+		return all_cells;
 	}
 
 	static findLineageFromClass = function (jquery_cell){
@@ -64,8 +77,8 @@ class Cell {
 
 	static classLabelDict = {
 			"M1": "Blast",
-			"M2": "Myelocyte",
-			"M3": "Promyelocyte",
+			"M2": "Promyelocyte",
+			"M3": "Myelocyte",
 			"M4": "Metamyelocyte",
 			"M5": "Band neutrophil",
 			"M6": "Segmented netrophil",
@@ -116,8 +129,11 @@ class Cell {
 			//return 'granulocytic';
 			return 'myeloid';
 		}
-		if (cell_type == 'ER1' || cell_type == 'ER2' || cell_type == 'ER3' || cell_type == 'ER4' || cell_type == 'ER5' || cell_type == 'ER6'){
+		if (cell_type == 'ER1' || cell_type == 'ER2' || cell_type == 'ER3' || cell_type == 'ER4' || cell_type == 'ER5' ){
 			return 'erythroid';
+		}
+		if( cell_type == 'ER6' ){
+			return 'misc';
 		}
 		if (cell_type == 'L0' || cell_type == 'L1' || cell_type == 'L2' || cell_type == 'L3' || cell_type == 'L4'){
 			return 'lymphoid';
@@ -147,6 +163,31 @@ class Cell {
 		return div;
 	}
 
+	getDivForCurrentCellView(){
+		var div = '<div class="cell_list_item '+this.getHTMLClasses()+'" id="celllistCID_' + this.cid+'">';
+		div = div +	'<p><img class="center" id="currentCellImage" src="'+this.image_url+'"></p>';
+		div = div + '<p class="center" id="currentCellId_'+ this.cid+'">Cell ID: '+ this.cid +'</p>';
+		div = div + '<p class="center cell_type" id="currentCellClass_'+ this.cid+'">'+this.getCellTypeName()+'</p></div>';
+		return div;		
+	}
+
+	makeCurrentCell(){
+
+	}
+
+	//Refactored to take all_cells hash array of javascript cell objects instead of JSON list
+	static populateCellLists(cells){
+			console.log("Entering populateCellLists: ", cells);
+
+		for (var key in cells) {
+			var cell = cells[key];
+			//console.log("key, value:", key, cell);
+			//cell_div = getDivFromCellObject(cell);
+			var cell_div = cell.getDivForCellList();
+			//$("#all_cells_inline").append(cell_div);
+			$("#"+cell.getLineage()+"_cells_inline").append(cell_div);
+		}
+	}
 
 }
 

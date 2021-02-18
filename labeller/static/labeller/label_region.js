@@ -2,13 +2,13 @@ console.log('entering label_region.js');
 
 
 function currentCellCID(){
-	console.log("Current cell", $('.current_cell'));
+	//console.log("Current cell", $('.current_cell'));
 	id = $('.current_cell')[0].id;
 	index = id.lastIndexOf('_');
 	if (index != '-1' ){
 		cid = id.substr(index+1, id.length-index+1);
-		console.log("Cid", cid);
-		console.log("index", index)
+		// console.log("Cid", cid);
+		// console.log("index", index)
 		return cid;
 	}
 	else return $('.current_cell')[0].id;
@@ -47,12 +47,18 @@ function labelCurrentCell(label) {
 			console.log("Was successful?: " + json['success'], label);
 	});
 
+	console.log("all cells", all_cells);
+	console.log("label", label);
+	console.log("label2", Cell.getClassLabelName(label))
+
+//	#Need to update 
+
 	//Update current cell classification in column2
 	$('#currentCellClassification').html("Classification: "+Cell.getClassLabelName(label));
 	
 	//Update current cell on cell list
-	$('#cellClassification_'+currentCellCID()).html("Classification: "+Cell.getClassLabelName(label));
-	console.log("New cell classifciation: ", Cell.getClassLabelName(label))
+	$('#cellClass_'+currentCellCID()).html(Cell.getClassLabelName(label));
+	console.log("New cell classification: ", Cell.getClassLabelName(label))
 
 	//If the lineage has changed, we need to remove the cell from the current cell list and move to the correct one.
 	updateCellListsAfterLabelChange(label);
@@ -138,8 +144,19 @@ function updateCurrentCell(current_cell){
 	clonedCell = current_cell.clone();
 	
 	current_cell_cid = current_cell.attr('id').substr(current_cell.attr('id').lastIndexOf('_')+1);	
+	currentCellObejct = all_cells[current_cell_cid];
+	console.log(currentCellObejct);
 	// console.log(current_cell.attr('id'))
 	clonedCell.attr('id', 'currentCell_'+current_cell_cid)
+	console.log("cloned cell", clonedCell);
+	//console.log(clonedCell.children().each().attr('id'));
+	//console.log("cloned cell2", clonedCell);
+	for (child of clonedCell.children()){
+	 	console.log("child", child);
+	// 	id = child.attr('id');
+	// 	child.attr('id') = "currentCellClass_"+id;
+	// 	console.log("changed child", child);
+	}
 	//clonedCell.attr('class', 'current_cell')
 	$('.current_cell').remove()
 	clonedCell.attr('class', 'current_cell')
@@ -283,6 +300,8 @@ function addKeyboardEventListeners() {
 			case "Digit9": labelCurrentCell('U3'); break;
 			case "Digit0": labelCurrentCell('U4'); break;
 
+			case "KeyU": labelCurrentCell('UL'); break;
+
 			case "ArrowLeft": nextCell(-1);  break;
 			case "ArrowRight": nextCell(1); break;
 			case "Enter": nextRegion(); break;
@@ -386,20 +405,7 @@ function populateCellLists(cells) {
 
 }
 
-function LoadCellsFromJson(cells_json){
-//	var cells_json_reformat = $.parseJSON(cells_json);
-	var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig,'"'));
 
-	var all_cells = {};
-	for (c of cells_json_reformat){
-//		console.log('c=', c);
-		cell = new Cell(c);
-		all_cells[cell.cid] = cell;
-//		console.log("new cell class", cell);
-	}
-//	console.log(all_cells);
-	return all_cells;
-}
 
 
 function addMouseEventListeners(){
@@ -424,6 +430,7 @@ function addMouseEventListeners(){
 
 var cell_counter = {};
 var all_cells = {};
+// current_cell = 
 
 $ (document).ready(function() {
 
@@ -437,9 +444,9 @@ $ (document).ready(function() {
 	}
 	console.log("cells_json:", cells_json);
 
-	all_cells = LoadCellsFromJson(cells_json);
+	all_cells = Cell.LoadCellsFromJson(cells_json);
 //	console.log("all cells:", all_cells);
-	populateCellLists(all_cells);
+	Cell.populateCellLists(all_cells);
 	cell_counter = new CellCounter(all_cells);
 
 	var cells = $.parseJSON(cells_json.replace(/&quot;/ig,'"'));

@@ -21,6 +21,7 @@ h2 {
 	text-align: center;
 }
 
+
 .row_menu {
 	background-color: white;
 	padding:10px;
@@ -78,12 +79,19 @@ img { margin: auto; }
 	display: inline-block;	
 }
 
-.legend_table {
-	border:0px;
-/*	grid:none;*/
-}
+
 
 /********** Column2, Current Cell/Selection **********/
+.purple_box {
+ 	margin: auto;
+	border: 1px solid purple;
+	padding: 25px;
+	padding-right: 50px;
+	padding-left: 50px;
+	align-content: center; 		
+
+}
+
 .column2 {
  	margin: auto;
 	border: 1px solid purple;
@@ -92,8 +100,21 @@ img { margin: auto; }
 	padding-left: 50px;
 	display: flex;
 	flex-direction: column;
-	align-content: center 
+	align-content: center;
  }
+
+#dot_legend {
+}
+
+#legend_table {
+	border:0px;
+
+}
+
+#mini_counter {
+ 	
+}
+
 
 #column2_wrapper {
 	flex-direction: column;

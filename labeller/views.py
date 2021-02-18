@@ -188,6 +188,25 @@ def update_cell_class(request):
 	return JsonResponse(results)
 
 
+def data_export(request):
+	regions = Region.objects.all()
+	regions_json = serializers.serialize("json", Region.objects.all())
+	cells = Cell.objects.all()
+	cells_json = serializers.serialize("json", Cell.objects.all())
+
+	context = {'regions': regions, 'regions_json': regions_json, 'cells':cells, 'cells_json': cells_json}
+	return render(request, 'labeller/data_export.html', context)
+
+def stats(request):
+	regions = Region.objects.all()
+	regions_json = serializers.serialize("json", Region.objects.all())
+	cells = Cell.objects.all()
+	cells_json = serializers.serialize("json", Cell.objects.all())
+
+	context = {'regions': regions, 'regions_json': regions_json, 'cells':cells, 'cells_json': cells_json}
+	return render(request, 'labeller/stats.html', context)
+
+
 
 def label_region(request, region_id):
 	"""label cells on a region"""

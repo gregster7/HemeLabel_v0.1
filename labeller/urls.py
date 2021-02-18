@@ -42,6 +42,13 @@ urlpatterns = [
 	# Page for labelling a region of interest
 	re_path(r'^label_region/(?P<region_id>\d+)/$', views.label_region, name='label_region'),
 
+	# # Page for exporting data
+	# re_path(r'^data_export/$', views.data_export, name='data_export'),
+
+	# Page for viewing labelling stats/progress
+	re_path(r'^stats/$', views.stats, name='stats'),
+
+
 	# Label next region
 	re_path(r'^next_region/', views.next_region, name='next_region'),
 

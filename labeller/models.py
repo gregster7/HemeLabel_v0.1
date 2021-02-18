@@ -47,7 +47,7 @@ class Region(models.Model):
 	y = models.FloatField(default=-1)
 	width = models.FloatField(default=-1)
 	height = models.FloatField(default=-1)
-	
+
 
 	def ceil_width (self):
 		return ceil(self.width)
@@ -62,7 +62,15 @@ class Region(models.Model):
 		"""Return a string representation of the model."""
 		return str(self.rid)
 
+# class FixedRegion(models.model):
+# 	"""All FixedRegions are 416x416 pixels"""
+# 	image = models.ImageField(upload_to='FixedRegions')
+# 	slide = models.ForeignKey('Slide', on_delete=models.RESTRICT)
+# 	x = models.FloatField(default=-1)
+# 	y = models.FloatField(default=-1)
 
+	
+	
 
 
 class Cell(models.Model):
