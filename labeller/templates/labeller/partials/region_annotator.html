@@ -1,0 +1,12 @@
+<div class="column1 region_surface" style="position: relative">
+
+	<img class="region region_image" id="r{{region.rid}}" style="position: absolute" src="{{region.image.url}}">
+	<canvas style="position: relative; top: 0; left: 0; z-index: 0" id="regionCanvas" height="{{region.ceil_height}}" width="{{region.ceil_width}}"></canvas>
+
+<button>Mark region complete (segmentation)</button>
+<button>Mark region as complete (classification)</button>
+
+</div>
+
+{% load static %}
+<script src="{% static 'labeller/partials/region_annotator.js' %}"></script>

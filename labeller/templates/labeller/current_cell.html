@@ -1,0 +1,10 @@
+<div class="column2" id="current_cell_column2">
+	<h2 id='current_cell_title'>Current Cell</h2>
+		{% with cells.0 as current_cell %}
+	<div class='current_cell' id="currentCell_{{current_cell.cid}}">
+		<img class='center' id='currentCellImage' src="{{current_cell.image.url}}">
+		<p class='center' id='currentCellId_{{current_cell.cid}}'>Cell ID: {{current_cell.cid}}</p>
+		<p class='center cell_type' id='currentCellClass_{{current_cell.cid}}'>{{current_cell.cell_type}}</p>
+	</div> 
+	{% endwith %}
+</div>

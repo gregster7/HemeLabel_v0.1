@@ -1,71 +1,6 @@
 console.log('entering label_region.js');
 
 
-function currentCellCID(){
-	//console.log("Current cell", $('.current_cell'));
-	id = $('.current_cell')[0].id;
-	index = id.lastIndexOf('_');
-	if (index != '-1' ){
-		cid = id.substr(index+1, id.length-index+1);
-		// console.log("Cid", cid);
-		// console.log("index", index)
-		return cid;
-	}
-	else return $('.current_cell')[0].id;
-}
-
-
-//If the lineage has changed, we need to remove the cell from the current cell list and move to the correct one.
-function updateCellListsAfterLabelChange(new_label) {
-	var new_lineage = Cell.getLineage(new_label);
-	var cell = $('.highlight');
-	var old_lineage = Cell.findLineageFromClass(cell);
-	var old_label = Cell.findLabelFromClass(cell);
-
-
-	if (old_label!=new_label) {
-		console.log("label change: ", old_label, new_label);
-		cell.removeClass(old_label).addClass(new_label);
-		cell_counter.updateCounts(old_label, new_label);
-	}
-
-	if (new_lineage!=old_lineage) {
-		console.log("linage change: ", old_lineage, new_lineage);
-		clonedCell = cell.clone();
-		clonedCell.removeClass(old_lineage).addClass(new_lineage);
-		cell.remove();
-		$("#"+new_lineage+"_cells_inline").prepend(clonedCell);
-		cell_counter.updateCounts(old_lineage, new_lineage);
-		//console.log("cloned cell: ", clonedCell);
-	}
-}
-
-function labelCurrentCell(label) {
-	console.log('current cell id: ', currentCellCID())
-	//Update record
-	$.post("/update_cell_class/", {'cid':currentCellCID(), 'cell_label':label}, function(json){
-			console.log("Was successful?: " + json['success'], label);
-	});
-
-	console.log("all cells", all_cells);
-	console.log("label", label);
-	console.log("label2", Cell.getClassLabelName(label))
-
-//	#Need to update 
-
-	//Update current cell classification in column2
-	$('#currentCellClassification').html("Classification: "+Cell.getClassLabelName(label));
-	
-	//Update current cell on cell list
-	$('#cellClass_'+currentCellCID()).html(Cell.getClassLabelName(label));
-	console.log("New cell classification: ", Cell.getClassLabelName(label))
-
-	//If the lineage has changed, we need to remove the cell from the current cell list and move to the correct one.
-	updateCellListsAfterLabelChange(label);
-	
-}
-
-
 //offset should be +1 or -1 *** not currently implemented ***
 function nextRegion(direction) {
 	// console.log('Entering Next Region')
@@ -95,171 +30,6 @@ function nextRegion(direction) {
 }
 
 
-function deleteCurrentCell() {
-	console.log("entering deleteCurrentCell")
-	cell_cid = currentCellCID();
-	console.log(cell_cid)
-	$.post("/delete_cell/", {'cid':cell_cid}, function(json){
-		console.log("Was successful?: " + json['success']);
-	});
-
-	
-	// // This should return a single cell
-	cell = $('.highlight');
-	cell_counter.deleteCell(Cell.findLabelFromClass(cell));
-
-	highlight_dot = $('.highlight_dot');
-
-	if (nextCell(1) || nextCell(-1)) {
-		cell.remove();
-		highlight_dot.remove();
-	} else {
-		//Reload page now that all cells are gone
-		console.log("no cells left");
-		$('.highlight').remove();	
-		$('.current_cell').remove();	
-		$('.highlight_dot').remove();
-	}
-
-}
-
-
-function updateCurrentCellFromDot(dot){
-	//console.log("dot", dot);
-	cid = dot.attr('id').substr(8)
-	//console.log("cid", cid, $("#celllistCID_"+cid))
-	updateCurrentCell($("#celllistCID_"+cid))
-}
-
-
-function updateCurrentCell(current_cell){
-	console.log("Entering updateCurrentCell");
-	console.log("current cell", current_cell, typeof current_cell);
-	// Unhighlight all cells in cell list
-	$('.highlight').removeClass('highlight');
-	$('.highlight_dot').removeClass('highlight_dot').addClass('no_highlight_dot');
-
-
-	// Clone unhighlighted current cell to put in column2 box
-	clonedCell = current_cell.clone();
-	
-	current_cell_cid = current_cell.attr('id').substr(current_cell.attr('id').lastIndexOf('_')+1);	
-	currentCellObejct = all_cells[current_cell_cid];
-	console.log(currentCellObejct);
-	// console.log(current_cell.attr('id'))
-	clonedCell.attr('id', 'currentCell_'+current_cell_cid)
-	console.log("cloned cell", clonedCell);
-	//console.log(clonedCell.children().each().attr('id'));
-	//console.log("cloned cell2", clonedCell);
-	for (child of clonedCell.children()){
-	 	console.log("child", child);
-	// 	id = child.attr('id');
-	// 	child.attr('id') = "currentCellClass_"+id;
-	// 	console.log("changed child", child);
-	}
-	//clonedCell.attr('class', 'current_cell')
-	$('.current_cell').remove()
-	clonedCell.attr('class', 'current_cell')
-	clonedCell.appendTo('#current_cell_column2');
-
-
-	// Re-highlight current cell
-	$("#celllistCID_"+current_cell_cid).addClass('highlight');
-
-
-	id = '#centroid'+current_cell_cid;
-	console.log("centroid: ", id);
-	$(id).removeClass('no_highlight_dot').addClass('highlight_dot');
-	console.log($(id));
-
-}
-
-
-// Returns true of successful, otherwise returns false
-function getNextCell(cell, offset) {
-
-
-	console.log("entering getNextCell");
-	console.log("offset", offset);
-	console.log("cell", cell);
-	if (offset !=1 && offset != -1){
-		console.log("Error in getNextCell(offset)");
-		return false;
-	}
-	if (cell.length  != 1) {
-		console.log("error in nextCell - number of highlighted cells returned not 1", cell.length, cell);
-		return false;
-	} 
-
-	if (cell.siblings.length == 0) {
-		console.log("cell has no siblings")
-		return false;
-	}
-
-	if (offset == 1 && cell.next().length ==1) {
-			current_cell = cell.next();
-			updateCurrentCell(current_cell);
-			return true;
-	}
-
-	if (offset == -1 && cell.prev().length ==1) {
-			current_cell = cell.prev();
-			updateCurrentCell(current_cell);
-			return true;
-	}
-
-	// if (offset == 1 && cell.next().length == 0) {
-	// 	return false;
-	// //	nextRegion(1);
-	// }
-
-	// if (offset == -1 && cell.prev().length == 0) {
-	// 	return false;
-	// //	nextRegion(-1);
-	// }
-
-
-
-
-	// 	// console.log('getNextCell offset==1');
-	// 	// console.log($(cell).next())
-	// 	if (cell.next().length ==1) {
-	// 		// console.log('getNextCell');
-	// 		current_cell = cell.next();
-	// 		return current_cell;
-	// 	} else if (cell.next().length == 0) {
-	// 		console.log("getNextCell->nextRegion")
-	// 		nextRegion(1);
-	// 	} else { 
-	// 		console.log("error in getNextCell offset==1"); 
-	// 	}
-	// } else if (offset == -1) {
-	// 	if (cell.prev().length ==1) {
-	// 		current_cell = cell.prev();
-	// 		return current_cell;
-	// 	} else if (cell.next.length = 0) {
-	// 		nextRegion(-1);
-	// 	}
-	// } else{
-	// 	console.log("Error - offset is not appropriate number %s" %offset);
-	// 	return null;
-	// }
-	console.log("Unknown error in getNextCell");
-	return false;
-}
-
-
-// Offset for now should be +1 or -1
-function nextCell(offset) {
-	if (offset !=1 && offset != -1){
-		console.log("Error in nextCell(offset)")
-	}
-	cell = $('.highlight');
-	success = getNextCell(cell, offset);
-	return success;
-}
-
-
 function addKeyboardEventListeners() {
 	console.log('adding keyboard event listeners');
 	window.addEventListener('keyup', (e) => {
@@ -268,45 +38,45 @@ function addKeyboardEventListeners() {
 
 		console.log(typeof code, code)
 		switch(code) {
-			case "Digit1": labelCurrentCell('M1'); break;
-			case "Digit2": labelCurrentCell('M2'); break;
-			case "Digit3": labelCurrentCell('M3'); break;
-			case "Digit4": labelCurrentCell('M4'); break;
-			case "Digit5": labelCurrentCell('M5'); break;
-			case "Digit6": labelCurrentCell('M6'); break;
+			case "Digit1": Cell.labelCurrentCell('M1'); break;
+			case "Digit2": Cell.labelCurrentCell('M2'); break;
+			case "Digit3": Cell.labelCurrentCell('M3'); break;
+			case "Digit4": Cell.labelCurrentCell('M4'); break;
+			case "Digit5": Cell.labelCurrentCell('M5'); break;
+			case "Digit6": Cell.labelCurrentCell('M6'); break;
 
-			case "KeyQ": labelCurrentCell('E1'); break;
-			case "KeyW": labelCurrentCell('E2'); break;
-			case "KeyE": labelCurrentCell('B1'); break;
-			case "KeyR": labelCurrentCell('B2'); break;
-			case "KeyT": labelCurrentCell('MO1'); break;
-			case "KeyY": labelCurrentCell('MO2'); break;
+			case "KeyQ": Cell.labelCurrentCell('E1'); break;
+			case "KeyW": Cell.labelCurrentCell('E2'); break;
+			case "KeyE": Cell.labelCurrentCell('B1'); break;
+			case "KeyR": Cell.labelCurrentCell('B2'); break;
+			case "KeyT": Cell.labelCurrentCell('MO1'); break;
+			case "KeyY": Cell.labelCurrentCell('MO2'); break;
 
-			case "KeyA": labelCurrentCell('L0'); break;
-			case "KeyS": labelCurrentCell('L1'); break;
-			case "KeyD": labelCurrentCell('L2'); break;
-			case "KeyF": labelCurrentCell('L3'); break;
-			case "KeyG": labelCurrentCell('L4'); break;
+			case "KeyA": Cell.labelCurrentCell('L0'); break;
+			case "KeyS": Cell.labelCurrentCell('L1'); break;
+			case "KeyD": Cell.labelCurrentCell('L2'); break;
+			case "KeyF": Cell.labelCurrentCell('L3'); break;
+			case "KeyG": Cell.labelCurrentCell('L4'); break;
 
-			case "KeyZ": labelCurrentCell('ER1'); break;
-			case "KeyX": labelCurrentCell('ER2'); break;
-			case "KeyC": labelCurrentCell('ER3'); break;
-			case "KeyV": labelCurrentCell('ER4'); break;
-			case "KeyB": labelCurrentCell('ER5'); break;
-			case "KeyN": labelCurrentCell('ER6'); break;
+			case "KeyZ": Cell.labelCurrentCell('ER1'); break;
+			case "KeyX": Cell.labelCurrentCell('ER2'); break;
+			case "KeyC": Cell.labelCurrentCell('ER3'); break;
+			case "KeyV": Cell.labelCurrentCell('ER4'); break;
+			case "KeyB": Cell.labelCurrentCell('ER5'); break;
+			case "KeyN": Cell.labelCurrentCell('ER6'); break;
 
-			case "Digit7": labelCurrentCell('U1'); break;
-			case "Digit8": labelCurrentCell('U2'); break;
-			case "Digit9": labelCurrentCell('U3'); break;
-			case "Digit0": labelCurrentCell('U4'); break;
+			case "Digit7": Cell.labelCurrentCell('U1'); break;
+			case "Digit8": Cell.labelCurrentCell('U2'); break;
+			case "Digit9": Cell.labelCurrentCell('U3'); break;
+			case "Digit0": Cell.labelCurrentCell('U4'); break;
 
-			case "KeyU": labelCurrentCell('UL'); break;
+			case "KeyU": Cell.labelCurrentCell('UL'); break;
 
 			case "ArrowLeft": nextCell(-1);  break;
 			case "ArrowRight": nextCell(1); break;
 			case "Enter": nextRegion(); break;
-			case "Backspace": deleteCurrentCell();break;
-			case "Backslash": deleteCurrentCell();break;
+			case "Backspace": Cell.deleteCurrentCell();break;
+			case "Backslash": Cell.deleteCurrentCell();break;
 
 			case "KeyH": helpDisplay(); break;
 		}
@@ -326,7 +96,7 @@ function helpDisplay() {
 }
 
 function addCellCentroids(cells) {
-	// console.log("Entering addCellCentroids")
+	console.log("Entering addCellCentroids")
 	// console.log(cells_json);
 	// console.log(cells_json.replace(/&quot;/ig,'"'));
 
@@ -343,7 +113,7 @@ function addNewCircle(x, y, cid, cell_type) {
 	newDiv1 = newDiv1 + 'position: absolute; top: ' + (y-10) +'px; left: ' + (x-10) + 'px; z-index: 100">';				
 	newDiv1 = newDiv1 + '</span>';
 	//console.log("NewDiv1=", newDiv1, $(newDiv1));
-	$( ".column1" ).append ($(newDiv1));
+	$( ".region_surface" ).append ($(newDiv1));
 	$("#centroid"+cid).on('click', function() {
 	//	console.log("this dot was clicked on", $(this))
 		updateCurrentCellFromDot($(this))
@@ -391,19 +161,19 @@ function createNewCell(canvas, e) {
 
 
 //Refactored to take all_cells hash array of javascript cell objects instead of JSON list
-function populateCellLists(cells) {
-	console.log("Entering populateCellLists: ", cells);
+// function populateCellLists(cells) {
+// 	console.log("Entering populateCellLists: ", cells);
 
-	for (key in cells) {
-		cell = cells[key];
-		//console.log("key, value:", key, cell);
-		//cell_div = getDivFromCellObject(cell);
-		cell_div = cell.getDivForCellList();
-		//$("#all_cells_inline").append(cell_div);
-		$("#"+cell.getLineage()+"_cells_inline").append(cell_div);
-	}
+// 	for (key in cells) {
+// 		cell = cells[key];
+// 		//console.log("key, value:", key, cell);
+// 		//cell_div = getDivFromCellObject(cell);
+// 		cell_div = cell.getDivForCellList();
+// 		//$("#all_cells_inline").append(cell_div);
+// 		$("#"+cell.getLineage()+"_cells_inline").append(cell_div);
+// 	}
 
-}
+// }
 
 
 
@@ -437,27 +207,25 @@ $ (document).ready(function() {
  	console.log("ready");
  	//$('#helpscreen').hide();
 
-	elements = document.getElementsByClassName('cell_type');
-
-	for (e of elements) {
-		e.textContent = Cell.getClassLabelName(e.textContent);
-	}
 	console.log("cells_json:", cells_json);
 
 	all_cells = Cell.LoadCellsFromJson(cells_json);
-//	console.log("all cells:", all_cells);
-	Cell.populateCellLists(all_cells);
+	console.log("all cells:", all_cells);
+	//Cell.populateCellLists(all_cells);
 	cell_counter = new CellCounter(all_cells);
 
-	var cells = $.parseJSON(cells_json.replace(/&quot;/ig,'"'));
-	addCellCentroids(cells);
+	if (all_cells.length != []){
+//		Cell.populateCellLists(all_cells);
+		// var cells = $.parseJSON(cells_json.replace(/&quot;/ig,'"'));
+		// addCellCentroids(cells);
+		//Set the initial current cell
+		updateCurrentCell($('#currentCell_'+Cell.currentCellCID()+'.current_cell'));
+	}
 
 	addKeyboardEventListeners();
 	addMouseEventListeners();
-	//Select a cell to annotate by clicking
 	
-	//Set the initial current cell
-	updateCurrentCell($('#'+currentCellCID()+'.current_cell'));
+	
 
 });
 

@@ -1,9 +1,40 @@
-{% load static %}<!doctype html>
+<!doctype html>
+{% load static %}
 <head>
 	{% block head %} {% endblock head %}
 	<link rel="stylesheet" type="text/css" href="{% static 'labeller/style.css' %}">
 	<link rel="shortcut icon" type="image/png" href="{% static 'labeller/images/favicon.ico' %}"/>
 	<title>{% block title %}Hemepath{% endblock %}</title>
+
+<!--     <script src="{% static 'labeller/jquery-3.5.1.min.js' %}" onload="loaded=true;"></script>
+ -->
+    <script src="{% static 'labeller/jquery-3.5.1.min.js' %}"></script>
+
+    <script>
+    $.ajaxSetup({ 
+         beforeSend: function(xhr, settings) {
+             function getCookie(name) {
+                 var cookieValue = null;
+                 if (document.cookie && document.cookie != '') {
+                     var cookies = document.cookie.split(';');
+                     for (var i = 0; i < cookies.length; i++) {
+                         var cookie = jQuery.trim(cookies[i]);
+                         // Does this cookie string begin with the name we want?
+                         if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                             cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                             break;
+                         }
+                     }
+                 }
+                 return cookieValue;
+             }
+             if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                 // Only send the token to relative URLs i.e. locally.
+                 xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+             }
+         } 
+    });
+    </script>
 </head>
 
 <body>
@@ -21,39 +52,10 @@
 {% block content %} {% endblock content %}
 
 <footer></footer>
-<script src="{% static 'labeller/jquery-3.5.1.min.js' %}" onload="loaded=true;"></script>
-
-<!-- <script src="{% static 'labeller/jquery-3.5.1.min.js' %}"></script>
- -->
-<script>
-$.ajaxSetup({ 
-     beforeSend: function(xhr, settings) {
-         function getCookie(name) {
-             var cookieValue = null;
-             if (document.cookie && document.cookie != '') {
-                 var cookies = document.cookie.split(';');
-                 for (var i = 0; i < cookies.length; i++) {
-                     var cookie = jQuery.trim(cookies[i]);
-                     // Does this cookie string begin with the name we want?
-                     if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                         break;
-                     }
-                 }
-             }
-             return cookieValue;
-         }
-         if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
-             // Only send the token to relative URLs i.e. locally.
-             xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
-         }
-     } 
-});
-</script>
-
 
 
 {% block scripts %} {% endblock scripts %}
+
 
 
 </body>

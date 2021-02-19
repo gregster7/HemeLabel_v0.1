@@ -4,17 +4,13 @@
 {% block title %}Label Region{% endblock %}
 
 {% block content %}
+<script src="{% static 'labeller/Cell.js' %}"></script>
+<script src="{% static 'labeller/CellCounter.js' %}"></script>
 
 
 <div id='labeller'>
 
-
-	<div class="column1" style="position: relative">
-
-		<img class="region region_image" id="r{{region.rid}}" style="position: absolute" src="{{region.image.url}}">
-		<canvas style="position: relative; top: 0; left: 0; z-index: 0" id="regionCanvas" height="{{region.ceil_height}}" width="{{region.ceil_width}}"></canvas>
-
-	</div>
+	{% include "labeller/partials/region_annotator.html" %}
 
 	<div id="column2_wrapper">
 
@@ -42,27 +38,40 @@
 <img id="helpscreen" style="display:none;" src="{% static 'labeller/images/Reference_maturation.png' %}" />
 
 
-
 {% endblock content %}
 
 {% block scripts %} 
 
+
+
 <script type="text/javascript">
-	{% with cells.0 as current_cell %}
-		current_cell_cid = {{current_cell.cid}};
-	{% endwith %}
+	var cells_json = [];
+	var current_cell_cid = '-1';
+	if ('{{cells_json}}'!='none') {
+		
+	 	cells_json = '{{cells_json}}';
+			
+//		Initialize current cell
+		{% with cells.0 as current_cell %}
+			console.log("current cell is", '{{current_cell}}');
+			current_cell_cid = {{current_cell.cid}};
+		{% endwith %}
+	
+	}
+	// cells_json = '{{cells_json}}';
+	console.log(current_cell_cid);
+	console.log("cells_json:", cells_json);
+
 
 	var region_img_url = '{{region.image.url}}';
 	console.log('region image path = ', region_img_url)
 	var region_rid = '{{region.rid}}';
-	var cells_json = '{{cells_json}}';
 
 
 	var static_image_path = "{% static 'labeller/images/' %}";
 	console.log("static", static_image_path);
 </script>
-<script src="{% static 'labeller/Cell.js' %}"></script>
-<script src="{% static 'labeller/CellCounter.js' %}"></script>
-<script src="{% static 'labeller/label_region.js' %}" onload="loaded=true;"></script>
+
+<script src="{% static 'labeller/label_region.js' %}"></script>
 
 {% endblock scripts %}

@@ -47,8 +47,9 @@ class Region(models.Model):
 	y = models.FloatField(default=-1)
 	width = models.FloatField(default=-1)
 	height = models.FloatField(default=-1)
-
-
+	all_wc_located = models.BooleanField(default=False)
+	all_wc_classified = models.BooleanField(default=False)
+	
 	def ceil_width (self):
 		return ceil(self.width)
 	

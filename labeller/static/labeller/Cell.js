@@ -45,6 +45,9 @@ class Cell {
 
 
 	static LoadCellsFromJson(cells_json){
+		if (cells_json == "") {
+			return [];
+		}
 	//	var cells_json_reformat = $.parseJSON(cells_json);
 		var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig,'"'));
 
@@ -107,7 +110,8 @@ class Cell {
 			"U2": "Unknown",
 			"U3": "Other",
 			"U4": "Histiocyte",
-			"UL": "Unlabelled", };
+			"UL": "Unlabelled", 
+			"Unlabelled": "Unlabelled"};
 
 	static findLabelFromClass(jquery_cell){
 		for (var key in Cell.classLabelDict) {
@@ -150,6 +154,231 @@ class Cell {
 	static getClassLabelName = function (cell_type) {
 		//console.log("getClassLabelName", cell_type, Cell.classLabelDict[cell_type], Cell.classLabelDict);
 		return Cell.classLabelDict[cell_type];
+	}
+
+	static updateCurrentCellFromDot = function (dot){
+		//console.log("dot", dot);
+		cid = dot.attr('id').substr(8)
+		//console.log("cid", cid, $("#celllistCID_"+cid))
+		Cell.updateCurrentCell($("#celllistCID_"+cid))
+	}
+
+
+	static updateCurrentCell = function (current_cell){
+		console.log("Entering updateCurrentCell");
+		console.log("current cell", current_cell, typeof current_cell);
+		// Unhighlight all cells in cell list
+		$('.highlight').removeClass('highlight');
+		$('.highlight_dot').removeClass('highlight_dot').addClass('no_highlight_dot');
+
+
+		// Clone unhighlighted current cell to put in column2 box
+		clonedCell = current_cell.clone();
+		
+		current_cell_cid = current_cell.attr('id').substr(current_cell.attr('id').lastIndexOf('_')+1);	
+		currentCellObejct = all_cells[current_cell_cid];
+		console.log(currentCellObejct);
+		// console.log(current_cell.attr('id'))
+		clonedCell.attr('id', 'currentCell_'+current_cell_cid)
+		console.log("cloned cell", clonedCell);
+		//console.log(clonedCell.children().each().attr('id'));
+		//console.log("cloned cell2", clonedCell);
+		for (child of clonedCell.children()){
+		 	console.log("child", child);
+		// 	id = child.attr('id');
+		// 	child.attr('id') = "currentCellClass_"+id;
+		// 	console.log("changed child", child);
+		}
+		//clonedCell.attr('class', 'current_cell')
+		$('.current_cell').remove()
+		clonedCell.attr('class', 'current_cell')
+		clonedCell.appendTo('#current_cell_column2');
+
+
+		// Re-highlight current cell
+		$("#celllistCID_"+current_cell_cid).addClass('highlight');
+
+
+		id = '#centroid'+current_cell_cid;
+		console.log("centroid: ", id);
+		$(id).removeClass('no_highlight_dot').addClass('highlight_dot');
+		console.log($(id));
+
+	}
+
+
+
+	// Returns true of successful, otherwise returns false
+	static getNextCell = function (cell, offset) {
+
+
+		console.log("entering getNextCell");
+		console.log("offset", offset);
+		console.log("cell", cell);
+		if (offset !=1 && offset != -1){
+			console.log("Error in getNextCell(offset)");
+			return false;
+		}
+		if (cell.length  != 1) {
+			console.log("error in nextCell - number of highlighted cells returned not 1", cell.length, cell);
+			return false;
+		} 
+
+		if (cell.siblings.length == 0) {
+			console.log("cell has no siblings")
+			return false;
+		}
+
+		if (offset == 1 && cell.next().length ==1) {
+				current_cell = cell.next();
+				updateCurrentCell(current_cell);
+				return true;
+		}
+
+		if (offset == -1 && cell.prev().length ==1) {
+				current_cell = cell.prev();
+				updateCurrentCell(current_cell);
+				return true;
+		}
+
+		// if (offset == 1 && cell.next().length == 0) {
+		// 	return false;
+		// //	nextRegion(1);
+		// }
+
+		// if (offset == -1 && cell.prev().length == 0) {
+		// 	return false;
+		// //	nextRegion(-1);
+		// }
+
+
+
+
+		// 	// console.log('getNextCell offset==1');
+		// 	// console.log($(cell).next())
+		// 	if (cell.next().length ==1) {
+		// 		// console.log('getNextCell');
+		// 		current_cell = cell.next();
+		// 		return current_cell;
+		// 	} else if (cell.next().length == 0) {
+		// 		console.log("getNextCell->nextRegion")
+		// 		nextRegion(1);
+		// 	} else { 
+		// 		console.log("error in getNextCell offset==1"); 
+		// 	}
+		// } else if (offset == -1) {
+		// 	if (cell.prev().length ==1) {
+		// 		current_cell = cell.prev();
+		// 		return current_cell;
+		// 	} else if (cell.next.length = 0) {
+		// 		nextRegion(-1);
+		// 	}
+		// } else{
+		// 	console.log("Error - offset is not appropriate number %s" %offset);
+		// 	return null;
+		// }
+		console.log("Unknown error in getNextCell");
+		return false;
+	}
+
+
+	// Offset for now should be +1 or -1
+	static nextCell = function (offset) {
+		if (offset !=1 && offset != -1){
+			console.log("Error in nextCell(offset)")
+		}
+		cell = $('.highlight');
+		success = getNextCell(cell, offset);
+		return success;
+	}
+
+
+	static currentCellCID = function () {
+		var id = $('.current_cell')[0].id;
+		var index = id.lastIndexOf('_');
+		if (index != '-1' ){
+			var cid = id.substr(index+1, id.length-index+1);
+			return cid;
+		}
+		else return $('.current_cell')[0].id;
+	}
+
+	//If the lineage has changed, we need to remove the cell from the current cell list and move to the correct one.
+	static updateCellListsAfterLabelChange = function (new_label, cell_counter) {
+		var new_lineage = Cell.getLineage(new_label);
+		var cell = $('.highlight');
+		var old_lineage = Cell.findLineageFromClass(cell);
+		var old_label = Cell.findLabelFromClass(cell);
+
+
+		if (old_label!=new_label) {
+			console.log("label change: ", old_label, new_label);
+			cell.removeClass(old_label).addClass(new_label);
+			cell_counter.updateCounts(old_label, new_label);
+		}
+
+		if (new_lineage!=old_lineage) {
+			console.log("linage change: ", old_lineage, new_lineage);
+			clonedCell = cell.clone();
+			clonedCell.removeClass(old_lineage).addClass(new_lineage);
+			cell.remove();
+			$("#"+new_lineage+"_cells_inline").prepend(clonedCell);
+			cell_counter.updateCounts(old_lineage, new_lineage);
+			//console.log("cloned cell: ", clonedCell);
+		}
+	}
+
+	static labelCurrentCell = function(label, cell_counter) {
+		console.log('current cell id: ', Cell.currentCellCID())
+		//Update record
+		$.post("/update_cell_class/", {'cid':Cell.currentCellCID(), 'cell_label':label}, function(json){
+				console.log("Was successful?: " + json['success'], label);
+		});
+
+		console.log("all cells", all_cells);
+		console.log("label", label);
+		console.log("label2", Cell.getClassLabelName(label))
+
+	//	#Need to update 
+
+		//Update current cell classification in column2
+		$('#currentCellClassification').html("Classification: "+Cell.getClassLabelName(label));
+		
+		//Update current cell on cell list
+		$('#cellClass_'+Cell.currentCellCID()).html(Cell.getClassLabelName(label));
+		console.log("New cell classification: ", Cell.getClassLabelName(label))
+
+		//If the lineage has changed, we need to remove the cell from the current cell list and move to the correct one.
+		Cell.updateCellListsAfterLabelChange(label, cell_counter);		
+	}
+
+
+	static deleteCurrentCell = function (cell_counter) {
+		console.log("entering deleteCurrentCell")
+		var cell_cid = currentCellCID();
+		console.log(cell_cid)
+		$.post("/delete_cell/", {'cid':cell_cid}, function(json){
+			console.log("Was successful?: " + json['success']);
+		});
+
+		
+		// // This should return a single cell
+		var cell = $('.highlight');
+		cell_counter.deleteCell(Cell.findLabelFromClass(cell));
+
+		var highlight_dot = $('.highlight_dot');
+
+		if (nextCell(1) || nextCell(-1)) {
+			cell.remove();
+			highlight_dot.remove();
+		} else {
+			//Reload page now that all cells are gone
+			console.log("no cells left");
+			$('.highlight').remove();	
+			$('.current_cell').remove();	
+			$('.highlight_dot').remove();
+		}
+
 	}
 
 

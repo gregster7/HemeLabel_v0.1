@@ -212,10 +212,14 @@ def label_region(request, region_id):
 	"""label cells on a region"""
 	region = Region.objects.get(rid=region_id)
 	cells = region.cell_set.all()
-	cells_json = serializers.serialize("json", region.cell_set.all())
-#	print(cells_json)
+	if (cells.count() == 0):
+		cells = "none"
+		cells_json = "none"
+	else:
+		cells_json = serializers.serialize("json", region.cell_set.all())
+	
 	context = {'region': region, 'cells':cells, 'cells_json': cells_json}
-#	print(context['cells_json'])
+	print(context)
 	return render(request, 'labeller/label_region.html', context)
 	
 
