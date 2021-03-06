@@ -6,6 +6,11 @@
 {% block content %}
 <script src="{% static 'labeller/Cell.js' %}"></script>
 <script src="{% static 'labeller/CellCounter.js' %}"></script>
+<script>
+//	all_cells = Cell.LoadCellsFromJson(cells_json);
+//	cell_counter = new CellCounter(all_cells);
+
+</script>
 
 
 <div id='labeller'>
@@ -26,16 +31,13 @@
 </div>
 {% include "labeller/partials/big_table.html" %}
 
-
-
-
 <div id="test_keyboard">Last Key Pressed: </div>
 <p id="additional_instructions">Press left and right arrows to change cell</p>
 <p id="additional_instructions">Click on cell to select it, or to create a new cell</p>
 
 {% include "labeller/partials/main_lineages_horizontal.html" %}
 
-<img id="helpscreen" style="display:none;" src="{% static 'labeller/images/Reference_maturation.png' %}" />
+{% include "labeller/partials/help_display.html" %}
 
 
 {% endblock content %}
@@ -45,31 +47,56 @@
 
 
 <script type="text/javascript">
-	var cells_json = [];
-	var current_cell_cid = '-1';
-	if ('{{cells_json}}'!='none') {
-		
-	 	cells_json = '{{cells_json}}';
-			
-//		Initialize current cell
-		{% with cells.0 as current_cell %}
-			console.log("current cell is", '{{current_cell}}');
-			current_cell_cid = {{current_cell.cid}};
-		{% endwith %}
-	
+	function addMouseEventListeners(region_id){
+		console.log("adding mouse event listeners");
+		// $('.cell_list_item').on('click', function() {
+		// 	console.log("this item was clicked on", $(this))
+		// 	Cell.updateCurrentCell($(this))
+		// });
+
+		$('.dot').on('click', function() {
+			console.log("this dot was clicked on", $(this))
+			Cell.updateCurrentCellFromDot($(this), region_id)
+		});
+		// $('.regionCanvas').on('click', function(e) {
+		// 	console.log("canvas was clicked", $(this))
+		// 	createNewCell(this, e)
+		// });
+		// $('#helpscreen').click(function() { 
+	 //        $(this).fadeOut(500);
+	 //    });
 	}
-	// cells_json = '{{cells_json}}';
-	console.log(current_cell_cid);
-	console.log("cells_json:", cells_json);
 
-
-	var region_img_url = '{{region.image.url}}';
-	console.log('region image path = ', region_img_url)
+	var cells_json = [];
+	var all_cells = {};
+	var current_cell_cid = '-1';
 	var region_rid = '{{region.rid}}';
 
+	if ('{{cells_json}}'!='none') {		
+	 	cells_json = '{{cells_json}}';
+	 	CellCounter.updateCountsOnPageJson(cells_json);
+	 	all_cells = Cell.LoadCellsFromJson(cells_json);
+	 	Cell.updateCurrentCell($('#currentCell_'+Cell.currentCellCID()+'.current_cell'), all_cells);
+	}
 
-	var static_image_path = "{% static 'labeller/images/' %}";
-	console.log("static", static_image_path);
+	Cell.addKeyboardEventListeners();
+	addMouseEventListeners(region_rid);
+
+
+	// var region_img_url = '{{region.image.url}}';
+	// console.log('region image path = ', region_img_url)
+
+
+//	console.log("all cells:", all_cells);
+	//Cell.populateCellLists(all_cells);
+
+
+	// addKeyboardEventListeners(cell_counter);
+	// addMouseEventListeners(cell_counter);
+
+
+//	var static_image_path = "{% static 'labeller/images/' %}";
+//	console.log("static", static_image_path);
 </script>
 
 <script src="{% static 'labeller/label_region.js' %}"></script>

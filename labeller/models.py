@@ -1,10 +1,18 @@
 from django.db import models
 from django.conf import settings
 from math import ceil
+from math import floor
 
 
 
 # Create your models here.
+
+class Project(models.Model):
+	name = models.CharField(max_length=200)
+
+	# How to use many to many fields
+	# https://docs.djangoproject.com/en/3.1/topics/db/examples/many_to_many/
+	regions = models.ManyToManyField('Region')
 
 class Patient (models.Model):
 	"""An individual patient, who can have many slides"""
@@ -42,6 +50,11 @@ class Region(models.Model):
 	rid = models.IntegerField(unique=True)
 	date_added = models.DateTimeField(auto_now_add=True)	
 	slide = models.ForeignKey('Slide', on_delete=models.RESTRICT)
+
+	# Projects
+	# projects can be accessed by 'region_variable_name.project_set.all()''
+	# https://docs.djangoproject.com/en/3.1/topics/db/examples/many_to_many/
+
 	image = models.ImageField(upload_to='regions')
 	x = models.FloatField(default=-1)
 	y = models.FloatField(default=-1)
@@ -50,6 +63,13 @@ class Region(models.Model):
 	all_wc_located = models.BooleanField(default=False)
 	all_wc_classified = models.BooleanField(default=False)
 	
+
+	def floor_width(self):
+		return floor(self.width)
+
+	def floor_height(self):
+		return floor(self.height)
+
 	def ceil_width (self):
 		return ceil(self.width)
 	

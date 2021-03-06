@@ -1,33 +1,6 @@
-<div class="column2" id="current_cell_column2">
+<div id="current_cell_column2" class="purple_box">
 	<h2 id='current_cell_title'>Current Cell</h2>
+ </div>
 
-	{% with cells.0 as current_cell %}
-	<div class='current_cell' id="currentCell_{{current_cell.cid}}">
-		<img class='center' id='currentCellImage' src="{{current_cell.image.url}}">
-		<p class='center' id='currentCellId_{{current_cell.cid}}'>Cell ID: {{current_cell.cid}}</p>
-		<p class='center cell_type' id='currentCellClass_{{current_cell.cid}}'>{{current_cell.cell_type}}</p>
-	</div> 
-	{% endwith %}
 
-</div>
 
-<!-- Javascript to change class label code to class label name -->
-<script>
-	var current_text = $("#currentCell_{{current_cell.cid}}").text();
-	$("#currentCell_{{current_cell.cid}}").text(Cell.getClassLabelName(current_text))
-</script>
-
-<script>
-	function currentCellCID(){
-	//console.log("Current cell", $('.current_cell'));
-		id = $('.current_cell')[0].id;
-		index = id.lastIndexOf('_');
-		if (index != '-1' ){
-			cid = id.substr(index+1, id.length-index+1);
-			// console.log("Cid", cid);
-			// console.log("index", index)
-			return cid;
-		}
-		else return $('.current_cell')[0].id;
-	}
-</script>		

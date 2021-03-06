@@ -30,96 +30,62 @@ function nextRegion(direction) {
 }
 
 
-function addKeyboardEventListeners() {
-	console.log('adding keyboard event listeners');
-	window.addEventListener('keyup', (e) => {
-		code = e.code;
-		document.getElementById('test_keyboard').innerHTML = 'code = ' + code;
+// function addKeyboardEventListeners(cell_counter) {
+// 	console.log('adding keyboard event listeners');
+// 	window.addEventListener('keyup', (e) => {
+// 		code = e.code;
+// 		document.getElementById('test_keyboard').innerHTML = 'code = ' + code;
 
-		console.log(typeof code, code)
-		switch(code) {
-			case "Digit1": Cell.labelCurrentCell('M1'); break;
-			case "Digit2": Cell.labelCurrentCell('M2'); break;
-			case "Digit3": Cell.labelCurrentCell('M3'); break;
-			case "Digit4": Cell.labelCurrentCell('M4'); break;
-			case "Digit5": Cell.labelCurrentCell('M5'); break;
-			case "Digit6": Cell.labelCurrentCell('M6'); break;
+// 		console.log(typeof code, code)
+// 		switch(code) {
+// 			case "Digit1": Cell.labelCurrentCell('M1', cell_counter); break;
+// 			case "Digit2": Cell.labelCurrentCell('M2', cell_counter); break;
+// 			case "Digit3": Cell.labelCurrentCell('M3', cell_counter); break;
+// 			case "Digit4": Cell.labelCurrentCell('M4', cell_counter); break;
+// 			case "Digit5": Cell.labelCurrentCell('M5', cell_counter); break;
+// 			case "Digit6": Cell.labelCurrentCell('M6', cell_counter); break;
 
-			case "KeyQ": Cell.labelCurrentCell('E1'); break;
-			case "KeyW": Cell.labelCurrentCell('E2'); break;
-			case "KeyE": Cell.labelCurrentCell('B1'); break;
-			case "KeyR": Cell.labelCurrentCell('B2'); break;
-			case "KeyT": Cell.labelCurrentCell('MO1'); break;
-			case "KeyY": Cell.labelCurrentCell('MO2'); break;
+// 			case "KeyQ": Cell.labelCurrentCell('E1', cell_counter); break;
+// 			case "KeyW": Cell.labelCurrentCell('E2', cell_counter); break;
+// 			case "KeyE": Cell.labelCurrentCell('B1', cell_counter); break;
+// 			case "KeyR": Cell.labelCurrentCell('B2', cell_counter); break;
+// 			case "KeyT": Cell.labelCurrentCell('MO1', cell_counter); break;
+// 			case "KeyY": Cell.labelCurrentCell('MO2', cell_counter); break;
 
-			case "KeyA": Cell.labelCurrentCell('L0'); break;
-			case "KeyS": Cell.labelCurrentCell('L1'); break;
-			case "KeyD": Cell.labelCurrentCell('L2'); break;
-			case "KeyF": Cell.labelCurrentCell('L3'); break;
-			case "KeyG": Cell.labelCurrentCell('L4'); break;
+// 			case "KeyA": Cell.labelCurrentCell('L0', cell_counter); break;
+// 			case "KeyS": Cell.labelCurrentCell('L1', cell_counter); break;
+// 			case "KeyD": Cell.labelCurrentCell('L2', cell_counter); break;
+// 			case "KeyF": Cell.labelCurrentCell('L3', cell_counter); break;
+// 			case "KeyG": Cell.labelCurrentCell('L4', cell_counter); break;
 
-			case "KeyZ": Cell.labelCurrentCell('ER1'); break;
-			case "KeyX": Cell.labelCurrentCell('ER2'); break;
-			case "KeyC": Cell.labelCurrentCell('ER3'); break;
-			case "KeyV": Cell.labelCurrentCell('ER4'); break;
-			case "KeyB": Cell.labelCurrentCell('ER5'); break;
-			case "KeyN": Cell.labelCurrentCell('ER6'); break;
+// 			case "KeyZ": Cell.labelCurrentCell('ER1', cell_counter); break;
+// 			case "KeyX": Cell.labelCurrentCell('ER2', cell_counter); break;
+// 			case "KeyC": Cell.labelCurrentCell('ER3', cell_counter); break;
+// 			case "KeyV": Cell.labelCurrentCell('ER4', cell_counter); break;
+// 			case "KeyB": Cell.labelCurrentCell('ER5', cell_counter); break;
+// 			case "KeyN": Cell.labelCurrentCell('ER6', cell_counter); break;
 
-			case "Digit7": Cell.labelCurrentCell('U1'); break;
-			case "Digit8": Cell.labelCurrentCell('U2'); break;
-			case "Digit9": Cell.labelCurrentCell('U3'); break;
-			case "Digit0": Cell.labelCurrentCell('U4'); break;
+// 			case "Digit7": Cell.labelCurrentCell('U1', cell_counter); break;
+// 			case "Digit8": Cell.labelCurrentCell('U2', cell_counter); break;
+// 			case "Digit9": Cell.labelCurrentCell('U3', cell_counter); break;
+// 			case "Digit0": Cell.labelCurrentCell('U4', cell_counter); break;
 
-			case "KeyU": Cell.labelCurrentCell('UL'); break;
+// 			case "KeyU": Cell.labelCurrentCell('UL', cell_counter); break;
 
-			case "ArrowLeft": nextCell(-1);  break;
-			case "ArrowRight": nextCell(1); break;
-			case "Enter": nextRegion(); break;
-			case "Backspace": Cell.deleteCurrentCell();break;
-			case "Backslash": Cell.deleteCurrentCell();break;
+// 			case "ArrowLeft": Cell.nextCell(-1);  break;
+// 			case "ArrowRight": Cell.nextCell(1); break;
+// 			case "Enter": nextRegion(); break;
+// 			case "Backspace": Cell.deleteCurrentCell(cell_counter);break;
+// 			case "Backslash": Cell.deleteCurrentCell(cell_counter);break;
 
-			case "KeyH": helpDisplay(); break;
-		}
-	});
-}
-
-function helpDisplay() {
-	console.log("help display", $("#helpscreen"), $("#helpscreen").is(":visible"))
-	if ($("#helpscreen").is(":visible")){
-		// $("#helpscreen").removeClass("hide");
-		$("#helpscreen").fadeOut(500);
-	}
-	else{
-//		$("helpscreen").addClass("hide");
-		$("#helpscreen").fadeIn(500);
-	}
-}
-
-function addCellCentroids(cells) {
-	console.log("Entering addCellCentroids")
-	// console.log(cells_json);
-	// console.log(cells_json.replace(/&quot;/ig,'"'));
-
-	// var cells = $.parseJSON(cells_json.replace(/&quot;/ig,'"'));
-	for (i=0; i<cells.length; i++) {
-	//	console.log(cells[i], cells[i].fields.center_x);
-		addNewCircle(cells[i].fields.center_x, cells[i].fields.center_y, cells[i].fields.cid, cells[i].fields.cell_type);
-	}
-}
+// 			//case "KeyH": HelpDisplay.toggle();  break;
+// 		}
+// 	});
+// }
 
 
-function addNewCircle(x, y, cid, cell_type) {
-	var newDiv1 = '<span class="dot no_highlight_dot '+cell_type+'" id="centroid'+cid+ '" style=" display: inline-block; ';
-	newDiv1 = newDiv1 + 'position: absolute; top: ' + (y-10) +'px; left: ' + (x-10) + 'px; z-index: 100">';				
-	newDiv1 = newDiv1 + '</span>';
-	//console.log("NewDiv1=", newDiv1, $(newDiv1));
-	$( ".region_surface" ).append ($(newDiv1));
-	$("#centroid"+cid).on('click', function() {
-	//	console.log("this dot was clicked on", $(this))
-		updateCurrentCellFromDot($(this))
-	});
-//	console.log("AddNewCircle", x, y, newDiv1, $(newDiv1))
-}
+
+
 
 
 function createNewCell(canvas, e) {
@@ -149,10 +115,10 @@ function createNewCell(canvas, e) {
 			$('#unlabelled_cells_inline').prepend(new_cell_div);
 
 			current_cell = $('.cell_list_item#celllistCID_'+ cell.cid);
-			current_cell.on('click', function() { updateCurrentCell($(this)) });
+			current_cell.on('click', function() { Cell.updateCurrentCell($(this)) });
 
 			addNewCircle(X, Y, cell.cid);
-			updateCurrentCell(current_cell);
+			Cell.updateCurrentCell(current_cell);
 			cell_counter.addCell(cell.cell_type);
 
  		}
@@ -178,28 +144,28 @@ function createNewCell(canvas, e) {
 
 
 
-function addMouseEventListeners(){
-	console.log("adding mouse event listeners");
-	$('.cell_list_item').on('click', function() {
-		console.log("this item was clicked on", $(this))
-		updateCurrentCell($(this))
-	});
+// function addMouseEventListeners(){
+// 	console.log("adding mouse event listeners");
+// 	$('.cell_list_item').on('click', function() {
+// 		console.log("this item was clicked on", $(this))
+// 		Cell.updateCurrentCell($(this))
+// 	});
 
-	$('.dot').on('click', function() {
-		console.log("this dot was clicked on", $(this))
-		updateCurrentCellFromDot($(this))
-	});
-	$('#regionCanvas').on('click', function(e) {
-		console.log("canvas was clicked", $(this))
-		createNewCell(this, e)
-	});
-	$('#helpscreen').click(function() { 
-        $(this).fadeOut(500);
-    });
-}
+// 	$('.dot').on('click', function() {
+// 		console.log("this dot was clicked on", $(this))
+// 		Cell.updateCurrentCellFromDot($(this))
+// 	});
+// 	// $('.regionCanvas').on('click', function(e) {
+// 	// 	console.log("canvas was clicked", $(this))
+// 	// 	createNewCell(this, e)
+// 	// });
+// 	// $('#helpscreen').click(function() { 
+//  //        $(this).fadeOut(500);
+//  //    });
+// }
 
-var cell_counter = {};
-var all_cells = {};
+// var cell_counter = {};
+// var all_cells = {};
 // current_cell = 
 
 $ (document).ready(function() {
@@ -207,25 +173,18 @@ $ (document).ready(function() {
  	console.log("ready");
  	//$('#helpscreen').hide();
 
-	console.log("cells_json:", cells_json);
+//	console.log("cells_json:", cells_json);
 
-	all_cells = Cell.LoadCellsFromJson(cells_json);
-	console.log("all cells:", all_cells);
-	//Cell.populateCellLists(all_cells);
-	cell_counter = new CellCounter(all_cells);
+// 	all_cells = Cell.LoadCellsFromJson(cells_json);
+// 	cell_counter = new CellCounter(all_cells);
 
-	if (all_cells.length != []){
-//		Cell.populateCellLists(all_cells);
-		// var cells = $.parseJSON(cells_json.replace(/&quot;/ig,'"'));
-		// addCellCentroids(cells);
-		//Set the initial current cell
-		updateCurrentCell($('#currentCell_'+Cell.currentCellCID()+'.current_cell'));
-	}
+// //	console.log("all cells:", all_cells);
+// 	//Cell.populateCellLists(all_cells);
 
-	addKeyboardEventListeners();
-	addMouseEventListeners();
+// 	if (all_cells.length != []){
+// 		Cell.updateCurrentCell($('#currentCell_'+Cell.currentCellCID()+'.current_cell'));
+// 	}
+
 	
-	
-
 });
 

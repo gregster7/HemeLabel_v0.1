@@ -1,11 +1,27 @@
-<div class="column1 region_surface" style="position: relative">
 
-	<img class="region region_image" id="r{{region.rid}}" style="position: absolute" src="{{region.image.url}}">
-	<canvas style="position: relative; top: 0; left: 0; z-index: 0" id="regionCanvas" height="{{region.ceil_height}}" width="{{region.ceil_width}}"></canvas>
-
-<button>Mark region complete (segmentation)</button>
+<div class="column1">
+<div class="region_surface" style="position: relative; height={{region.ceil_height}}; width={{region.ceil_width}}">
+	<img class="region region_image canvas" id="r{{region.rid}}" style="position: relative" src="{{region.image.url}}">
+	</img>
+	<!-- <canvas style="position: relative; top: 0; left: 0; z-index: 0" class="regionCanvas" height="{{region.ceil_height}}" width="{{region.ceil_width}}"></canvas> -->
+</div>
+<table>
+	<tr>
+		<td><input type="checkbox" id="new_cell_select" name="new_cell_select" value="new_cell_select">
+		<label for="new_cell_select">New Cell Select Mode (press 'm')</label><br>
+	<tr>
+		<td><input type="checkbox" id="region_complete_seg" name="region_complete_seg" value="region_complete_seg">
+		<label for="region_complete_seg">Mark region complete: segmentation</label><br>
+	<tr>
+		<td><input type="checkbox" id="region_complete_classif" name="region_complete_classif" value="region_complete_classif">
+		<label for="region_complete_classif">Mark region complete: classification</label><br>
+	<tr>
+		<td>X=<div id="x_cursor"></div> Y=<div id="y_cursor"></div></td>
+</table>
+<!-- <button>Mark region complete (segmentation)</button>
 <button>Mark region as complete (classification)</button>
-
+<button id='new cell select mode'>new cell select mode</button>
+ -->
 </div>
 
 {% load static %}

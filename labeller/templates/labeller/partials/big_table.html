@@ -43,3 +43,73 @@
 		<td class="class_table_td" id="count_ER6">Mature RBC (n):	
 		<td class="class_table_td">	
 </table>
+<div id="test_keyboard">Last Key Pressed: </div>
+
+
+<script>
+
+$ (document).ready(function() {
+	console.log('entering big_table.html scripts');
+
+	class BigTable {
+		static labelCurrentCell(command_code) {
+			if (Cell.currentCellCID ()==-1) {
+				console.log("BigTable:labelCurrentCell: No current cell selected");
+				return;
+			}
+
+			else {
+				Cell.labelCurrentCell(command_code);
+			}
+		}
+
+		static addKeyboardEventListeners(){
+			window.addEventListener('keyup', (e) => {
+				var code = e.code;
+				document.getElementById('test_keyboard').innerHTML = 'code = ' + code;
+
+				console.log(typeof code, code)
+				switch(code) {
+					case "Digit1": BigTable.labelCurrentCell('M1'); break;
+					case "Digit2": BigTable.labelCurrentCell('M2'); break;
+					case "Digit3": BigTable.labelCurrentCell('M3'); break;
+					case "Digit4": BigTable.labelCurrentCell('M4'); break;
+					case "Digit5": BigTable.labelCurrentCell('M5'); break;
+					case "Digit6": BigTable.labelCurrentCell('M6'); break;
+
+					case "KeyQ": BigTable.labelCurrentCell('E1'); break;
+					case "KeyW": BigTable.labelCurrentCell('E2'); break;
+					case "KeyE": BigTable.labelCurrentCell('B1'); break;
+					case "KeyR": BigTable.labelCurrentCell('B2'); break;
+					case "KeyT": BigTable.labelCurrentCell('MO1'); break;
+					case "KeyY": BigTable.labelCurrentCell('MO2'); break;
+
+					case "KeyA": BigTable.labelCurrentCell('L0'); break;
+					case "KeyS": BigTable.labelCurrentCell('L1'); break;
+					case "KeyD": BigTable.labelCurrentCell('L2'); break;
+					case "KeyF": BigTable.labelCurrentCell('L3'); break;
+					case "KeyG": BigTable.labelCurrentCell('L4'); break;
+
+					case "KeyZ": BigTable.labelCurrentCell('ER1'); break;
+					case "KeyX": BigTable.labelCurrentCell('ER2'); break;
+					case "KeyC": BigTable.labelCurrentCell('ER3'); break;
+					case "KeyV": BigTable.labelCurrentCell('ER4'); break;
+					case "KeyB": BigTable.labelCurrentCell('ER5'); break;
+					case "KeyN": BigTable.labelCurrentCell('ER6'); break;
+
+					case "Digit7": BigTable.labelCurrentCell('U1'); break;
+					case "Digit8": BigTable.labelCurrentCell('U2'); break;
+					case "Digit9": BigTable.labelCurrentCell('U3'); break;
+					case "Digit0": BigTable.labelCurrentCell('U4'); break;
+
+					case "KeyU": BigTable.labelCurrentCell('UL'); break;
+
+				}
+			});
+		}
+	}
+	
+	BigTable.addKeyboardEventListeners();
+});
+
+</script>

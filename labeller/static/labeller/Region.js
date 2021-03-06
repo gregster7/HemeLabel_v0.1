@@ -13,6 +13,9 @@ class Region {
 		this.all_wc_classified = region.fields.all_wc_classified;
 	}
 
+	static getRegionIDFromContainer(){
+		console.log($(".region_container"));
+	}
 
 	static LoadRegionFromJson(region_json){
 	//	var cells_json_reformat = $.parseJSON(cells_json);

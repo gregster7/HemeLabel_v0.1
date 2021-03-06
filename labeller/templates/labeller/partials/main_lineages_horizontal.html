@@ -1,3 +1,6 @@
+<p id="additional_instructions">Press left and right arrows to change cell</p>
+<p id="additional_instructions">Click on cell to select it, or to create a new cell</p>
+
 <h2>Unlabelled Cells</h2>
 <div id="unlabelled_cells_inline" class="inline_cells"></div>
 
@@ -14,4 +17,107 @@
 <div id="misc_cells_inline" class="inline_cells"></div>
 
 {% load static %}
-<script src="{% static 'labeller/partials/main_lineages_horizontal.js' %}"></script>
+<!-- <script src="{% static 'labeller/Cell.js' %}"></script>
+ -->
+<script>
+console.log('entering horizontal_cells.html javascript');
+
+class HorizontalCellList {
+
+	
+	static nextCell(offset) {
+
+		if (offset !=1 && offset != -1){
+			console.log("Error in HorizontalCellList:nextCell - wrong offset", offset);
+			return false;
+		}
+
+		if ($('.cell_list_item.highlight').length<1) {
+			console.log("HorizontalCellList:nextCell() - No current cell");
+			return false;
+		}
+
+		var cell = $('.cell_list_item.highlight');
+		if (cell.siblings.length == 0) {
+			console.log("cell has no siblings")
+			return false;
+		
+		}
+
+		if (offset == 1 && cell.next().length ==1) {
+//				var current_cell = cell.next();
+				var cid = Cell.getCIDfromDivID(cell.next()[0]);
+				Cell.selectCellByCID(cid);
+				return true;
+			}
+
+			else if (offset == -1 && cell.prev().length ==1) {
+				var cid = Cell.getCIDfromDivID(cell.prev()[0]);
+				Cell.selectCellByCID(cid);
+				return true;
+		}
+
+		return false;
+	}
+
+	static addKeyboardEventListeners(){
+			window.addEventListener('keyup', (e) => {
+				var code = e.code;
+
+				switch(code) {
+					
+					case "ArrowLeft": HorizontalCellList.nextCell(-1);  break;
+					case "ArrowRight": HorizontalCellList.nextCell(1); break;
+					//case "Enter": nextRegion(); break;
+
+				}
+			});
+	}
+
+	static cellListItemClickHandler(jq_obj){
+		console.log("this item was clicked on", jq_obj)
+		var cid = Cell.extractCIDFromJQueryObjectID(jq_obj)
+		Cell.selectCellByCID(cid);
+	}
+
+
+	static selectFirstUnlabelledCell(){
+		if ($(".cell_list_item.unlabelled").first().length>0){
+			var cid = Cell.extractCIDFromJQueryObjectID($(".cell_list_item.unlabelled").first());
+			Cell.selectCellByCID(cid);
+		}
+	}
+
+	static populateCellLists (cells_json){
+		var cells = Cell.LoadCellsFromJson(cells_json);
+
+		var counter = 1;
+		for (var key in cells) {
+			var cell = cells[key];
+			var cid = cell.getCID();
+			var cell_div = cell.getDivForCellList();
+			var jq_obj = $("#"+cell.getLineage()+"_cells_inline").append(cell_div);
+			// if (counter == 1 ){
+			// 	Cell.selectCellByCID(cid)
+			// }
+			// counter +=1;
+		}
+
+		$('.cell_list_item').on('click', function (){
+			HorizontalCellList.cellListItemClickHandler($(this))
+		});
+	}
+}
+
+$ (document).ready(function() {
+	if ('{{cells_json}}'!='none') {		
+	 	var cells_json = '{{cells_json}}';	 	
+ 		HorizontalCellList.populateCellLists(cells_json);
+ 		HorizontalCellList.addKeyboardEventListeners();
+ 		HorizontalCellList.selectFirstUnlabelledCell();
+	}
+});
+</script>
+
+
+<!-- <script src="{% static 'labeller/partials/main_lineages_horizontal.js' %}"></script> -->

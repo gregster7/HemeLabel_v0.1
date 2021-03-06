@@ -7,6 +7,17 @@ body {
 	margin: 0 auto; 
 }
 
+
+
+.rectangle {
+        border: 5px solid #FF0000;
+        position: absolute;
+        /*z-index: 50;*/
+        resize: both;
+		overflow: auto;
+/*        background:green;
+*/ }
+
 h1 {
 	background-color: #663399FF ;
 	padding: 10px;
@@ -59,7 +70,6 @@ img { margin: auto; }
 .highlight_dot {
 	background-color: yellow;
 	border: solid 5px yellow;
-
 }
 
 .no_highlight_dot {
@@ -78,6 +88,11 @@ img { margin: auto; }
 	height: 10px;
 	display: inline-block;	
 }
+
+.hidden_dot {
+	display:none;
+}
+
 
 
 
@@ -176,10 +191,7 @@ Image height is 665px
 
 }
 
-/*.hide {
-
-}
-*//*
+/*
 #all_cells_inline {
 	display: flex;
 	flex-direction: row;
@@ -205,4 +217,29 @@ Image height is 665px
 */
 
 
+
+
+/********** Label Region Fabric **********/
+.region_container_fabric {
+	display:inline-block;
+    margin: 0 auto; 
+    position:relative; 
+    border:1px solid black; 
+/*    border-radius: 10px; 
+    box-shadow: 0 5px 50px #333
+*/}
+
+.region_image_fabric {
+	position:absolute;
+	top:0;
+	left:0;
+	z-index:1;
+}
+
+.region_canvas_fabric{
+    position:absolute;
+    top:0;
+    left:0;
+    z-index:20;
+}
 

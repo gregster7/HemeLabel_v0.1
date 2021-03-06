@@ -21,11 +21,13 @@ def index(request):
 	"""The home page for labeller"""
 	return render(request, 'labeller/index.html')
 
+
 def regions(request):
 	"""Show all regions."""
 	regions = Region.objects.order_by('rid')
 	context = {'regions': regions}
 	return render(request, 'labeller/regions.html', context)
+
 
 def cells(request):
 	"""Show all regions."""
@@ -33,14 +35,17 @@ def cells(request):
 	context = {'cells': cells}
 	return render(request, 'labeller/cells.html', context)	
 
+
 def slides(request):
 	"""Show all regions."""
 	slides = Slide.objects.order_by('sid')
 	context = {'slides': slides}
 	return render(request, 'labeller/slides.html', context)	
 
+
 def slide_viewer(request):
 	return render(request, 'labeller/slide_viewer.html')
+
 
 def label_cell(request, cell_id):
 	"""label inidivudal cell"""
@@ -58,6 +63,7 @@ def label_cell(request, cell_id):
 	context = {'region': region, 'cell':cell, 'other_cells': other_cells}
 	return render(request, 'labeller/label_cell.html', context)
 
+
 def label_slide(request, slide_id):
 	slide = Slide.objects.get(sid=slide_id)
 	regions = slide.region_set.all()
@@ -65,55 +71,191 @@ def label_slide(request, slide_id):
 	return render(request, 'labeller/label_slide.html', context)
 
 
-def add_new_cell(request):
+def get_all_cells_json(region):
+	cells_json = serializers.serialize("json", region.cell_set.all())
+#	print(region, cells_json)
+	return cells_json
+
+def change_cell_location(request):
 	POST = request.POST
-	rid = int(POST['rid'])
-	center_x = float(POST['center_x'])
-	center_y = float(POST['center_y'])
-	box_dim = 90 # Box dimension (it is a square)
+	cid = POST['cid']
+	left = float(POST['left'])
+	top = float(POST['top'])
+	width = float(POST['width'])
+	height = float(POST['height'])
+	results = change_cell_location_helper(cid, left, top, width, height)
+	return JsonResponse(results)
 
+
+def change_cell_location_helper(cid, left, top, width, height):
+	cell = Cell.objects.get(cid=cid);
+	region = cell.region;
+	if ((top < 0) | (top + height > region.height) | (left < 0) | (left + width > region.width)):
+		return {'success':False, 'error':'box outside boundary'}
+	else:
+		#This should overwrite the old image
+		generate_cell_image_with_vips(region, cid, left, top, width, height)
+		cell_path = '/cells/' + str(cid) + '.jpg'
+		Cell.objects.filter(cid=cid).update(center_x=left + width/2, center_y=top + height/2, width=width, height=height, image=cell_path)
+		#cell.save()
+		cell = Cell.objects.get(cid=cid);
+		cell_json = serializers.serialize("json", [cell])
+		results = {'success':True, 'cell_json':cell_json}
+		return results
+
+def get_all_cells_in_region(request):
+	GET = request.GET
+	rid = GET['rid']
 	region = Region.objects.get(rid=rid)
+	all_cells_json = serializers.serialize("json", region.cell_set.all())
+	results = {'success':True, 'all_cells_json':all_cells_json}
+	return JsonResponse(results);
+
+def get_cell_json(request):
+	GET = request.GET
+	cid = GET['cid']
+	cell = Cell.objects.get(cid=cid)
+	cell_json = serializers.serialize("json", [cell])
+	results = {'success':True, 'cell_json':cell_json}
+	return JsonResponse(results);
 
 
+def generate_cell_image_with_vips(region, cid, left, top, width, height):
+	cid = str(cid)
 	region_path = settings.MEDIA_ROOT + region.image.url
-	print(region_path)
+	cell_path = settings.MEDIA_ROOT + '/cells/' + cid + '.jpg'
+	command = "vips crop "+ region_path + " " + cell_path + " " + \
+		str(left) + " " + str(top) + " " + \
+		str(width) + " " + str(height) 
+	os.system(command)
 
-	# Make sure not too lose to edge
-	if (center_x-box_dim/2 > 0 and center_y-box_dim/2 > 0 and \
-		center_x+box_dim/2 < region.width and center_y+box_dim/2 < region.height):
-		now = datetime.now()
-		date_time = now.strftime("%m%d%Y%H%M%S")
-		cell_path = settings.MEDIA_ROOT + '/cells/' + date_time + '.jpg'
-		command = "vips crop "+ region_path + " " + cell_path + " " + \
-			str(center_x-box_dim/2) + " " + str(center_y-box_dim/2) + " " + \
-			str(box_dim) + " " + str(box_dim) 
-		os.system(command)
 
-		cell_path = '/cells/' + date_time + '.jpg'
-		new_cell = Cell.objects.create(region = region, image=cell_path, cid=date_time, \
-			center_x=center_x, center_y=center_y, width=box_dim, height=box_dim)
+# need to make sure CIDs do not start with trailing 0s as this causes problems
+def create_new_cid():
+	now = datetime.now()
+	date_time = now.strftime("%m%d%Y%H%M%S")
+	return "1"+date_time
+
+
+def create_new_cell(rid, left, top, width, height):
+	print(rid, left, top, width, height);	
+	print(type(rid), type(left), type(top), type(width), type(height));	
+	region = Region.objects.get(rid=rid)
+	if ((top < 0) | (top + height > region.height) | (left < 0) | (left + width > region.width)):
+		return {'success':False, 'error':'box outside boundary'}
+
+	else:
+		#region = Region.objects.get(rid=rid)
+		cid = create_new_cid()
+		generate_cell_image_with_vips(region, cid, left, top, width, height)
+		cell_path = '/cells/' + cid + '.jpg'
+
+		new_cell = Cell.objects.create(region = region, image=cell_path, cid=cid, \
+			center_x=left + width/2, center_y=top + height/2, width=width, height=height)
 		new_cell.save()
 		# cells = region.cell_set.all()
 		new_cell_json = serializers.serialize("json", [new_cell])
-		results = {'success':True, 'new_cell_json':new_cell_json}
-	else:
-		results = {'success':False, 'error':'too close to boundary'}
+		all_cells_json = get_all_cells_json(region)
+
+		results = {'success':True, 'new_cell_json':new_cell_json, 'all_cells_json':all_cells_json}
+		return results
 	
+
+
+def add_new_cell_box(request):
+	POST = request.POST
+	rid = int(POST['rid'])
+
+	top = float(POST['top'])
+	height = float(POST['height'])
+
+	left = float(POST['left'])
+	width = float(POST['width'])
+
+	results = create_new_cell(rid, left, top, width, height);
 	return JsonResponse(results)
+
+
+def toggle_region_complete_class(request):
+	POST = request.POST
+	rid = int(POST['rid'])
+	if (POST['value'] == 'true'):
+		value = True
+	else:
+		value = False
+	#print('toggle_region_complete_seg', POST['value'], value)
+	success = Region.objects.filter(rid=rid).update(all_wc_classified=value)
+	results = {'success':(success == 1)}	
+	return JsonResponse(results)
+
+def toggle_region_complete_seg(request):
+	POST = request.POST
+	rid = int(POST['rid'])
+	if (POST['value'] == 'true'):
+		value = True
+	else:
+		value = False
+	#print('toggle_region_complete_seg', POST['value'], value)
+	success = Region.objects.filter(rid=rid).update(all_wc_located=value)
+	results = {'success':(success == 1)}	
+	return JsonResponse(results)
+
+def add_new_cell(request):
+	POST = request.POST
+	rid = POST['rid']
+	center_x = float(POST['center_x'])
+	center_y = float(POST['center_y'])
+	box_dim = 90 # Box dimension (it is a square)
+	left = center_x - box_dim/2
+	top = center_y - box_dim/2
+	return JsonResponse(create_new_cell(rid, left, top, box_dim, box_dim))
+
+	# region = Region.objects.get(rid=rid)
+
+
+	# region_path = settings.MEDIA_ROOT + region.image.url
+	# print(region_path)
+
+
+
+	# # Make sure not too close to edge
+	# if (center_x-box_dim/2 > 0 and center_y-box_dim/2 > 0 and \
+	# 	center_x+box_dim/2 < region.width and center_y+box_dim/2 < region.height):
+	# 	now = datetime.now()
+	# 	date_time = now.strftime("%m%d%Y%H%M%S")
+	# 	cell_path = settings.MEDIA_ROOT + '/cells/' + date_time + '.jpg'
+	# 	command = "vips crop "+ region_path + " " + cell_path + " " + \
+	# 		str(center_x-box_dim/2) + " " + str(center_y-box_dim/2) + " " + \
+	# 		str(box_dim) + " " + str(box_dim) 
+	# 	os.system(command)
+
+	# 	cell_path = '/cells/' + date_time + '.jpg'
+	# 	new_cell = Cell.objects.create(region = region, image=cell_path, cid=date_time, \
+	# 		center_x=center_x, center_y=center_y, width=box_dim, height=box_dim)
+	# 	new_cell.save()
+	# 	# cells = region.cell_set.all()
+	# 	new_cell_json = serializers.serialize("json", [new_cell])
+	# 	results = {'success':True, 'new_cell_json':new_cell_json}
+	# else:
+	# 	results = {'success':False, 'error':'too close to boundary'}
+	
+	# return JsonResponse(results)
 
 
 def delete_cell(request):
 	POST = request.POST
-	cid = int(POST['cid'])
+	cid = POST['cid']
 	print('deleting cell %s' %cid)
 	cell = Cell.objects.filter(cid=cid).delete()
+	print('deleting', cell)
+#	results = {'success':True, 'all_cells_json':get_all_cells_json(cell.region)}
 	results = {'success':True}
 	return JsonResponse(results)
 
 
 def add_new_region(request):
 	POST = request.POST
-	sid = int(POST['sid'])
+	sid = POST['sid']
 	x1 = float(POST['x1'])
 	y1 = float(POST['y1'])
 	x2 = float(POST['x2'])
@@ -155,7 +297,7 @@ def add_new_region(request):
 # Needs to be udpated to support changing slide and patient as well
 def next_region(request):
 	POST = request.POST
-	rid = int(POST['rid'])
+	rid = POST['rid']
 	direction = int(POST['direction'])
 	region = Region.objects.get(rid=rid)
 	results = {'rid': rid, 'success':False}
@@ -179,12 +321,13 @@ def next_region(request):
 
 	return JsonResponse(results)
 
+
 def update_cell_class(request):
 	POST = request.POST
-	cell = Cell.objects.get(cid=int(POST['cid']))
+	cell = Cell.objects.get(cid=POST['cid'])
 	cell.cell_type = POST['cell_label']
 	cell.save()
-	results = {'success':True}
+	results = {'success':True, 'all_cells_json':get_all_cells_json(cell.region)}
 	return JsonResponse(results)
 
 
@@ -206,6 +349,20 @@ def stats(request):
 	context = {'regions': regions, 'regions_json': regions_json, 'cells':cells, 'cells_json': cells_json}
 	return render(request, 'labeller/stats.html', context)
 
+
+def label_region_fabric(request, region_id):
+	"""label cells on a region"""
+	region = Region.objects.get(rid=region_id)
+	cells = region.cell_set.all()
+	if (cells.count() == 0):
+		cells = "none"
+		cells_json = "none"
+	else:
+		cells_json = serializers.serialize("json", region.cell_set.all())
+	
+	context = {'region': region, 'cells':cells, 'cells_json': cells_json}
+	print(context)
+	return render(request, 'labeller/label_region_fabric.html', context)
 
 
 def label_region(request, region_id):
