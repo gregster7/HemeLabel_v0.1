@@ -395,8 +395,10 @@ def new_region(request):
 	context = {'form': form}
 	return render(request, 'labeller/new_region.html', context)
 
-
-
+def get_all_cells_in_project(project):
+	regions = region.project_set.all()
+	cells = Cell.objects.filter(regions__in=regions)
+	
 
 # def update_cell_class(request):
 # 	results = {'success':False}
