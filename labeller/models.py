@@ -19,7 +19,7 @@ class Patient (models.Model):
 	pid = models.IntegerField(unique=True)
 #	slides = models.ForeignKey('Slide', on_delete=models.RESTRICT)
 	date_added = models.DateTimeField(auto_now_add=True)
-	name = models.CharField(max_length=200)
+	name = models.CharField(max_length=200, default="default")
 
 	class Meta:
 		verbose_name_plural = 'Patients'
