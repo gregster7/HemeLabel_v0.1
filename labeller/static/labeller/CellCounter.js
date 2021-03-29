@@ -55,15 +55,22 @@ class CellCounter {
 
 	static buildpageCounter (){
 		var lineage_divs = {};
+
+		$('#counter').append("<H3 class='counter header' id='total'>Total:</H3>");
+
 		for (var i=0; i<Cell.lineage_labels.length; i++) { 
 			var new_div="<H3 class='counter header' id='" + Cell.lineage_labels[i]+"'>"+ Cell.lineage_labels[i]+ ":</H3>";
-			lineage_divs[Cell.lineage_labels[i]] = new_div;  
+			$("#counter").append(new_div);
 		}
-		$('#counter').append("<H3 class='counter header' id='total'>Total:</H3>");
-		for (var key in lineage_divs) {
-			//console.log("buildpagecounter", key, lineage_divs[key]);
-			$("#counter").append($(lineage_divs[key]));
-		}
+
+		// for (var i=0; i<Cell.lineage_labels.length; i++) { 
+		// 	var new_div="<H3 class='counter header' id='" + Cell.lineage_labels[i]+"'>"+ Cell.lineage_labels[i]+ ":</H3>";
+		// 	lineage_divs[Cell.lineage_labels[i]] = new_div;  
+		// }
+		// for (var key in lineage_divs) {
+		// 	//console.log("buildpagecounter", key, lineage_divs[key]);
+		// 	$("#counter").append($(lineage_divs[key]));
+		// }
 	}
 
 	static updateMERatio(counts) {
