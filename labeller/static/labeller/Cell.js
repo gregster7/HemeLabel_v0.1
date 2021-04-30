@@ -306,7 +306,7 @@ class Cell {
 		current_cell.attr('id', cid);
 		$('#current_cell_column2').append(current_cell);
 		Cell.highlightCircle(cid);
-		RegionLabellerFabric.selectBoxAsActiveFromCID(cid)
+		//RegionLabellerFabric.selectBoxAsActiveFromCID(cid);
 	}
 
 	static deleteCellByCID(cell_cid){
@@ -320,8 +320,9 @@ class Cell {
 
 	static deleteCellFromPage(cid){
 		console.log('removing all objects with class', cid);
+		HorizontalCellList.nextCell(1);
 		$('.cell.'+cid).remove();
-		$('#centroid'+cid).remove()
+		$('#centroid'+cid).remove();
 	}
 
 
