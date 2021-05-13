@@ -1,0 +1,125 @@
+{% extends "labeller/base.html" %}
+{% load static %}
+
+{% block title %}Label Region{% endblock %}
+
+{% block content %}
+<!-- <script src="{% static 'labeller/Cell.js' %}"></script>
+<script src="{% static 'labeller/CellCounter.js' %}"></script> -->
+{% include "labeller/partials/help_display.html" %}
+
+<div id="normal_current_cell" class="purple_box">
+	<h2 id='current_cell_title'>Current Cell</h2>
+	<img id="current_cell_image" />
+	<
+</div>
+
+
+
+{% include "labeller/partials/normal_big_table.html" %}
+
+<script>
+$ (document).ready(function() {
+console.log('entering normal_cell_labeller.html scripts');
+
+	
+
+
+	class NewCell {	
+		constructor(cell) {
+			this.cid = cell.fields.cell_id;
+			this.image_url = cell.fields.image;
+			this.cell_type = cell.fields.cell_type;
+			//this.pk = cell.pk;
+			this.additional_review = cell.fields.additional_review;
+		}
+
+		vewRandomCell(){
+
+		}
+
+
+		static classLabelDict = {
+				"M1": "Blast",
+				"M2": "Promyelocyte",
+				"M3": "Myelocyte",
+				"M4": "Metamyelocyte",
+				"M5": "Band neutrophil",
+				"M6": "Segmented netrophil",
+
+				"E1": "Immature Eosinophil",
+				"E2": "Mature Eosinophil",
+				"B1": "Immature Basophil",
+				"B2": "Mature Basophil",
+				"MO1": "Monoblast",
+				"MO2": "Monocyte",
+
+				"L0": "Lymphoblast",
+				"L1": "Hematagone",
+				"L2": "Small Mature Lymphocyte",
+				"L3": "Large Grancular lymphocyte",
+				"L4": "Plasma Cell",
+
+				"ER1": "Pronormoblast",
+				"ER2": "Basophilic normoblast",
+				"ER3": "Polychromatophilic",
+				"ER4": "Orthochromic (nuc red)",
+				"ER5": "Reticulocyte",
+				"ER6": "Mature RBC",
+
+				"U1": "Artifact",
+				"U2": "Unknown",
+				"U3": "Other",
+				"U4": "Histiocyte",
+				"UL": "Unlabelled", 
+				};
+
+		static findLabelFromClass (jquery_cell){
+			for (var key in NormalCellLabeller.classLabelDict) {
+				if ($(jquery_cell).hasClass(key)) {
+					return key;
+				}
+			}
+			console.log("Error in findLabelFromClass: no class found", jquery_cell);
+		}
+
+		static getClassLabelName (cell_type) {
+			return NormalCellLabeller.classLabelDict[cell_type];
+		}
+
+		static LoadCellsFromJson (cells_json){
+			if (cells_json == "" || cell_json == "none") {
+				return [];
+			}
+		//	var cells_json_reformat = $.parseJSON(cells_json);
+			var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig,'"'));
+
+			var all_cells = {};
+			
+			for (var c of cells_json_reformat){
+		//		console.log('c=', c);
+				var cell = new NewCell(c);
+				all_cells[cell.id] = cell;
+		//		console.log("new cell class", cell);
+			}
+		//	console.log(all_cells);
+			return all_cells;
+		}
+
+
+	};
+
+	function PresentRandomCell(all_cells){
+
+	}
+
+	if ('{{cells_json}}'!='none') {		
+		var cells_json = '{{cells_json}}';
+		all_cells = NewCell.LoadCellsFromJson(cells_json);
+		PresentRandomCell(all_cells);
+	}
+});
+
+</script>
+
+{% endblock %}

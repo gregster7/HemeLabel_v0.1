@@ -14,7 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.conf.urls import re_path
+
+from django.urls import path, include, re_path
+
 
 from . import views 
 
@@ -93,6 +95,10 @@ urlpatterns = [
 	# Page for viewing Whole Slide IMages
 	re_path(r'^slide_viewer/$', views.slide_viewer, name= 'slide_viewer'),
 
+	# Page for viewing Whole Slide IMages
+	re_path(r'^normal_cell_labeller/$', views.normal_cell_labeller, name= 'normal_cell_labeller'),
+
+	path('accounts/', include('django.contrib.auth.urls')),
 
 
 	# # Page for AJAX updates to cell

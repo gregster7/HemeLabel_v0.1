@@ -7,8 +7,9 @@ import json
 import os
 from datetime import datetime
 from django.db import models
+from django.contrib.auth.decorators import login_required
 
-from .models import Region, Cell, Patient, Slide
+from .models import Region, Cell, Patient, Slide, NewCell
 from .forms import RegionForm
 
 from django.conf import settings
@@ -21,7 +22,7 @@ def index(request):
 	"""The home page for labeller"""
 	return render(request, 'labeller/index.html')
 
-
+@login_required
 def regions(request):
 	"""Show all regions."""
 	regions = Region.objects.order_by('rid')
@@ -62,6 +63,32 @@ def label_cell(request, cell_id):
 	other_cells = region.cell_set.all()
 	context = {'region': region, 'cell':cell, 'other_cells': other_cells}
 	return render(request, 'labeller/label_cell.html', context)
+
+
+# New page started on May 7, 2021
+# Rapid labeller for normal cells without associated regions
+def normal_cell_labeller(request):
+	"""label all unlabelledd cells for a project"""
+
+
+	# Need to only get cells for the current user and for the current project
+	# For now only one user and project
+	#NewCells = project.cell_set.all() 
+	#newCells = NewCell.objects.get()
+	cells = NewCell.objects.all()
+
+	#region = Region.objects.get(rid=region_id)
+	#cells = region.cell_set.all()
+	if (cells.count() == 0):
+		cells = "none"
+		cells_json = "none"
+	else:
+		cells_json = serializers.serialize("json", cells)
+	
+	context = {'cells':cells, 'cells_json': cells_json}
+	print(context)
+	return render(request, 'labeller/normal_cell_labeller.html', context)
+
 
 
 def label_slide(request, slide_id):
@@ -340,6 +367,7 @@ def data_export(request):
 	context = {'regions': regions, 'regions_json': regions_json, 'cells':cells, 'cells_json': cells_json}
 	return render(request, 'labeller/data_export.html', context)
 
+@login_required
 def stats(request):
 	regions = Region.objects.all()
 	regions_json = serializers.serialize("json", Region.objects.all())
