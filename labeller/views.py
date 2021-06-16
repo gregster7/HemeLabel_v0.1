@@ -9,7 +9,7 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth.decorators import login_required
 
-from .models import Region, Cell, Patient, Slide, NewCell
+from .models import Region, Cell, Patient, Slide
 from .forms import RegionForm
 
 from django.conf import settings
@@ -89,6 +89,20 @@ def normal_cell_labeller(request):
 	print(context)
 	return render(request, 'labeller/normal_cell_labeller.html', context)
 
+def label_slide_overlay(request, slide_id):
+	slide = Slide.objects.get(sid=slide_id)
+	regions = slide.region_set.all()
+	print(regions)
+	cells = Cell.objects.filter(region__slide__sid=slide_id)
+	#cells = Cell.objects.all()
+	if (cells.count() == 0):
+		cells_json = "none"
+	else:	
+		cells_json = serializers.serialize("json", cells)
+		print("cell count", cells.count())
+
+	context = {'slide': slide, 'regions': regions, 'cells': cells, 'cells_json': cells_json}
+	return render(request, 'labeller/label_slide_overlay.html', context)
 
 
 def label_slide(request, slide_id):
@@ -124,11 +138,27 @@ def change_cell_location_helper(cid, left, top, width, height):
 		generate_cell_image_with_vips(region, cid, left, top, width, height)
 		cell_path = '/cells/' + str(cid) + '.jpg'
 		Cell.objects.filter(cid=cid).update(center_x=left + width/2, center_y=top + height/2, width=width, height=height, image=cell_path)
-		#cell.save()
 		cell = Cell.objects.get(cid=cid);
+		cell.center_x_slide = cell.center_x + region.x;
+		cell.center_y_slide = cell.center_y + region.y;
+		cell.save()
+#		cell = Cell.objects.get(cid=cid);
 		cell_json = serializers.serialize("json", [cell])
 		results = {'success':True, 'cell_json':cell_json}
 		return results
+
+def get_cell_center_relative_to_slide(request): 
+	GET = request.GET
+	cid = GET['cid']
+	cell = Cell.objects.get(cid=cid)
+	results = {'success':True, 'x':cell.GetCenter_x_slide(), 'y':cell.GetCenter_y_slide()}
+	print('get_cell_center_relative_to_slide', cell.GetCenter_x_slide(), cell.center_x,cell.GetCenter_y_slide(), cell.center_y)
+	cell.center_x_slide = cell.GetCenter_x_slide();
+	cell.center_y_slide = cell.GetCenter_y_slide();
+	cell.save()
+	print('get_cell_center_relative_to_slide', cell.GetCenter_x_slide(), cell.center_x, cell.center_x_slide, cell.GetCenter_y_slide(), cell.center_y, cell.center_y_slide)
+
+	return JsonResponse(results);
 
 def get_all_cells_in_region(request):
 	GET = request.GET
@@ -138,6 +168,15 @@ def get_all_cells_in_region(request):
 	results = {'success':True, 'all_cells_json':all_cells_json}
 	return JsonResponse(results);
 
+def get_all_cells_in_slide(request):
+	GET = request.GET
+	sid = GET['sid']
+	cells = Cell.objects.filter(region__slide__sid=sid)
+	all_cells_json = serializers.serialize("json", cells)
+	results = {'success':True, 'all_cells_json':all_cells_json}
+	return JsonResponse(results);
+
+
 def get_cell_json(request):
 	GET = request.GET
 	cid = GET['cid']
@@ -146,6 +185,26 @@ def get_cell_json(request):
 	results = {'success':True, 'cell_json':cell_json}
 	return JsonResponse(results);
 
+
+# vips crop
+# extract an area from an image
+# usage:
+#    extract_area input out left top width height [--option-name option-value ...]
+# where:
+#    input        - Input image, input VipsImage
+#    out          - Output image, output VipsImage
+#    left         - Left edge of extract area, input gint
+# 			default: 0
+# 			min: -10000000, max: 10000000
+#    top          - Top edge of extract area, input gint
+# 			default: 0
+# 			min: -10000000, max: 10000000
+#    width        - Width of extract area, input gint
+# 			default: 1
+# 			min: 1, max: 10000000
+#    height       - Height of extract area, input gint
+# 			default: 1
+# 			min: 1, max: 10000000
 
 def generate_cell_image_with_vips(region, cid, left, top, width, height):
 	cid = str(cid)
@@ -165,6 +224,10 @@ def create_new_cid():
 
 
 def create_new_cell(rid, left, top, width, height):
+	left = int(left)
+	top = int(top)
+	width = int(width)
+	height = int(height)
 	print(rid, left, top, width, height);	
 	print(type(rid), type(left), type(top), type(width), type(height));	
 	region = Region.objects.get(rid=rid)
@@ -179,6 +242,8 @@ def create_new_cell(rid, left, top, width, height):
 
 		new_cell = Cell.objects.create(region = region, image=cell_path, cid=cid, \
 			center_x=left + width/2, center_y=top + height/2, width=width, height=height)
+		new_cell.center_x_slide = new_cell.center_x + region.x;
+		new_cell.center_y_slide = new_cell.center_y + region.y;
 		new_cell.save()
 		# cells = region.cell_set.all()
 		new_cell_json = serializers.serialize("json", [new_cell])

@@ -1,5 +1,22 @@
 class CellCounter {
 
+	static updateCountsOnPageAJAXWholeSlide (sid) {
+		$.get("/get_all_cells_in_slide/", {'sid':sid}, function(json){
+			//console.log("Was successful?: " + json['success']);	
+	 		if (json['success'] == false) {
+	 			console.log("updateCountsOnPageAJAX");	
+	 		}
+
+	 		else if(json['success'] == true) {
+				var cells_json = json['all_cells_json'];
+//				console.log('cells_json in updateCountsOnPageAJAX', cells_json, typeof(cells_json));
+				if ('cells_json'!='none') {		
+					CellCounter.updateCountsOnPageJson(cells_json);
+				}
+	 		}
+		});
+	}
+
 	static updateCountsOnPageAJAX (rid) {
 		$.get("/get_all_cells_in_region/", {'rid':rid}, function(json){
 			//console.log("Was successful?: " + json['success']);	

@@ -41,6 +41,10 @@ urlpatterns = [
 	# Page for labelling a slide
 	re_path(r'^label_slide/(?P<slide_id>\d+)/$', views.label_slide, name='label_slide'),
 
+	# Page for labelling a slide
+	re_path(r'^label_slide_overlay/(?P<slide_id>\d+)/$', views.label_slide_overlay, name='label_slide_overlay'),
+
+
 	# Page for labelling a region of interest
 	re_path(r'^label_region/(?P<region_id>\d+)/$', views.label_region, name='label_region'),
 
@@ -64,12 +68,18 @@ urlpatterns = [
 	# Change cell location (AJAX)
 	re_path(r'^change_cell_location/', views.change_cell_location, name='change_cell_location'),
 
+	# Change cell location (AJAX)
+	re_path(r'^get_cell_center_relative_to_slide/', views.get_cell_center_relative_to_slide, name='get_cell_center_relative_to_slide'),
+
 
 	# Get cell information (AJAX)
 	re_path(r'^get_cell_json/', views.get_cell_json, name='get_cell_json'),
 
 	# Get cell information (AJAX)
 	re_path(r'^get_all_cells_in_region/', views.get_all_cells_in_region, name='get_all_cells_in_region'),
+
+	# Get cell information (AJAX)
+	re_path(r'^get_all_cells_in_slide/', views.get_all_cells_in_slide, name='get_all_cells_in_slide'),
 
 	# toggle_region_complete_seg (AJAX)
 	re_path(r'^toggle_region_complete_seg/', views.toggle_region_complete_seg, name='toggle_region_complete_seg'),

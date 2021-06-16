@@ -1,5 +1,6 @@
 //Convert json cell to javascript cell
 class Cell {
+	// Input is JSON
 	constructor(cell) {
 		this.cid = cell.fields.cid;
 		this.x = cell.fields.center_x;
@@ -10,6 +11,13 @@ class Cell {
 		this.height = cell.fields.height;
 		this.width = cell.fields.width;
 		this.region = cell.fields.region;
+		this.x_slide = cell.fields.center_x_slide;
+		this.y_slide = cell.fields.center_y_slide;
+		// Uncomment this line if you ever have to manually popualte the center_x_slide 
+		// 	         or center_y_slide fields (this should not be needed in the future)
+		//this.getCellCentersRelativeToSlideAJAX (cell.fields.cid);
+		
+		//console.log(this);
 	}
 
 	getLeft(){
@@ -55,6 +63,26 @@ class Cell {
 		return div;
 	}
 
+	getCellCentersRelativeToSlideAJAX (cid) {
+		console.log('getCellCentersRelativeToSlideAJAX');
+		$.get("/get_cell_center_relative_to_slide/", {'cid':cid}, function(json){
+			//console.log("Was successful?: " + json['success']);	
+	 		if (json['success'] == false) {
+	 			console.log("error getCellCentersRelativeToSlideAJAX");	
+	 		}
+
+	 		else if(json['success'] == true) {
+				var x = json['x'];
+				var y = json['y'];
+				console.log("getCellCentersRelativeToSlideAJAX x,y", x, y);
+				this.x_slide = x;
+				this.y_slide = y;
+//				console.log('cells_json in updateCountsOnPageAJAX', cells_json, typeof(cells_json));
+//				if ('cells_json'!='none') {		
+//					CellCounter.updateCountsOnPageJson(cells_json);
+			}
+ 		});
+	}
 
 	static createCellInDatabase(rid, left, top, width, height){
 		var created_cell = null;

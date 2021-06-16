@@ -84,26 +84,27 @@ class Region(models.Model):
 
 	
 # Simlar to Cell model, but not associated with a region. Designed for normal cell classification task. 	
-class NewCell(models.Model):
-	# cell_id are randomly generated randomUUIDs generated before inport. They are 36 characters long. 
-	cell_id = models.CharField(max_length=36)
+# class NewCell(models.Model):
+# 	# cell_id are randomly generated randomUUIDs generated before inport. They are 36 characters long. 
+# 	cell_id = models.CharField(max_length=36)
 	
-	slide_name = models.CharField(max_length=100)
-	image = models.ImageField(upload_to='new_cells')
+# 	slide_name = models.CharField(max_length=100, blank=True, null=True)
+# #	slide = models.ForeignKey()
+# 	image = models.ImageField(upload_to='new_cells')
 
 
-	class Meta:
-		verbose_name_plural = 'NewCells'
+# 	class Meta:
+# 		verbose_name_plural = 'NewCells'
 
-	def __str__(self):
-		"""Return a string representation of the model."""
-		return str(self.cell_id)
+# 	def __str__(self):
+# 		"""Return a string representation of the model."""
+# 		return str(self.cell_id)
 
 # Each Cell Classification has one classification, one reviewer and one associated NewCell object.
-class CellClassification(models.Model):
-	cell_class = models.CharField(max_length=50, default = 'UL')
-	additional_review = models.CharField(max_length=50, default = 'No')
-	reviewer = models.ForeignKey(User, on_delete=models.RESTRICT)
+# class CellClassification(models.Model):
+# 	cell_class = models.CharField(max_length=50, default = 'UL')
+# 	additional_review = models.CharField(max_length=50, default = 'No')
+# 	reviewer = models.ForeignKey(User, on_delete=models.RESTRICT)
 	#newCell = models.ForeignKey('NewCell', on_delete=models.RESTRICT)
 
 # class Reviewer(models.Model):
@@ -126,17 +127,39 @@ class Cell(models.Model):
 	readonly_fields=('id',)
 	cid = models.IntegerField(unique=True)
 	date_added = models.DateTimeField(auto_now_add=True)	
-	region = models.ForeignKey('Region', on_delete=models.RESTRICT)
+	region = models.ForeignKey('Region', on_delete=models.RESTRICT, blank=True, null=True)
 	image = models.ImageField(upload_to='cells')
 
+	"""centers are relative to region if there is a region, if not they are relative to the slide"""
 	center_x = models.FloatField(default=-1)
 	center_y = models.FloatField(default=-1)
+
+	center_x_slide = models.FloatField(default=-1)
+	center_y_slide = models.FloatField(default=-1)
+
+	def GetCenter_x_slide(self):
+		"return center_x relative to slide instead of region"
+		if (self.region is None):
+			return self.center_x
+		else:
+			return self.region.x+self.center_x
+
+	def GetCenter_y_slide(self):
+		"return center_x relative to slide instead of region"
+		if (self.region is None):
+			return self.center_y
+		else:
+			return self.region.y+self.center_y		
+
+#	center_x_slide = property(GetCenter_x_slide)
+#	center_y_slide = region.y+center_y;
 
 	width = models.FloatField(default=-1)
 	height = models.FloatField(default=-1)
 
 	cell_type = models.CharField(max_length=50, default = 'UL')
 	
+
 
 	# def getCellTypeName(self):
 	# 	classLabelDict = {
