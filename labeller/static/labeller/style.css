@@ -16,10 +16,11 @@ body {
         resize: both;
 		overflow: auto;
 /*        background:green;
-*/ }
+/* */ }
 
 h1 {
-	background-color: #663399FF ;
+	background-color: #663399FF;
+  /* position: static; */
 	padding: 10px;
 	color: white;
 	text-align: center;
@@ -32,13 +33,31 @@ h2 {
 	text-align: center;
 }
 
-
+/* Main Menu Nav */
 .row_menu {
 	background-color: white;
-	padding:10px;
-	color:black;
-	text-align: center;
+	padding: 10px;
+  list-style-type: none;
+  display: flex;
+  justify-content: center;
 }
+
+.row_menu li {
+  /* float: left; */
+  padding: 0 10px;
+  /* text-align: center; */
+}
+
+.row_menu a {
+  text-decoration: none;
+  text-align: center;
+}
+
+.row_menu a:hover {
+  text-decoration: underline;
+}
+
+
 
 /*General*/
 .center {

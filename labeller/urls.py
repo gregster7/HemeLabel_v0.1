@@ -14,7 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.conf.urls import re_path
+from django.conf.urls import re_path, url
+from django.urls import path, include
+from . import views as core_views 
 
 from . import views 
 
@@ -99,3 +101,18 @@ urlpatterns = [
 	# re_path(r'^ajax/update_cell_class/$', views.update_cell_class.as_view(), name='update_cell_class'),
 
 ]
+
+# # Add Django site authentication URLS (login, logout, password management...)
+urlpatterns += [ 
+  path('accounts/', include('django.contrib.auth.urls'), name='accounts'),
+]
+
+urlpatterns += [ 
+  path('register/', views.register, name='register'),
+  # path('dashboard/', name='dashboard')
+]
+
+# # Add Create User URLs.
+# urlpatterns += [ 
+#   path('register/', views.register, name='register'),
+# ]

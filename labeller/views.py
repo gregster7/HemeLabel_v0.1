@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, resolve_url
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.core import serializers
@@ -9,12 +9,19 @@ from datetime import datetime
 from django.db import models
 
 from .models import Region, Cell, Patient, Slide
-from .forms import RegionForm
+from .models import User
+from .forms import RegionForm, UserForm 
 
 from django.conf import settings
 from django.conf.urls.static import static
 from django.core.files import File
 from django.core.files.images import ImageFile
+
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages 
+from django.contrib.auth import login, authenticate 
+from django.contrib.auth.forms import UserCreationForm 
+from django.shortcuts import render, redirect 
 
 
 def index(request):
@@ -22,31 +29,33 @@ def index(request):
 	return render(request, 'labeller/index.html')
 
 
+
+@login_required
 def regions(request):
 	"""Show all regions."""
 	regions = Region.objects.order_by('rid')
 	context = {'regions': regions}
 	return render(request, 'labeller/regions.html', context)
 
-
+@login_required
 def cells(request):
 	"""Show all regions."""
 	cells = Cell.objects.order_by('cid')
 	context = {'cells': cells}
 	return render(request, 'labeller/cells.html', context)	
 
-
+@login_required 
 def slides(request):
 	"""Show all regions."""
 	slides = Slide.objects.order_by('sid')
 	context = {'slides': slides}
 	return render(request, 'labeller/slides.html', context)	
 
-
+@login_required 
 def slide_viewer(request):
 	return render(request, 'labeller/slide_viewer.html')
 
-
+@login_required 
 def label_cell(request, cell_id):
 	"""label inidivudal cell"""
 	cell = Cell.objects.get(cid=cell_id)
@@ -63,19 +72,20 @@ def label_cell(request, cell_id):
 	context = {'region': region, 'cell':cell, 'other_cells': other_cells}
 	return render(request, 'labeller/label_cell.html', context)
 
-
+@login_required 
 def label_slide(request, slide_id):
 	slide = Slide.objects.get(sid=slide_id)
 	regions = slide.region_set.all()
 	context = {'slide': slide, 'regions': regions}
 	return render(request, 'labeller/label_slide.html', context)
 
-
+@login_required 
 def get_all_cells_json(region):
 	cells_json = serializers.serialize("json", region.cell_set.all())
 #	print(region, cells_json)
 	return cells_json
 
+@login_required 
 def change_cell_location(request):
 	POST = request.POST
 	cid = POST['cid']
@@ -86,7 +96,7 @@ def change_cell_location(request):
 	results = change_cell_location_helper(cid, left, top, width, height)
 	return JsonResponse(results)
 
-
+@login_required 
 def change_cell_location_helper(cid, left, top, width, height):
 	cell = Cell.objects.get(cid=cid);
 	region = cell.region;
@@ -103,6 +113,7 @@ def change_cell_location_helper(cid, left, top, width, height):
 		results = {'success':True, 'cell_json':cell_json}
 		return results
 
+@login_required 
 def get_all_cells_in_region(request):
 	GET = request.GET
 	rid = GET['rid']
@@ -111,6 +122,7 @@ def get_all_cells_in_region(request):
 	results = {'success':True, 'all_cells_json':all_cells_json}
 	return JsonResponse(results);
 
+@login_required 
 def get_cell_json(request):
 	GET = request.GET
 	cid = GET['cid']
@@ -119,7 +131,7 @@ def get_cell_json(request):
 	results = {'success':True, 'cell_json':cell_json}
 	return JsonResponse(results);
 
-
+@login_required 
 def generate_cell_image_with_vips(region, cid, left, top, width, height):
 	cid = str(cid)
 	region_path = settings.MEDIA_ROOT + region.image.url
@@ -131,12 +143,13 @@ def generate_cell_image_with_vips(region, cid, left, top, width, height):
 
 
 # need to make sure CIDs do not start with trailing 0s as this causes problems
+@login_required 
 def create_new_cid():
 	now = datetime.now()
 	date_time = now.strftime("%m%d%Y%H%M%S")
 	return "1"+date_time
 
-
+@login_required 
 def create_new_cell(rid, left, top, width, height):
 	print(rid, left, top, width, height);	
 	print(type(rid), type(left), type(top), type(width), type(height));	
@@ -161,7 +174,7 @@ def create_new_cell(rid, left, top, width, height):
 		return results
 	
 
-
+@login_required 
 def add_new_cell_box(request):
 	POST = request.POST
 	rid = int(POST['rid'])
@@ -175,7 +188,7 @@ def add_new_cell_box(request):
 	results = create_new_cell(rid, left, top, width, height);
 	return JsonResponse(results)
 
-
+@login_required 
 def toggle_region_complete_class(request):
 	POST = request.POST
 	rid = int(POST['rid'])
@@ -188,6 +201,7 @@ def toggle_region_complete_class(request):
 	results = {'success':(success == 1)}	
 	return JsonResponse(results)
 
+@login_required 
 def toggle_region_complete_seg(request):
 	POST = request.POST
 	rid = int(POST['rid'])
@@ -200,6 +214,7 @@ def toggle_region_complete_seg(request):
 	results = {'success':(success == 1)}	
 	return JsonResponse(results)
 
+@login_required 
 def add_new_cell(request):
 	POST = request.POST
 	rid = POST['rid']
@@ -241,7 +256,7 @@ def add_new_cell(request):
 	
 	# return JsonResponse(results)
 
-
+@login_required 
 def delete_cell(request):
 	POST = request.POST
 	cid = POST['cid']
@@ -252,7 +267,7 @@ def delete_cell(request):
 	results = {'success':True}
 	return JsonResponse(results)
 
-
+@login_required 
 def add_new_region(request):
 	POST = request.POST
 	sid = POST['sid']
@@ -295,6 +310,7 @@ def add_new_region(request):
 
 
 # Needs to be udpated to support changing slide and patient as well
+@login_required 
 def next_region(request):
 	POST = request.POST
 	rid = POST['rid']
@@ -321,7 +337,7 @@ def next_region(request):
 
 	return JsonResponse(results)
 
-
+@login_required 
 def update_cell_class(request):
 	POST = request.POST
 	cell = Cell.objects.get(cid=POST['cid'])
@@ -330,7 +346,7 @@ def update_cell_class(request):
 	results = {'success':True, 'all_cells_json':get_all_cells_json(cell.region)}
 	return JsonResponse(results)
 
-
+@login_required 
 def data_export(request):
 	regions = Region.objects.all()
 	regions_json = serializers.serialize("json", Region.objects.all())
@@ -340,6 +356,7 @@ def data_export(request):
 	context = {'regions': regions, 'regions_json': regions_json, 'cells':cells, 'cells_json': cells_json}
 	return render(request, 'labeller/data_export.html', context)
 
+@login_required
 def stats(request):
 	regions = Region.objects.all()
 	regions_json = serializers.serialize("json", Region.objects.all())
@@ -349,7 +366,7 @@ def stats(request):
 	context = {'regions': regions, 'regions_json': regions_json, 'cells':cells, 'cells_json': cells_json}
 	return render(request, 'labeller/stats.html', context)
 
-
+@login_required 
 def label_region_fabric(request, region_id):
 	"""label cells on a region"""
 	region = Region.objects.get(rid=region_id)
@@ -364,7 +381,7 @@ def label_region_fabric(request, region_id):
 	print(context)
 	return render(request, 'labeller/label_region_fabric.html', context)
 
-
+@login_required 
 def label_region(request, region_id):
 	"""label cells on a region"""
 	region = Region.objects.get(rid=region_id)
@@ -379,7 +396,7 @@ def label_region(request, region_id):
 	print(context)
 	return render(request, 'labeller/label_region.html', context)
 	
-
+@login_required 
 def new_region(request):
 	"""Add a new region"""
 	if request.method != 'POST':
@@ -395,10 +412,49 @@ def new_region(request):
 	context = {'form': form}
 	return render(request, 'labeller/new_region.html', context)
 
+@login_required 
 def get_all_cells_in_project(project):
 	regions = region.project_set.all()
 	cells = Cell.objects.filter(regions__in=regions)
-	
+
+
+# UserForm View
+def register(request):
+  if request.method == 'POST':
+    form = UserForm(request.POST)
+    if form.is_valid():
+      new_user = form.save()
+      messages.info(request, "Thank you for registering. You are now logged in.")
+      new_user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
+      login(request, new_user)
+      return HttpResponseRedirect('/')
+
+      # form.save()
+      # messages.success(request, 'Account successfully created.')
+      # if user is not None:
+      #   user.is_authenticated
+      #   login(request, user)
+      # return redirect('/')
+      # # return redirect('/')
+
+  else:
+    form = UserForm()
+
+  return render(request, 'labeller/register.html', {'form': form})
+
+# def signup(request):
+#   if request.method == "POST":
+#     form = UserCreationForm(request.post)
+#     if form.is_valid():
+#       form.save
+#       username = form.cleaned_data.get('username')
+#       raw_password = form.cleaned_data.get('password1')
+#       user = authenticate(username=username, password=raw_password)
+#       return redirect('labeller:index')
+#   else:
+#     form = UserCreationForm()
+#   return render(request, 'signup.html', {'form':form})
+
 
 # def update_cell_class(request):
 # 	results = {'success':False}

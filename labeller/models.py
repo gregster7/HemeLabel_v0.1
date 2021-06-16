@@ -3,9 +3,14 @@ from django.conf import settings
 from math import ceil
 from math import floor
 
+from django.contrib.auth.models import User 
 
 
 # Create your models here.
+
+# class User(AbstractUser):
+#   email = models.EmailField(unique=True)
+User._meta.get_field('email')._unique = True
 
 class Project(models.Model):
 	name = models.CharField(max_length=200)
