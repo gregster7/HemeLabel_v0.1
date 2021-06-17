@@ -27,15 +27,12 @@ urlpatterns = [
     re_path(r'', include(('labeller.urls', 'labeller'), namespace='labeller')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-<<<<<<< HEAD
 
 # # Add Django site authentication URLS (login, logout, password management...)
 urlpatterns += [ 
-  path('register/', views.register, name='labeller:register'),
+  path('register/', views.register, name='register'),
   path('accounts/', include('django.contrib.auth.urls'), name='labeller:accounts'),
   # path('password_reset/done', auth_views.PasswordResetDoneView.as_view(template_name='labeller/templates/registration/password_reset_done.htlm'), name='password_reset_done'),
   # path('reset/<uidb64>/<token>', auth_views.PasswordResetConfirmView.as_view(template_name='labeller/templates/registration/password_reset_confirm.html'), name='password_reset_confirm'),
   # path('reset/done', auth_views.PasswordResetCompleteView.as_view(template_name='labeller/templates/registration/password_reset_complete.html'), name='password_reset_complete'),
 ]
-=======
->>>>>>> 7e27c93b13dd045af2575eb0a1cff74310e188e4

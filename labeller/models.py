@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import User 
 
 
-<<<<<<< HEAD
+
 # Create your models here.
 
 # class User(AbstractUser):
@@ -21,8 +21,7 @@ class Project(models.Model):
 	# https://docs.djangoproject.com/en/3.1/topics/db/examples/many_to_many/
 	regions = models.ManyToManyField('Region')
 
-=======
->>>>>>> 7e27c93b13dd045af2575eb0a1cff74310e188e4
+
 class Patient (models.Model):
 	"""An individual patient, who can have many slides"""
 	pid = models.IntegerField(unique=True)

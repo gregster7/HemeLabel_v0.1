@@ -29,11 +29,8 @@ def index(request):
 	"""The home page for labeller"""
 	return render(request, 'labeller/index.html')
 
-<<<<<<< HEAD
 
 
-=======
->>>>>>> 7e27c93b13dd045af2575eb0a1cff74310e188e4
 @login_required
 def regions(request):
 	"""Show all regions."""
@@ -76,9 +73,7 @@ def label_cell(request, cell_id):
 	context = {'region': region, 'cell':cell, 'other_cells': other_cells}
 	return render(request, 'labeller/label_cell.html', context)
 
-<<<<<<< HEAD
 @login_required 
-=======
 
 # New page started on May 7, 2021
 # Rapid labeller for normal cells without associated regions
@@ -120,7 +115,6 @@ def label_slide_overlay(request, slide_id):
 	return render(request, 'labeller/label_slide_overlay.html', context)
 
 
->>>>>>> 7e27c93b13dd045af2575eb0a1cff74310e188e4
 def label_slide(request, slide_id):
 	slide = Slide.objects.get(sid=slide_id)
 	regions = slide.region_set.all()
@@ -164,9 +158,7 @@ def change_cell_location_helper(cid, left, top, width, height):
 		results = {'success':True, 'cell_json':cell_json}
 		return results
 
-<<<<<<< HEAD
 @login_required 
-=======
 def get_cell_center_relative_to_slide(request): 
 	GET = request.GET
 	cid = GET['cid']
@@ -180,7 +172,6 @@ def get_cell_center_relative_to_slide(request):
 
 	return JsonResponse(results);
 
->>>>>>> 7e27c93b13dd045af2575eb0a1cff74310e188e4
 def get_all_cells_in_region(request):
 	GET = request.GET
 	rid = GET['rid']
@@ -189,9 +180,7 @@ def get_all_cells_in_region(request):
 	results = {'success':True, 'all_cells_json':all_cells_json}
 	return JsonResponse(results);
 
-<<<<<<< HEAD
 @login_required 
-=======
 def get_all_cells_in_slide(request):
 	GET = request.GET
 	sid = GET['sid']
@@ -201,7 +190,6 @@ def get_all_cells_in_slide(request):
 	return JsonResponse(results);
 
 
->>>>>>> 7e27c93b13dd045af2575eb0a1cff74310e188e4
 def get_cell_json(request):
 	GET = request.GET
 	cid = GET['cid']
@@ -210,9 +198,7 @@ def get_cell_json(request):
 	results = {'success':True, 'cell_json':cell_json}
 	return JsonResponse(results);
 
-<<<<<<< HEAD
 @login_required 
-=======
 
 # vips crop
 # extract an area from an image
@@ -234,7 +220,6 @@ def get_cell_json(request):
 # 			default: 1
 # 			min: 1, max: 10000000
 
->>>>>>> 7e27c93b13dd045af2575eb0a1cff74310e188e4
 def generate_cell_image_with_vips(region, cid, left, top, width, height):
 	cid = str(cid)
 	region_path = settings.MEDIA_ROOT + region.image.url
