@@ -6,3 +6,9 @@ HemeLabel_env/
 */__pycache__/
 db/
 hemelabel_env/
+*.dzi
+*.svs
+media/slides
+media/zoom
+labeller/static/labeer/images/wsi
+labeller/static/labeller/images/zoom
