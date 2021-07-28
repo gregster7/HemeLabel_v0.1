@@ -1,0 +1,31 @@
+{% extends "labeller/base.html" %}
+
+
+{% block content %}
+
+	<h2>Cells</h2>
+	
+	<p>
+	<u1>
+		{% for cell in cells %}
+
+
+			<p> 
+				ID: {{cell.id}} &nbsp &nbsp &nbsp &nbsp
+				CID: {{cell.cid}} &nbsp &nbsp &nbsp &nbsp  
+				<a href={% url 'labeller:label_cell' cell.cid %}>
+					<img src="{{cell.image.url}}" >
+				</a>
+				
+			</p>			
+
+
+		{% empty %}
+			<li>No cells have been added yet</li>
+		{% endfor %}
+
+	</u1></p>
+
+
+
+{% endblock content %}
