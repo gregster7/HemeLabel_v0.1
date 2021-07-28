@@ -11,7 +11,7 @@ labeller/images
 labeller/static/labeller/images/zoom
 labeller/static/labeller/images/wsi
 media/slides.zip
-*.jpg
+# *.jpg
 *.svs
 *.dzi
 media/zoom
