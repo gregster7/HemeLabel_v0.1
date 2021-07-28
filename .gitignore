@@ -5,3 +5,17 @@ HemeLabel_env/
 */*/__pycache__/
 */__pycache__/
 db/
+media/scrap
+media/slides
+media/zoom
+media/slides.zip
+media/archive
+media/fixed_regions
+media/new_cells
+labeller/static/labeller/images/zoom
+labeller/static/labeller/images/wsi
+labeller/templates/labeller/scrap
+labeller/templates/labeller/partials/scrap
+labeller/static/labeller/scrap
+labeller/static/labeller/partials/scrap
+archive/
