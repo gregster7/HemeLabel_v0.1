@@ -48,13 +48,13 @@ class HorizontalCellList {
 //				var current_cell = cell.next();
 				var cid = Cell.getCIDfromDivID(cell.next()[0]);
 				Cell.selectCellByCID(cid);
-				return true;
+				return cid;
 			}
 
 			else if (offset == -1 && cell.prev().length ==1) {
 				var cid = Cell.getCIDfromDivID(cell.prev()[0]);
 				Cell.selectCellByCID(cid);
-				return true;
+				return cid;
 		}
 
 		return false;

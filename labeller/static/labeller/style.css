@@ -16,10 +16,11 @@ body {
         resize: both;
 		overflow: auto;
 /*        background:green;
-*/ }
+/* */ }
 
 h1 {
-	background-color: #663399FF ;
+	background-color: #663399FF;
+  /* position: static; */
 	padding: 10px;
 	color: white;
 	text-align: center;
@@ -32,13 +33,31 @@ h2 {
 	text-align: center;
 }
 
-
+/* Main Menu Nav */
 .row_menu {
 	background-color: white;
-	padding:10px;
-	color:black;
-	text-align: center;
+	padding: 10px;
+  list-style-type: none;
+  display: flex;
+  justify-content: center;
 }
+
+.row_menu li {
+  /* float: left; */
+  padding: 0 10px;
+  /* text-align: center; */
+}
+
+.row_menu a {
+  text-decoration: none;
+  text-align: center;
+}
+
+.row_menu a:hover {
+  text-decoration: underline;
+}
+
+
 
 /*General*/
 .center {
@@ -87,6 +106,7 @@ img { margin: auto; }
 	width: 10px;
 	height: 10px;
 	display: inline-block;	
+	z-index: 75;
 }
 
 .hidden_dot {
@@ -94,6 +114,9 @@ img { margin: auto; }
 }
 
 
+.hidden {
+	display:none;
+}
 
 
 /********** Column2, Current Cell/Selection **********/
@@ -183,7 +206,7 @@ Image height is 665px
 */
 #helpscreen {
 	position:fixed;
-	z-index: 100;
+	z-index: 120;
 	top: 50%;
 	left: 50%;
 	margin-top: -332px; /* Negative half of height. */
@@ -220,7 +243,7 @@ Image height is 665px
 
 
 /********** Label Region Fabric **********/
-.region_container_fabric {
+#region_canvas_fabric {
 	display:inline-block;
     margin: 0 auto; 
     position:relative; 

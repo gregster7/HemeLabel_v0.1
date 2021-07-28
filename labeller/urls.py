@@ -14,7 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from django.conf.urls import re_path
+from django.conf.urls import re_path, url
+from django.urls import path, include
+from . import views as core_views 
+
+from django.urls import path, include, re_path
+
 
 from . import views 
 
@@ -39,6 +44,10 @@ urlpatterns = [
 	# Page for labelling a slide
 	re_path(r'^label_slide/(?P<slide_id>\d+)/$', views.label_slide, name='label_slide'),
 
+	# Page for labelling a slide
+	re_path(r'^label_slide_overlay/(?P<slide_id>\d+)/$', views.label_slide_overlay, name='label_slide_overlay'),
+
+
 	# Page for labelling a region of interest
 	re_path(r'^label_region/(?P<region_id>\d+)/$', views.label_region, name='label_region'),
 
@@ -62,12 +71,18 @@ urlpatterns = [
 	# Change cell location (AJAX)
 	re_path(r'^change_cell_location/', views.change_cell_location, name='change_cell_location'),
 
+	# Change cell location (AJAX)
+	re_path(r'^get_cell_center_relative_to_slide/', views.get_cell_center_relative_to_slide, name='get_cell_center_relative_to_slide'),
+
 
 	# Get cell information (AJAX)
 	re_path(r'^get_cell_json/', views.get_cell_json, name='get_cell_json'),
 
 	# Get cell information (AJAX)
 	re_path(r'^get_all_cells_in_region/', views.get_all_cells_in_region, name='get_all_cells_in_region'),
+
+	# Get cell information (AJAX)
+	re_path(r'^get_all_cells_in_slide/', views.get_all_cells_in_slide, name='get_all_cells_in_slide'),
 
 	# toggle_region_complete_seg (AJAX)
 	re_path(r'^toggle_region_complete_seg/', views.toggle_region_complete_seg, name='toggle_region_complete_seg'),
@@ -93,9 +108,28 @@ urlpatterns = [
 	# Page for viewing Whole Slide IMages
 	re_path(r'^slide_viewer/$', views.slide_viewer, name= 'slide_viewer'),
 
+	# Page for viewing Whole Slide IMages
+	re_path(r'^normal_cell_labeller/$', views.normal_cell_labeller, name= 'normal_cell_labeller'),
+
+	path('accounts/', include('django.contrib.auth.urls')),
 
 
 	# # Page for AJAX updates to cell
 	# re_path(r'^ajax/update_cell_class/$', views.update_cell_class.as_view(), name='update_cell_class'),
 
 ]
+
+# # Add Django site authentication URLS (login, logout, password management...)
+urlpatterns += [ 
+  path('accounts/', include('django.contrib.auth.urls'), name='accounts'),
+]
+
+urlpatterns += [ 
+  path('register/', views.register, name='register'),
+  # path('dashboard/', name='dashboard')
+]
+
+# # Add Create User URLs.
+# urlpatterns += [ 
+#   path('register/', views.register, name='register'),
+# ]

@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
+import os 
+
 from os import path
 
 from pathlib import Path
@@ -34,6 +36,10 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+
+    # My apps
+    'labeller',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,8 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # My apps
-    'labeller'
+
 ]
 
 MIDDLEWARE = [
@@ -60,7 +65,7 @@ ROOT_URLCONF = 'HL_site.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -125,7 +130,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-
 # Media file handling
 MEDIA_ROOT = path.join(BASE_DIR, 'media')
 
+# Redirect to Home URL after successful login (Default redirects to accounts/profile)
+LOGIN_REDIRECT_URL = '/'
+
+# Logs any emails sent to server.
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
