@@ -464,6 +464,7 @@ def stats(request):
 def label_region_fabric(request, region_id):
 	"""label cells on a region"""
 	region = Region.objects.get(rid=region_id)
+	slide = region.slide
 	cells = region.cell_set.all()
 	if (cells.count() == 0):
 		cells = "none"
@@ -471,8 +472,9 @@ def label_region_fabric(request, region_id):
 	else:
 		cells_json = serializers.serialize("json", region.cell_set.all())
 	
-	context = {'region': region, 'cells':cells, 'cells_json': cells_json}
-	print(context)
+	context = {'region': region, 'cells':cells, 'cells_json': cells_json, 'slide': slide}
+	print("slide is", slide)
+#	print(context)
 	return render(request, 'labeller/label_region_fabric.html', context)
 
 @login_required 

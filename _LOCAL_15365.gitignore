@@ -1,0 +1,14 @@
+HemeLabel_env/
+.DS_Store
+*.pyc
+*/*/*/__pycache__/
+*/*/__pycache__/
+*/__pycache__/
+db/
+hemelabel_env/
+*.dzi
+*.svs
+media/slides
+media/zoom
+labeller/static/labeer/images/wsi
+labeller/static/labeller/images/zoom
