@@ -4,8 +4,10 @@ from math import ceil
 from math import floor
 from django.contrib.auth.models import User 
 
-from django.contrib.auth.models import User 
+from django.contrib.auth.models import User, AbstractUser
 
+# class User(AbstractUser):
+#   pass
 
 
 # Create your models here.

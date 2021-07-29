@@ -138,3 +138,5 @@ LOGIN_REDIRECT_URL = '/'
 
 # Logs any emails sent to server.
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# AUTH_USER_MODEL = 'labeller.User'

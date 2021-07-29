@@ -525,13 +525,13 @@ def register(request):
       login(request, new_user)
       return HttpResponseRedirect('/')
 
-      # form.save()
-      # messages.success(request, 'Account successfully created.')
-      # if user is not None:
-      #   user.is_authenticated
-      #   login(request, user)
+    # form.save()
+    # messages.success(request, 'Account successfully created.')
+    # if user is not None:
+    #   user.is_authenticated
+    #   login(request, user)
+    # return redirect('/')
       # return redirect('/')
-      # # return redirect('/')
 
   else:
     form = UserForm()
