@@ -30,11 +30,8 @@ def index(request):
 	return render(request, 'labeller/index.html')
 
 
-<<<<<<< HEAD
 
 @login_required
-=======
->>>>>>> 57ac7bd35d8b93140d9eb3eab612afe8b495a766
 def regions(request):
 	"""Show all regions."""
 	regions = Region.objects.order_by('rid')
