@@ -1,6 +1,7 @@
 //Convert json cell to javascript cell
 class Cell {
-	// Input is JSON
+
+	// Convert JSON representation of cells sent from database into easier to use javascript object
 	constructor(cell) {
 		this.cid = cell.fields.cid;
 		this.x = cell.fields.center_x;
@@ -40,6 +41,9 @@ class Cell {
 		return this.height;
 	}
 
+	//Cells have cell_types. They also have lineages (which are determined by a cell type). 
+	// Multiple cell types share lineages. For example, segmented neutrophils and myelocytes are both
+	// part of the myeloid lineage
 	getLineage (){
 		return Cell.getLineage(this.cell_type);
 	}
@@ -48,10 +52,13 @@ class Cell {
 		return 'cell ' + this.cid + ' ' + this.cell_type + ' ' + this.pk + ' ' +Cell.getLineage(this.cell_type);
 	}
 
+	// Cell types are represented either as a two letter code or a full name
 	getCellTypeName (){
 		return Cell.getClassLabelName(this.cell_type);
 	}
 
+	// Used for horizontal cell list and current cell view 
+	//   returns HTML representing a single cell. This can be added to page using JQUERY
 	getDivForCellList(){
 //		console.log("Entering getDivForCellList", this);
 		var div = '<div class="cell_list_item '+this.getHTMLClasses()+'" id="celllistCID_' + this.cid+'">';
@@ -63,6 +70,9 @@ class Cell {
 		return div;
 	}
 
+	//*** Under construction ***
+	// This function is used in label_slide_overlay.html and label_slide_overlay2.html 
+	// which are under production
 	getCellCentersRelativeToSlideAJAX (cid) {
 		console.log('getCellCentersRelativeToSlideAJAX');
 		$.get("/get_cell_center_relative_to_slide/", {'cid':cid}, function(json){
@@ -114,6 +124,31 @@ class Cell {
 		});
 	}
 
+	static UpdateHorizontalCellCounts(){
+		for (var key in Cell.classLabelDict) { 
+			var cell_type_length = $('#'+key+'_cells_inline').children().length;
+			//console.log($('#h2_'+key).text())
+
+			var temp_div = '<h2 id="h2_'+key+'">'+Cell.classLabelDict[key]+' ('+cell_type_length+')</h2><div id="'+key+'_cells_inline" class="inline_cells"></div>'
+
+			$('#h2_'+key).replaceWith(temp_div)
+			// console.log(key, $('#'+key+'_cells_inline').children().length);
+		}
+
+	 	var lineages = ['unlabelled','myeloid', 'lymphoid', 'erythroid', 'misc'];
+
+		for (var key in lineages) {
+//			console.log('meow', key, lineages[key])
+			var lineage_name = lineages[key]
+
+			var cell_type_length = $('#'+lineage_name+'_cells_inline').children().length;
+//			console.log($('#h2_'+lineage_name).text())
+
+			var temp_div = '<h2 id="h2_'+key+'">'+lineage_name+' ('+cell_type_length+')</h2><div id="'+key+'_cells_inline" class="inline_cells"></div>';
+
+			$('#h2_'+lineage_name).replaceWith(temp_div);
+		}
+	}
 
 	static LoadCellsFromJson (cells_json){
 		if (cells_json == "") {
@@ -306,6 +341,7 @@ class Cell {
 		 		}
 
 		});
+		Cell.UpdateHorizontalCellCounts()
 	}
 
 	static deleteCellFromDatabase(cell_cid) {

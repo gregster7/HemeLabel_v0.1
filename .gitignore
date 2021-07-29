@@ -6,14 +6,12 @@ HemeLabel_env/
 */__pycache__/
 db/
 hemelabel_env/
-<<<<<<< HEAD
 *.dzi
 *.svs
 media/slides
 media/zoom
 labeller/static/labeer/images/wsi
 labeller/static/labeller/images/zoom
-=======
 media/slides
 labeller/images
 labeller/static/labeller/images/zoom
@@ -23,4 +21,18 @@ media/slides.zip
 *.svs
 *.dzi
 media/zoom
->>>>>>> f68fe85d01da11d7fedf8146c91ebdc981616f0f
+
+media/scrap
+media/slides
+media/zoom
+media/slides.zip
+media/archive
+media/fixed_regions
+media/new_cells
+labeller/static/labeller/images/zoom
+labeller/static/labeller/images/wsi
+labeller/templates/labeller/scrap
+labeller/templates/labeller/partials/scrap
+labeller/static/labeller/scrap
+labeller/static/labeller/partials/scrap
+archive/

@@ -1,20 +1,23 @@
 <p id="additional_instructions">Press left and right arrows to change cell</p>
 <p id="additional_instructions">Click on cell to select it, or to create a new cell</p>
 
-<h2>Unlabelled Cells</h2>
+<h2 id="h2_unlabelled">Unlabelled Cells</h2>
 <div id="unlabelled_cells_inline" class="inline_cells"></div>
 
-<h2>Myeloid cells</h2>
+<h2 id="h2_myeloid">Myeloid cells</h2>
 <div id="myeloid_cells_inline" class="inline_cells"></div>
 
-<h2>Lymphoid Cells</h2>
+<h2 id="h2_lymphoid">Lymphoid Cells</h2>
 <div id="lymphoid_cells_inline" class="inline_cells"></div>
 
-<h2>Erythroid Cells</h2>
+<h2 id="h2_erythroid">Erythroid Cells</h2>
 <div id="erythroid_cells_inline" class="inline_cells"></div>
 
-<h2>Miscelaneous Cells</h2>
+<h2 id="h2_misc">Miscelaneous Cells</h2>
 <div id="misc_cells_inline" class="inline_cells"></div>
+
+<div id="celltype_inline_container"></div>
+
 
 {% load static %}
 <!-- <script src="{% static 'labeller/Cell.js' %}"></script>
@@ -97,27 +100,36 @@ class HorizontalCellList {
 			var cid = cell.getCID();
 			var cell_div = cell.getDivForCellList();
 			var jq_obj = $("#"+cell.getLineage()+"_cells_inline").append(cell_div);
-			// if (counter == 1 ){
-			// 	Cell.selectCellByCID(cid)
-			// }
-			// counter +=1;
+
+			var jq_obj_celltype = $("#"+cell.cell_type+"_cells_inline").append(cell_div);
+			
 		}
 
 		$('.cell_list_item').on('click', function (){
 			HorizontalCellList.cellListItemClickHandler($(this))
 		});
 	}
+
+	static addCellClassHorizontalRows(cells_json) {
+		for (var key in Cell.classLabelDict) {
+			//console.log('meow', key, Cell.classLabelDict[key])
+			var temp_div = '<h2 id="h2_'+key+'">'+Cell.classLabelDict[key]+'</h2><div id="'+key+'_cells_inline" class="inline_cells"></div>'
+			$("#celltype_inline_container").append(temp_div);
+		}
+	}
+
+
 }
 
 $ (document).ready(function() {
 	if ('{{cells_json}}'!='none') {		
 	 	var cells_json = '{{cells_json}}';	 	
+ 		HorizontalCellList.addCellClassHorizontalRows(cells_json);
  		HorizontalCellList.populateCellLists(cells_json);
+ 		Cell.UpdateHorizontalCellCounts();
  		HorizontalCellList.addKeyboardEventListeners();
  		HorizontalCellList.selectFirstUnlabelledCell();
 	}
 });
 </script>
 
-
-<!-- <script src="{% static 'labeller/partials/main_lineages_horizontal.js' %}"></script> -->
