@@ -46,7 +46,7 @@ urlpatterns = [
 
 
 	# Page for labelling a region of interest
-	re_path(r'^label_region/(?P<region_id>\d+)/$', views.label_region, name='label_region'),
+	#re_path(r'^label_region/(?P<region_id>\d+)/$', views.label_region, name='label_region'),
 
 
 	# Page for labelling a region of interest
@@ -97,7 +97,8 @@ urlpatterns = [
 	re_path(r'^delete_cell/', views.delete_cell, name='delete_cell'),
 
 	# Page for labelling individual cell
-	re_path(r'^label_cell/(?P<cell_id>\d+)/$', views.label_cell, name='label_cell'),
+	## No longer in use - was for non-existed label_cell individual html page
+	#re_path(r'^label_cell/(?P<cell_id>\d+)/$', views.label_cell, name='label_cell'),
 
 	# Page for labelling individual cell (used with AJAX)
 	re_path(r'^update_cell_class/', views.update_cell_class, name='update_cell_class'),

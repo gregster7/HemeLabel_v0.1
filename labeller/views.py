@@ -48,21 +48,21 @@ def slide_viewer(request):
 	return render(request, 'labeller/slide_viewer.html')
 
 
-def label_cell(request, cell_id):
-	"""label inidivudal cell"""
-	cell = Cell.objects.get(cid=cell_id)
-	# if request.method != 'POST':
-	# 	form = CellLabelForm(instance=cell)
+# def label_cell(request, cell_id):
+# 	"""label inidivudal cell"""
+# 	cell = Cell.objects.get(cid=cell_id)
+# 	# if request.method != 'POST':
+# 	# 	form = CellLabelForm(instance=cell)
 		
-	# else:
-	# 	# Post data submitted; process data
-	# 	form = CellLabelForm(request.POST, instance=cell)
-	# 	if form.is_valid():
-	# 		form.save(update_fields['label', ''])
-	region = cell.region
-	other_cells = region.cell_set.all()
-	context = {'region': region, 'cell':cell, 'other_cells': other_cells}
-	return render(request, 'labeller/label_cell.html', context)
+# 	# else:
+# 	# 	# Post data submitted; process data
+# 	# 	form = CellLabelForm(request.POST, instance=cell)
+# 	# 	if form.is_valid():
+# 	# 		form.save(update_fields['label', ''])
+# 	region = cell.region
+# 	other_cells = region.cell_set.all()
+# 	context = {'region': region, 'cell':cell, 'other_cells': other_cells}
+# 	return render(request, 'labeller/label_cell.html', context)
 
 
 # New page started on May 7, 2021
