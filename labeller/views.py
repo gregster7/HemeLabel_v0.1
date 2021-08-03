@@ -432,7 +432,7 @@ def data_export(request):
 	context = {'regions': regions, 'regions_json': regions_json, 'cells':cells, 'cells_json': cells_json}
 	return render(request, 'labeller/data_export.html', context)
 
-@login_required
+
 def stats(request):
 	regions = Region.objects.all()
 	regions_json = serializers.serialize("json", Region.objects.all())
