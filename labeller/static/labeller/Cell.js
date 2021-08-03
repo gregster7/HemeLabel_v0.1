@@ -159,12 +159,10 @@ class Cell {
 
 		var all_cells = {};
 		for (var c of cells_json_reformat){
-	//		console.log('c=', c);
 			var cell = new Cell(c);
 			all_cells[cell.cid] = cell;
-	//		console.log("new cell class", cell);
 		}
-	//	console.log(all_cells);
+
 		return all_cells;
 	}
 
@@ -291,7 +289,7 @@ class Cell {
 	//If the lineage has changed, we need to remove the cell from the current cell list and move to the correct one.
 	static updateCellListsAfterLabelChange (new_label) {
 		var new_lineage = Cell.getLineage(new_label);
-		var cell = $('.highlight');
+		var cell = $('.highlight').first();
 		var old_lineage = Cell.findLineageFromClass(cell);
 		var old_label = Cell.findLabelFromClass(cell);
 
@@ -359,16 +357,20 @@ class Cell {
 
 
 	static selectCellByCID(cid){
-		console.log("Entering selectCellByCID", cid);
+		// console.log("Entering selectCellByCID", cid);
+
 		$('.highlight').removeClass('highlight');
-		var current_cell = $('.cell_list_item.cell.'+cid).clone();
+		var current_cell = $('.cell_list_item.cell.'+cid).first().clone();
 		$('.cell.'+cid).addClass('highlight');
 		$('.current_cell').remove();
-//		console.log('current cell', current_cell)
+
 		current_cell.addClass('current_cell')
 		current_cell.removeClass('cell_list_item')
 		current_cell.attr('id', cid);
+//		console.log(current_cell);
 		$('#current_cell_column2').append(current_cell);
+
+//		console.log($('#current_cell_column2').children().length)
 		Cell.highlightCircle(cid);
 		//RegionLabellerFabric.selectBoxAsActiveFromCID(cid);
 	}

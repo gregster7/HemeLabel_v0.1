@@ -305,7 +305,7 @@ class RegionLabellerFabric {
 		});
 		rect.name=name;
 		rect.id=name;
-		console.log('creating bounding box', rect.name, rect);
+//		console.log('creating bounding box', rect.name, rect);
 		canvas.add(rect);
 
 		rect.on('mousedown', function(e) {
@@ -391,8 +391,8 @@ class RegionLabellerFabric {
 	}
 
 	static toggleCanvasModes(){
-		console.log('toggleCanvasMode');
-		console.log('hiding', $('#fabric_canvas'), $('#region_canvas_container'));
+		//console.log('toggleCanvasMode');
+		//console.log('hiding', $('#fabric_canvas'), $('#region_canvas_container'));
 		if($('#fabric_canvas').hasClass('hidden')){
 			$('#fabric_canvas').removeClass('hidden');
 			$('.canvas-container').removeClass('hidden');
@@ -412,7 +412,7 @@ class RegionLabellerFabric {
 	}
 
 	static toggleSquares(){
-		console.log('hiding', $('#fabric_canvas'));
+		//console.log('hiding', $('#fabric_canvas'));
 		if($('#fabric_canvas').hasClass('hidden')){
 			$('#fabric_canvas').removeClass('hidden');
 		}
@@ -420,7 +420,7 @@ class RegionLabellerFabric {
 	}
 
 	static convertTextToBool(text){
-		console.log("convertTextToBool", text, typeof(text));
+		//console.log("convertTextToBool", text, typeof(text));
 		if (text.toLowerCase() == 'true') {return true;}
 		if (text.toLowerCase() != 'false') {
 			console.log("error in convertTextToBool", text);
@@ -659,13 +659,13 @@ class RegionLabellerFabric {
 
 	//This references a global variable canvas. If there is more than one canvas, it will not work
 	static selectBoxAsActiveFromCID (cid){
-		console.log("selectBoxAsActiveFromCID canvas", canvas, cid);
+		//console.log("selectBoxAsActiveFromCID canvas", canvas, cid);
 		var counter = 0;
 		var found = -1;
 		canvas.forEachObject(function(obj) {
 			if (obj.id == cid) {
 				found = counter
-				console.log('found', found)
+				//console.log('found', found)
 			}
 			counter +=1;
 		});
