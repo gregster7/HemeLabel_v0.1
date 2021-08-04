@@ -4,27 +4,60 @@
 {% block title %}Label Region{% endblock %}
 {% block content %}
 
-ID: {{slide.id}} &nbsp &nbsp &nbsp &nbsp
-SID: {{slide.sid}} &nbsp &nbsp &nbsp &nbsp  
+<script type="text/javascript">
+function createRegionDiv(rid, path) {
+  new_div = '<p> RID: '+rid+'    '+'<img src="'+path+'" id="region_img_'+rid+'"></p>'
+  console.log(new_div);
+  return new_div;
+}
 
-<button id="button">Select Region</button>
+function fadeRegionInAndOut(rid){
+  $('.floating_region').remove()
+  imageID = 'region_img_' + rid;
+  clone = $('#'+imageID).clone()
+  clone.addClass('floating_region')
+  console.log(clone)
+  clone.click(function() { 
+    $(this).fadeOut(2000);
+    //$(this).remove()
+  });
+  $('#regions').prepend(clone)
+  $('.floating_region').fadeIn(2000);
+  //clone.fadeOut(500);
+  //clone.delete();
+}
 
-<div id="openseadragon1" style="width: 1200px; height: 800px;"></div>
+function addNewRegion(sid, x1, y1, x2, y2){
+     $.post("/add_new_region/", {'sid':slide_id, 'x1':x1, 'y1':y1, 'x2':x2, 'y2':y2}, function(json){
+     console.log("Was successful?: " + json['success'] +' '+ json['rid']+' '+ json['region_path']);
+      
+      //Add new region to top of regions div
+      $('#regions').prepend(createRegionDiv(json['rid'],json['region_path']));
+      fadeRegionInAndOut(json['rid'])
+    });
+ }
+</script>
+
+<!-- ID: {{slide.id}} &nbsp &nbsp &nbsp &nbsp -->
 
 
+<h2 id="slide_banner">Slide</h2>
+
+
+<div id="openseadragon1" style="width: 100%; height: 700px;"></div>
+<p id="slide_info" style="text-align: center;"> SID: {{slide.sid}} &nbsp &nbsp &nbsp &nbsp  <button id="button">Crop New Region</button></p>
+
+<h2 id="regions_banner">Regions</h2>
 <div id="regions">
 <u1>
-	{% for region in regions %}
-	<p> 
-		ID: {{region.id}} &nbsp &nbsp &nbsp &nbsp
-		RID: {{region.rid}} &nbsp &nbsp &nbsp &nbsp  
-		<img src="{{region.image.url}}" >
-	</p>			
+  {% for region in regions %}
+  <script>
+     $('#regions').append(createRegionDiv('{{region.rid}}', '{{region.image.url}}'))
+  </script>
 
-
-	{% empty %}
-		<li>No regions have been added yet</li>
-	{% endfor %}
+  {% empty %}
+    <li>No regions have been added yet</li>
+  {% endfor %}
 
 </u1></div>
 
@@ -35,19 +68,15 @@ SID: {{slide.sid}} &nbsp &nbsp &nbsp &nbsp
 <script src="{% static 'labeller/openseadragon/openseadragon.min.js' %}"></script>
 
 <script type="text/javascript">
-	console.log('static', '{% static media %}')
+  console.log('static', '{% static media %}')
 
     var dzi_path = "{% static 'labeller/images/zoom/' %}" + '{{slide.sid}}' + '.dzi';
     var prefix_url = "{% static 'labeller/openseadragon/images/' %}";
     var slide_id = "{{slide.sid}}"
 
 </script>
-<script type="text/javascript">
-function addNewRegion(sid, x, y, width, height){
-	$.post("/add_new_region/", {'sid':sid, 'x':x, 'y':y, 'width': width, 'height':height}, function(json){
-			console.log("Was successful?: " + json['success']);
-	});
- }
+
+<script>
 
 // https://codepen.io/iangilman/pen/qBdabGM
 // https://stackoverflow.com/questions/36006823/openseadragon-selection information on how to return info from selection
@@ -69,7 +98,7 @@ new OpenSeadragon.MouseTracker({
     element: viewer.element,
     
     pressHandler: function(event) {
-    	console.log('Presss handler')
+      console.log('Presss handler')
       if (!selectionMode) {
         return;
       }
@@ -119,55 +148,54 @@ new OpenSeadragon.MouseTracker({
 
 
 
-	releaseHandler: function(event) {
+  releaseHandler: function(event) {
 
 
-		var x1 = drag.startPosImagePoint.x;
-		var y1 = drag.startPosImagePoint.y;
-		var x2 = drag.endPosImagePoint.x;
-		var y2 = drag.endPosImagePoint.y;
+    var x1 = drag.startPosImagePoint.x;
+    var y1 = drag.startPosImagePoint.y;
+    var x2 = drag.endPosImagePoint.x;
+    var y2 = drag.endPosImagePoint.y;
 
 
     console.log(x1, y1, x2, y2)
-		$.post("/add_new_region/", {'sid':slide_id, 'x1':x1, 'y1':y1, 'x2':x2, 'y2':y2}, function(json){
-			console.log("Was successful?: " + json['success']);
-		});
-		
-       	var height = drag.overlayElement.height;
-  //     	console.log('release ', x, y, width, height);
-      	console.log(drag, x1)
+    addNewRegion(slide_id, x1, y1, x2, y2)
 
-      	// console.log(drag.overlayElement.getBoundingClientRect())
+    
+        var height = drag.overlayElement.height;
+  //      console.log('release ', x, y, width, height);
+        console.log(drag, x1)
 
-		// Description of coordinate system
-		// https://openseadragon.github.io/examples/viewport-coordinates/
+        // console.log(drag.overlayElement.getBoundingClientRect())
+
+    // Description of coordinate system
+    // https://openseadragon.github.io/examples/viewport-coordinates/
 
 
-		// var viewportPos = viewer.viewport.pointFromPixel(event.position);
+    // var viewportPos = viewer.viewport.pointFromPixel(event.position);
 
-		// // The canvas-click event gives us a position in web coordinates.
-	 //    var webPoint = event.position;
-	 //    console.log(webPoint)
+    // // The canvas-click event gives us a position in web coordinates.
+   //    var webPoint = event.position;
+   //    console.log(webPoint)
 
-	 //    webPoint.x = x;
-	 //    webPoint.y = y;
-	 //    console.log(webPoint)
+   //    webPoint.x = x;
+   //    webPoint.y = y;
+   //    console.log(webPoint)
 
-	 //    // Convert that to viewport coordinates, the lingua franca of OpenSeadragon coordinates.
-	 //    var viewportPoint = viewer.viewport.pointFromPixel(webPoint);
+   //    // Convert that to viewport coordinates, the lingua franca of OpenSeadragon coordinates.
+   //    var viewportPoint = viewer.viewport.pointFromPixel(webPoint);
 
-	 //    // Convert from viewport coordinates to image coordinates.
-	 //    var imagePoint = viewer.viewport.viewportToImageCoordinates(viewportPoint);
+   //    // Convert from viewport coordinates to image coordinates.
+   //    var imagePoint = viewer.viewport.viewportToImageCoordinates(viewportPoint);
 
-	 //    // Show the results.
-	 //    console.log(webPoint.toString(), viewportPoint.toString(), imagePoint.toString());
+   //    // Show the results.
+   //    console.log(webPoint.toString(), viewportPoint.toString(), imagePoint.toString());
 
-		//   console.log(viewer.getOverlayById("box1"))
+    //   console.log(viewer.getOverlayById("box1"))
 
-	    drag = null;
-	    selectionMode = false;
-	    viewer.setMouseNavEnabled(true);
-	}
+      drag = null;
+      selectionMode = false;
+      viewer.setMouseNavEnabled(true);
+  }
 
 });
 if (document.getElementById('button')!=null) {
@@ -177,7 +205,7 @@ if (document.getElementById('button')!=null) {
     viewer.setMouseNavEnabled(false);
   });
 }
-	
+  
 
 
 </script>
