@@ -109,7 +109,11 @@ urlpatterns = [
 	# Page for viewing Whole Slide IMages
 	re_path(r'^normal_cell_labeller/$', views.normal_cell_labeller, name= 'normal_cell_labeller'),
 
-	path('accounts/', include('django.contrib.auth.urls')),
+  # Add Django site authentication URLS (login, logout, password management...)
+	path('accounts/', include('django.contrib.auth.urls'), name='accounts'),
+
+  # Add user registration page
+  path('register/', views.register, name='register'),
 
 
 	# # Page for AJAX updates to cell
