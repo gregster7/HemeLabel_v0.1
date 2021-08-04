@@ -353,7 +353,7 @@ def add_new_region(request):
 	slide = Slide.objects.get(sid=sid)
 	svs_path = settings.MEDIA_ROOT + slide.svs_path.url
 	now = datetime.now()
-	date_time = now.strftime("%m%d%Y%H%M%S")
+	date_time = now.strftime("%Y%m%d%H%M%S")
 	region_path = settings.MEDIA_ROOT + '/regions/' + date_time + '.jpg'
 	command = "vips crop "+ svs_path + " " + region_path + " " + str(x) + " " + str(y) + " " + \
 		str(width) + " " + str(height) 
@@ -373,7 +373,7 @@ def add_new_region(request):
 #	new_region.image.
 ##	print(MEDIA_ROOT)
 
-	results = {'success':True}
+	results = {'success':True, 'rid': date_time, 'region_path':region_path}
 	return JsonResponse(results)
 
 # Needs to be udpated to support changing slide and patient as well
