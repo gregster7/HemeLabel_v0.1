@@ -46,16 +46,27 @@
 <body>
 <h1> UCSF Hematopathology Cell Labeller </h1>
 
-<p class="row_menu">
-	<a href="{% url 'labeller:index' %}">Home</a> - 
-    <a href="{% url 'labeller:slides' %}">Slides</a> - 
-	<a href="{% url 'labeller:regions' %}">Regions</a> - 
-	<a href="{% url 'labeller:cells' %}">Cells</a> - 
-    <!-- <a href="{% url 'labeller:slide_viewer' %}">Slide Viewer</a> -  -->
-    <a href="{% url 'labeller:stats' %}">Stats</a>
-    <!-- <a href="{% url 'labeller:normal_cell_labeller' %}">Normal Cell Labeller</a> -->
-   
-</p>
+<ul class="row_menu">
+	<li><a href="{% url 'labeller:index' %}">Home</a></li>
+
+  {% if user.is_authenticated %}
+
+    <li><a href="{% url 'labeller:slides' %}">Slides</a></li>
+    <li><a href="{% url 'labeller:regions' %}">Regions</a></li>
+    <li><a href="{% url 'labeller:cells' %}">Cells</a></li>
+      <!-- <a href="{% url 'labeller:slide_viewer' %}">Slide Viewer</a> -  -->
+    <li><a href="{% url 'labeller:stats' %}">Stats</a></li>
+          <!-- <a href="{% url 'labeller:normal_cell_labeller' %}">Normal Cell Labeller</a> -->
+
+    <li><a href="{% url 'labeller:logout' %}?next={% url 'labeller:index' %}">Logout</a></li>
+
+  {% else %}
+  
+    <li><a href="{% url 'labeller:login' %}?next={% url 'labeller:index' %}">Login</a></li>
+    <li><a href="{% url 'labeller:register' %}">Sign Up</a></li>
+  
+  {% endif %}
+</ul>
 
 {% block content %} {% endblock content %}
 
