@@ -5,6 +5,7 @@ from math import floor
 from django.contrib.auth.models import User 
 
 
+User._meta.get_field('email')._unique = True 
 
 class Patient (models.Model):
 	"""An individual patient, who can have many slides"""
