@@ -113,13 +113,21 @@ class Region(models.Model):
 # 	classifications = models.ForeignKey('CellClassification', on_delete=models.RESTRICT)
 
 class Project(models.Model):
-	name = models.CharField(max_length=200)
+	name = models.CharField(max_length=200, default="No Name")
+	date_added = models.DateTimeField(auto_now_add=True)
 
 	# How to use many to many fields
 	# https://docs.djangoproject.com/en/3.1/topics/db/examples/many_to_many/
 	#regions = models.ManyToManyField('Region')
 	#reviewers = models.ManyToManyField('Reviewer')
 	#newCells = models.ManyToManyField('NewCell')
+
+	class Meta:
+		verbose_name_plural = 'Projects'
+
+	def __str__(self):
+		"""Return a string representation of the model."""
+		return str(self.name)
 
 
 class Cell(models.Model):
@@ -129,6 +137,7 @@ class Cell(models.Model):
 	cid = models.IntegerField(unique=True)
 	date_added = models.DateTimeField(auto_now_add=True)	
 	region = models.ForeignKey('Region', on_delete=models.RESTRICT, blank=True, null=True)
+	project = models.ForeignKey('Project', on_delete=models.RESTRICT, blank=True, null=True)
 	image = models.ImageField(upload_to='cells')
 
 	"""centers are relative to region if there is a region, if not they are relative to the slide"""
