@@ -115,6 +115,12 @@ urlpatterns = [
   # Add user registration page
   path('register/', views.register, name='register'),
 
+  # Page for viewing all projects created when uploading cells
+  re_path(r'^projects/$', views.projects, name='projects'),
+
+  # Page for directly uploading cells enmasse.
+  re_path(r'^upload_cells/$', views.upload_cells, name='upload_cells'),
+
 
 	# # Page for AJAX updates to cell
 	# re_path(r'^ajax/update_cell_class/$', views.update_cell_class.as_view(), name='update_cell_class'),

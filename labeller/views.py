@@ -11,7 +11,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 
-from .models import Region, Cell, Patient, Slide
+from .models import Region, Cell, Patient, Slide, Project
 from .forms import RegionForm, UserForm
 
 from django.conf import settings
@@ -499,6 +499,16 @@ def register(request):
     form = UserForm()
     
   return render(request, 'labeller/register.html', {'form': form})
+
+
+# Projects page view
+@login_required
+def projects(request):
+	return render(request, 'labeller/projects.html')
+
+# Upload cells
+def upload_cells(request):
+	return render(request, 'labeller/cell_upload.html')
 
 # def update_cell_class(request):
 # 	results = {'success':False}
