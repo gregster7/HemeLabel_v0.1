@@ -528,7 +528,7 @@ def dropzone_image(request):
 		print (request)
 		print(request.FILES)
 		print(request.FILES.get('image'))
-		cid = request.FILES.get('image')
+		cid = create_new_cid()
 		# print(request.FILES.get('file'))
 		# cell = request.FILES.get('file')
 		# cid = request.FILES.get('filename')
