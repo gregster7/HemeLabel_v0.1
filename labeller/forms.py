@@ -11,6 +11,12 @@ class RegionForm(forms.ModelForm):
 		fields = ['rid', 'slide', 'image']
 		labels = {'rid': '', 'slide': '', 'image': ''}
 
+# Form for cell upload
+class CellForm(forms.ModelForm):
+  class Meta:
+    model = Cell
+    fields = {'image'}
+
 
 # Create user sign up form
 class UserForm(UserCreationForm):
@@ -21,3 +27,5 @@ class UserForm(UserCreationForm):
   class Meta:
     model = User
     fields = ('first_name', 'last_name', 'username', 'email', 'password1', 'password2')
+
+

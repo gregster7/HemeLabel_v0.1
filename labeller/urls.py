@@ -121,6 +121,9 @@ urlpatterns = [
   # Page for directly uploading cells enmasse.
   re_path(r'^upload_cells/$', views.upload_cells, name='upload_cells'),
 
+  # Handles uploaded cell images
+  path('upload_cells/dropzone_image', views.dropzone_image, name='dropzone_image'),
+
 
 	# # Page for AJAX updates to cell
 	# re_path(r'^ajax/update_cell_class/$', views.update_cell_class.as_view(), name='update_cell_class'),

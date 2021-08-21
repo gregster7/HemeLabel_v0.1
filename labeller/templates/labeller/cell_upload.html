@@ -5,23 +5,27 @@
 
 {% block content %}
 <script src="{% static 'labeller/dropzone-5.7.0/dist/dropzone.js' %}"></script>
-<script src="{% static 'labeller/dropzone-5.7.0/dist/dropzone.css' %}"></script>
-
+<link rel="stylesheet" href="{% static 'labeller/dropzone-5.7.0/dist/dropzone.css' %}">
   <h2>Upload Cells</h2>
 
-  <div class="containter">
 
-    <form action='#' method="POST" enctype="multipart/form-data" class="dropzone">
+    <form action="dropzone_image" method="POST" enctype="multipart/form-data">
       {% csrf_token %}
+      {{ form.as_p }}
+      <button type="submit">Upload</button>
+    </form>
 
-    <input type="text" name="projects" />
+    {% comment %} {% if img_obj %}
+      <h3>Successfully uploaded: {{ img_obj.cid }}</h3>
+      <img src="{{ img_obj.image.url }}" alt="connect", style="mas_height=300px">
+    {% endif %} {% endcomment %}
+
+    {% comment %} <input type="text" name="projects" /> {% endcomment %}
 
     </form>
     <br>
 
-    <button id="upload-btn" type="submit">Add Cells</button>
-
-  </div>
+    {% comment %} <button id="upload-btn" type="submit">Add Cells</button> {% endcomment %}
 
 
 

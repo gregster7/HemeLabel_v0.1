@@ -12,7 +12,7 @@ from django.contrib import messages
 from django.contrib.auth import login, authenticate
 
 from .models import Region, Cell, Patient, Slide, Project
-from .forms import RegionForm, UserForm
+from .forms import RegionForm, UserForm, CellForm
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -508,7 +508,36 @@ def projects(request):
 
 # Upload cells
 def upload_cells(request):
-	return render(request, 'labeller/cell_upload.html')
+	if request.method == 'POST':
+		form = CellForm(request.POST, request.FILES)
+		if form.is_valid():
+			form.save()
+			# Get current instance objecct to dispaly
+			img_obj = form.instance
+			cell = request.FILES.get('file')
+			cid = request.FILES.get('filename')
+			return render(request, 'labeller/upload_cells.html', {'form': form, 'cell': cell, 'cid': cid, 'img_obj': img_obj})
+	else:
+		form = CellForm()
+	return render(request, 'labeller/cell_upload.html', {'form': form})
+
+# Dropzone upload action
+def dropzone_image(request):
+	if request.method == "POST":
+
+		print (request)
+		print(request.FILES)
+		print(request.FILES.get('image'))
+		cid = request.FILES.get('image')
+		# print(request.FILES.get('file'))
+		# cell = request.FILES.get('file')
+		# cid = request.FILES.get('filename')
+		img = Cell.objects.create(cid = cid)
+		
+		img.save()
+		return HttpResponse()
+
+	return HttpResponse()
 
 # def update_cell_class(request):
 # 	results = {'success':False}
