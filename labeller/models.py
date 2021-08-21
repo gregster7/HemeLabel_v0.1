@@ -135,6 +135,7 @@ class Cell(models.Model):
 	"""A cell comes from a region and has a label"""
 	readonly_fields=('id',)
 	cid = models.IntegerField(unique=True)
+	name = models.CharField(max_length=200, blank=True, null=True)
 	date_added = models.DateTimeField(auto_now_add=True)	
 	region = models.ForeignKey('Region', on_delete=models.RESTRICT, blank=True, null=True)
 	project = models.ForeignKey('Project', on_delete=models.RESTRICT, blank=True, null=True)
