@@ -8,25 +8,15 @@
 <link rel="stylesheet" href="{% static 'labeller/dropzone-5.7.0/dist/dropzone.css' %}">
   <h2>Upload Cells</h2>
 
+  <div>
 
-    <form action="dropzone_image" method="POST" enctype="multipart/form-data">
+    <form action="dropzone_image" id="my-dropzone" method="POST" enctype="multipart/form-data" class="dropzone">
       {% csrf_token %}
-      {{ form.as_p }}
-      <button type="submit">Upload</button>
-    </form>
-
-    {% comment %} {% if img_obj %}
-      <h3>Successfully uploaded: {{ img_obj.cid }}</h3>
-      <img src="{{ img_obj.image.url }}" alt="connect", style="mas_height=300px">
-    {% endif %} {% endcomment %}
-
-    {% comment %} <input type="text" name="projects" /> {% endcomment %}
-
     </form>
     <br>
 
-    {% comment %} <button id="upload-btn" type="submit">Add Cells</button> {% endcomment %}
+    <button id="upload-btn" type="button">Add Cells</button>
 
-
+  </div>
 
 {% endblock %}

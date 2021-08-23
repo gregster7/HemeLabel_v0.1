@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.core import serializers
@@ -483,22 +483,22 @@ def get_all_cells_in_project(project):
 # UserForm view
 def register(request):
 
-  if request.method == 'POST':
-    form = UserForm(request.POST)
-    if form.is_valid():
-      new_user = form.save()
-      messages.info(request, "Thank you for registering. You are now logged in.")
-      new_user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
-      login(request, new_user)
-      return HttpResponseRedirect('/')
-    else:
-      print('form not valid')
-      print(form)
+	if request.method == 'POST':
+		form = UserForm(request.POST)
+		if form.is_valid():
+			new_user = form.save()
+			messages.info(request, "Thank you for registering. You are now logged in.")
+			new_user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
+			login(request, new_user)
+			return HttpResponseRedirect('/')
+		else:
+			print('form not valid')
+			print(form)
 
-  else:
-    form = UserForm()
-    
-  return render(request, 'labeller/register.html', {'form': form})
+	else:
+		form = UserForm()
+		
+	return render(request, 'labeller/register.html', {'form': form})
 
 
 # Projects page view
@@ -524,17 +524,21 @@ def upload_cells(request):
 # Dropzone upload action
 def dropzone_image(request):
 	if request.method == "POST":
-
-		print (request)
+		print(request)
 		print(request.FILES)
-		print(request.FILES.get('image'))
-		cid = create_new_cid()
-		# print(request.FILES.get('file'))
-		# cell = request.FILES.get('file')
-		# cid = request.FILES.get('filename')
-		img = Cell.objects.create(cid = cid)
-		
-		img.save()
+		print(request.FILES.getlist('file'))
+		i = 0
+		for image in request.FILES.getlist('file'):
+			print(image)
+			print(type(image))
+			cid = int(create_new_cid()+str(i))
+			i+=1
+			name = image.name
+			print(name)
+			print(image)
+			print(cid)
+			cell = Cell.objects.create(image = image, cid = cid, name = name)
+			cell.save()
 		return HttpResponse()
 
 	return HttpResponse()
