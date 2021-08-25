@@ -528,16 +528,21 @@ def dropzone_image(request):
 		print(request.FILES)
 		print(request.FILES.getlist('file'))
 		i = 0
+		proj = request.POST.get('project')
+		project = Project.objects.create(name=proj)
 		for image in request.FILES.getlist('file'):
 			print(image)
 			print(type(image))
 			cid = int(create_new_cid()+str(i))
 			i+=1
 			name = image.name
+			# project = request.POST.get('project')
+			# print(proj)
+			print(project)
 			print(name)
 			print(image)
 			print(cid)
-			cell = Cell.objects.create(image = image, cid = cid, name = name)
+			cell = Cell.objects.create(image = image, cid = cid, name = name, project = project)
 			cell.save()
 		return HttpResponse()
 

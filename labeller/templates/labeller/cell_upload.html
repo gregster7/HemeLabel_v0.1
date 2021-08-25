@@ -4,19 +4,41 @@
 {% block title %}Upload Cells{% endblock %}
 
 {% block content %}
+<script src="{% static 'labeller/Cell.js' %}"></script>
+<script src="{% static 'labeller/CellCounter.js' %}"></script>
 <script src="{% static 'labeller/dropzone-5.7.0/dist/dropzone.js' %}"></script>
+
 <link rel="stylesheet" href="{% static 'labeller/dropzone-5.7.0/dist/dropzone.css' %}">
-  <h2>Upload Cells</h2>
+  <h2>Cell Labeler</h2>
+
+  <div id='labeller'>
+	{% comment %} {% include "labeller/partials/region_annotator_fabric.html" %} {% endcomment %}
+    <div id="column2_wrapper" >
+      {% include "labeller/partials/current_cell.html" %}
+    </div>
+
+    <div>
+    {% include "labeller/partials/mini_counter.html" %}
+    </div>
+  </div>
 
   <div>
 
     <form action="dropzone_image" id="my-dropzone" method="POST" enctype="multipart/form-data" class="dropzone">
       {% csrf_token %}
+      {% comment %} Project: <input type="text" name="project" /> {% endcomment %}
     </form>
     <br>
 
     <button id="upload-btn" type="button">Add Cells</button>
 
   </div>
+  <br>
+
+  <div class="cells_list_of_current_project">
+  </div>
+
+  {% include "labeller/partials/big_table.html" %}
+  {% include "labeller/partials/main_lineages_horizontal.html" %}
 
 {% endblock %}
