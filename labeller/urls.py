@@ -119,10 +119,18 @@ urlpatterns = [
   re_path(r'^projects/$', views.projects, name='projects'),
 
   # Page for directly uploading cells enmasse.
-  re_path(r'^upload_cells/$', views.upload_cells, name='upload_cells'),
+  # re_path(r'^upload_cells/$', views.upload_cells, name='upload_cells'),
 
   # Handles uploaded cell images
-  path('upload_cells/dropzone_image', views.dropzone_image, name='dropzone_image'),
+  #path('dropzone_image', views.dropzone_image, name='dropzone_image'),
+  #re_path(r'^label_cell_fabric/(?P<project_id>\d+)/dropzone_image', views.dropzone_image_w_projectID, name='dropzone_image_w_projectID'),
+  re_path(r'^label_cells_in_project/(?P<project_id>\d+)/dropzone_image', views.dropzone_image_w_projectID, name='dropzone_image_w_projectID'),
+
+
+  path('create_project', views.create_project, name="create_project"),
+
+  # Page for labelling a cell in given project
+	re_path(r'^label_cells_in_project/(?P<project_id>\d+)/$', views.label_cells_in_project, name='label_cells_in_project'),
 
 
 	# # Page for AJAX updates to cell

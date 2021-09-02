@@ -6,6 +6,28 @@
 
   <h2>Projects</h2>
 
-  <a href="{% url 'labeller:upload_cells' %}">Add More Cells</a>
+  <p>
+    <ul>
+      {% for project in projects %}
 
+
+      <p>
+        <a href="{% url 'labeller:label_cells_in_project' project.id %}">
+        Project: {{ project.name }} &nbsp &nbsp &nbsp &nbsp
+        Project ID: {{ project.id }}
+        </a>
+      </p>
+
+      {% empty %}
+        <li>No projects have been added yet.</li>
+      {% endfor %}
+
+  <br>
+  <p>
+    <form action='/create_project' method="POST">
+      {% csrf_token %}
+      New Project: <input type="text" name="project" required />
+      <button>Create</button>
+    </form>
+  </p>
 {% endblock %}

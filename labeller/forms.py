@@ -3,7 +3,7 @@ from django.forms import ModelForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
-from .models import Region, Cell
+from .models import Project, Region, Cell
 
 class RegionForm(forms.ModelForm):
 	class Meta:
@@ -16,6 +16,12 @@ class CellForm(forms.ModelForm):
   class Meta:
     model = Cell
     fields = {'image'}
+
+# Form for creating a new project
+class ProjectForm(forms.ModelForm):
+  class Meta:
+    model = Project
+    fields = {'name'}
 
 
 # Create user sign up form

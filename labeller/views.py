@@ -504,32 +504,50 @@ def register(request):
 # Projects page view
 @login_required
 def projects(request):
-	return render(request, 'labeller/projects.html')
+	"""Show all projects"""
+	projects = Project.objects.order_by('id')
+	context = {'projects': projects}
+	print(Project.id)
+	return render(request, 'labeller/projects.html', context)
 
-# Upload cells
-def upload_cells(request):
+def create_project(request):
 	if request.method == 'POST':
-		form = CellForm(request.POST, request.FILES)
-		if form.is_valid():
-			form.save()
-			# Get current instance objecct to dispaly
-			img_obj = form.instance
-			cell = request.FILES.get('file')
-			cid = request.FILES.get('filename')
-			return render(request, 'labeller/upload_cells.html', {'form': form, 'cell': cell, 'cid': cid, 'img_obj': img_obj})
-	else:
-		form = CellForm()
-	return render(request, 'labeller/cell_upload.html', {'form': form})
+		if request.POST.get('project') != None:
+			proj = request.POST.get('project')
+			project = Project.objects.create(name=proj)
+			print(proj)
+			print(project)
+		
+		else:
+			return render(request, 'labeller/projects.html')
 
-# Dropzone upload action
-def dropzone_image(request):
+			# context = {'project': project}
+
+	return HttpResponseRedirect(reverse('labeller:label_cells_in_project'))
+
+# # Upload cells
+# def upload_cells(request):
+# 	if request.method == 'POST':
+# 		form = CellForm(request.POST, request.FILES)
+# 		if form.is_valid():
+# 			form.save()
+# 			# Get current instance objecct to dispaly
+# 			img_obj = form.instance
+# 			cell = request.FILES.get('file')
+# 			cid = request.FILES.get('filename')
+# 			return render(request, 'labeller/upload_cells.html', {'form': form, 'cell': cell, 'cid': cid, 'img_obj': img_obj})
+# 	else:
+# 		form = CellForm()
+# 	return render(request, 'labeller/label_cells_in_project.html', {'form': form})
+
+def dropzone_image_w_projectID(request, project_id):
 	if request.method == "POST":
 		print(request)
 		print(request.FILES)
 		print(request.FILES.getlist('file'))
 		i = 0
-		proj = request.POST.get('project')
-		project = Project.objects.create(name=proj)
+		#proj = request.POST.get('project')
+		project = Project.objects.create(name=project_id)
 		for image in request.FILES.getlist('file'):
 			print(image)
 			print(type(image))
@@ -547,6 +565,25 @@ def dropzone_image(request):
 		return HttpResponse()
 
 	return HttpResponse()
+
+def label_cells_in_project(request, project_id):
+	"""label cells in a given project"""
+	print(project_id)
+	project = Project.objects.get(id=project_id)
+	print(project)
+	cells = project.cell_set.all()
+	name = Project.name
+	
+	if (cells.count() == 0):
+		cells = "none"
+		cells_json = "none"
+	else:
+		cells_json = serializers.serialize("json", project.cell_set.all())
+
+	context = {'project': project, 'name': name, 'cells': cells, 'cells_json': cells_json}
+	print(context)
+
+	return render(request, 'labeller/label_cells_in_project.html', context)
 
 # def update_cell_class(request):
 # 	results = {'success':False}

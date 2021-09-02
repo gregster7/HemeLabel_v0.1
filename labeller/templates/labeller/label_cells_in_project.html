@@ -1,7 +1,7 @@
 {% extends 'labeller/base.html' %}
 {% load static %}
 
-{% block title %}Upload Cells{% endblock %}
+{% block title %}{{ project.name }}{% endblock %}
 
 {% block content %}
 <script src="{% static 'labeller/Cell.js' %}"></script>
