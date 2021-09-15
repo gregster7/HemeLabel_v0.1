@@ -3829,27 +3829,27 @@ function __guardMethod__(obj, methodName, transform) {
   }
 }
 
-// My own Dropzone //
-Dropzone.options.myDropzone = {
-  paramName: function(){
-    return "file";
-  },
-  autoProcessQueue: false,
-  maxFilesize: 1000,
-  parallelUploads: 100,
-  uploadMultiple: true,
+// // My own Dropzone //
+// Dropzone.options.myDropzone = {
+//   paramName: function(){
+//     return "file";
+//   },
+//   autoProcessQueue: false,
+//   maxFilesize: 1000,
+//   parallelUploads: 100,
+//   uploadMultiple: true,
 
-  init: function() {
-    var submitButton = document.querySelector("#upload-btn");
-    var myDropzone = this;
+//   init: function() {
+//     var submitButton = document.querySelector("#upload-btn");
+//     var myDropzone = this;
 
-    submitButton.addEventListener("click", function() {
-      myDropzone.processQueue();
-    });
+//     submitButton.addEventListener("click", function() {
+//       myDropzone.processQueue();
+//     });
 
-    myDropzone.on("complete", function(file) {
-      myDropzone.removeFile(file);
-    });
+//     myDropzone.on("complete", function(file) {
+//       myDropzone.removeFile(file);
+//     });
 
-  },
-}
+//   },
+// }

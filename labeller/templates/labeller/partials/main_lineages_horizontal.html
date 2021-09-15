@@ -29,58 +29,86 @@ class HorizontalCellList {
 
 	
 	static nextCell(offset) {
+    console.log('entering next cell');
 
 		if (offset !=1 && offset != -1){
 			console.log("Error in HorizontalCellList:nextCell - wrong offset", offset);
 			return false;
 		}
 
-		if ($('.cell_list_item.highlight').length<1) {
-			console.log("HorizontalCellList:nextCell() - No current cell");
-			return false;
-		}
+    if ($('.clicked_cell').length==0) {
+        console.log('No clicked_cell in HorizontalCellList.nextCell')
+        return;
+      }
+    if ($('.clicked_cell').length>1){
+        console.log('Too many clicked_cell objects in HorizontalCellList.nextCell', $('.clicked_cell'))
+        return;
+    }
 
-		var cell = $('.cell_list_item.highlight');
-		if (cell.siblings.length == 0) {
+    var cell = $('.clicked_cell')
+
+		{% comment %} if (cell.siblings.length == 0) {
 			console.log("cell has no siblings")
 			return false;
 		
-		}
+		} {% endcomment %}
 
 		if (offset == 1 && cell.next().length ==1) {
 //				var current_cell = cell.next();
 				var cid = Cell.getCIDfromDivID(cell.next()[0]);
 				Cell.selectCellByCID(cid);
-				return cid;
+        cell.removeClass('clicked_cell');
+        cell.next().addClass('clicked_cell');
+				return;
 			}
 
 			else if (offset == -1 && cell.prev().length ==1) {
 				var cid = Cell.getCIDfromDivID(cell.prev()[0]);
 				Cell.selectCellByCID(cid);
-				return cid;
+        cell.removeClass('clicked_cell');
+        cell.prev().addClass('clicked_cell');
+				return;
 		}
 
-		return false;
+		return;
 	}
 
 	static addKeyboardEventListeners(){
-			window.addEventListener('keyup', (e) => {
-				var code = e.code;
+    {% comment %} window.addEventListener('keydown', function(e) {
+      if(e.key === 'r' && e.ctrlKey) {
+        e.preventDefault();
+    }
+    }); {% endcomment %}
+    window.addEventListener('keydown', function(e) {
+      if(e.keyCode == 32 && e.target == document.body) {
+        e.preventDefault();
+      }
+    });
 
+			window.addEventListener('keyup', (e) => {
+        console.log('horizontal key pressed event in main_lineages_horizontal');
+       
+
+				var code = e.code;
+        
 				switch(code) {
 					
 					case "ArrowLeft": HorizontalCellList.nextCell(-1);  break;
 					case "ArrowRight": HorizontalCellList.nextCell(1); break;
 					//case "Enter": nextRegion(); break;
-
+          case "Space": HorizontalCellList.selectFirstUnlabelledCell(); break;
+          case "Backslash": Cell.deleteCellByCID(Cell.currentCellCID()); break;
 				}
 			});
 	}
 
 	static cellListItemClickHandler(jq_obj){
-		console.log("this item was clicked on", jq_obj)
-		var cid = Cell.extractCIDFromJQueryObjectID(jq_obj)
-		Cell.selectCellByCID(cid);
+		console.log("this item was clicked on", jq_obj);
+		var cid = Cell.extractCIDFromJQueryObjectID(jq_obj);
+    console.log($('.clicked_cell'))
+ 		Cell.selectCellByCID(cid);
+    $('.clicked_cell').removeClass('clicked_cell');
+    jq_obj.addClass('clicked_cell');
 	}
 
 
@@ -88,12 +116,15 @@ class HorizontalCellList {
 		if ($(".cell_list_item.unlabelled").first().length>0){
 			var cid = Cell.extractCIDFromJQueryObjectID($(".cell_list_item.unlabelled").first());
 			Cell.selectCellByCID(cid);
+      $('.clicked_cell').removeClass('clicked_cell');
+      $(".cell_list_item.unlabelled").first().addClass('clicked_cell');
 		}
 	}
 
 	static populateCellLists (cells_json){
+    console.log('entering populatCellList', cells_json)
 		var cells = Cell.LoadCellsFromJson(cells_json);
-
+    //console.log(cells)
 		var counter = 1;
 		for (var key in cells) {
 			var cell = cells[key];
@@ -102,12 +133,13 @@ class HorizontalCellList {
 			var jq_obj = $("#"+cell.getLineage()+"_cells_inline").append(cell_div);
 
 			var jq_obj_celltype = $("#"+cell.cell_type+"_cells_inline").append(cell_div);
-			
+      //console.log(jq_obj, jq_obj_celltype)
 		}
 
 		$('.cell_list_item').on('click', function (){
 			HorizontalCellList.cellListItemClickHandler($(this))
 		});
+    Cell.UpdateHorizontalCellCounts();
 	}
 
 	static addCellClassHorizontalRows(cells_json) {
@@ -126,7 +158,7 @@ $ (document).ready(function() {
 	 	var cells_json = '{{cells_json}}';	 	
  		HorizontalCellList.addCellClassHorizontalRows(cells_json);
  		HorizontalCellList.populateCellLists(cells_json);
- 		Cell.UpdateHorizontalCellCounts();
+ 		//Cell.UpdateHorizontalCellCounts();
  		HorizontalCellList.addKeyboardEventListeners();
  		HorizontalCellList.selectFirstUnlabelledCell();
 	}

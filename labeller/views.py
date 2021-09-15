@@ -116,6 +116,10 @@ def get_all_cells_json(region):
 #	print(region, cells_json)
 	return cells_json
 
+def get_all_cells_json_project(project):
+	cells_json = serializers.serialize("json", project.cells_set.all())
+	return cells_json
+
 def change_cell_location(request):
 	POST = request.POST
 	cid = POST['cid']
@@ -408,7 +412,15 @@ def update_cell_class(request):
 	cell = Cell.objects.get(cid=POST['cid'])
 	cell.cell_type = POST['cell_label']
 	cell.save()
-	results = {'success':True, 'all_cells_json':get_all_cells_json(cell.region)}
+	results = {'success':True}
+	return JsonResponse(results)
+
+def update_cell_class_in_project(request):
+	POST = request.POST
+	cell = Cell.objects.get(cid=POST['cid'])
+	cell.cell_type = POST['cell_label']
+	cell.save()
+	results = {'success':True, 'all_cells_json':get_all_cells_json_project(cell.project)}
 	return JsonResponse(results)
 
 def data_export(request):
@@ -475,9 +487,15 @@ def new_region(request):
 	context = {'form': form}
 	return render(request, 'labeller/new_region.html', context)
 
-def get_all_cells_in_project(project):
-	regions = region.project_set.all()
-	cells = Cell.objects.filter(regions__in=regions)
+
+def get_all_cells_in_project(request):
+	GET = request.GET
+	project_id = GET['project_id']
+	print(project_id)
+	project = Project.objects.get(id=project_id)
+	all_cells_json = serializers.serialize("json", project.cell_set.all())
+	results = {'success':True, 'all_cells_json':all_cells_json}
+	return JsonResponse(results)
 	
 
 # UserForm view
@@ -505,10 +523,18 @@ def register(request):
 @login_required
 def projects(request):
 	"""Show all projects"""
+	# user_projects = Project.objects.filter(user=request.user).order_by('id')
+
 	projects = Project.objects.order_by('id')
 	context = {'projects': projects}
 	print(Project.id)
+
 	return render(request, 'labeller/projects.html', context)
+
+		# def get_queryset(self):
+		# user = self.request.user
+		# return Project.objects.filter(user)
+	
 
 def create_project(request):
 	if request.method == 'POST':
@@ -523,7 +549,8 @@ def create_project(request):
 
 			# context = {'project': project}
 
-	return HttpResponseRedirect(reverse('labeller:label_cells_in_project'))
+	# return HttpResponseRedirect(reverse('labeller:label_cells_in_project'))
+	return render(request, 'labeller/label_cells_in_project.html')
 
 # # Upload cells
 # def upload_cells(request):
@@ -541,28 +568,43 @@ def create_project(request):
 # 	return render(request, 'labeller/label_cells_in_project.html', {'form': form})
 
 def dropzone_image_w_projectID(request, project_id):
+	print("entering dropzone_image_w_projectID")
 	if request.method == "POST":
 		print(request)
 		print(request.FILES)
 		print(request.FILES.getlist('file'))
 		i = 0
 		#proj = request.POST.get('project')
-		project = Project.objects.create(name=project_id)
+		# project_id = Project.name 
+		project = Project.objects.get(id=project_id)
+		cell_list = []
 		for image in request.FILES.getlist('file'):
 			print(image)
 			print(type(image))
 			cid = int(create_new_cid()+str(i))
 			i+=1
 			name = image.name
+			cell_type = request.POST.get('cell_type')
+			cells_json = serializers.serialize("json", project.cell_set.all())
+
 			# project = request.POST.get('project')
 			# print(proj)
+			print(cell_type)
 			print(project)
+			print(project_id)
 			print(name)
 			print(image)
 			print(cid)
-			cell = Cell.objects.create(image = image, cid = cid, name = name, project = project)
+			print(cells_json)
+			cell = Cell.objects.create(image = image, cid = cid, name = name, project = project, project_id = project_id, cell_type = cell_type)
 			cell.save()
-		return HttpResponse()
+			cell_list.append(cell)
+		cells_json = serializers.serialize("json", cell_list)	
+		print('cell list: ' + str(cell_list))
+		print('cells json: ' + str(cells_json))
+		results = {'success': True,  'cells_json': cells_json}
+		return JsonResponse(results)
+		#return HttpResponse()
 
 	return HttpResponse()
 
@@ -572,8 +614,8 @@ def label_cells_in_project(request, project_id):
 	project = Project.objects.get(id=project_id)
 	print(project)
 	cells = project.cell_set.all()
-	name = Project.name
-	
+	name = project.name
+
 	if (cells.count() == 0):
 		cells = "none"
 		cells_json = "none"

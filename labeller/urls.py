@@ -78,6 +78,8 @@ urlpatterns = [
 	# Get cell information (AJAX)
 	re_path(r'^get_all_cells_in_region/', views.get_all_cells_in_region, name='get_all_cells_in_region'),
 
+  re_path(r'^get_all_cells_in_project/', views.get_all_cells_in_project, name='get_all_cells_in_project'),
+
 	# Get cell information (AJAX)
 	re_path(r'^get_all_cells_in_slide/', views.get_all_cells_in_slide, name='get_all_cells_in_slide'),
 
