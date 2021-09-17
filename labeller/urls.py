@@ -55,6 +55,9 @@ urlpatterns = [
 	# # Page for exporting data
 	# re_path(r'^data_export/$', views.data_export, name='data_export'),
 
+  # Page for exporting Project Data
+  re_path(r'^export_project_data/$', views.export_project_data, name='export_project_data'),
+
 	# Page for viewing labelling stats/progress
 	re_path(r'^stats/$', views.stats, name='stats'),
 
@@ -80,6 +83,8 @@ urlpatterns = [
 
   re_path(r'^get_all_cells_in_project/', views.get_all_cells_in_project, name='get_all_cells_in_project'),
 
+  re_path(r'^blank_request/', views.blank_request, name='blank_request'),
+  
 	# Get cell information (AJAX)
 	re_path(r'^get_all_cells_in_slide/', views.get_all_cells_in_slide, name='get_all_cells_in_slide'),
 

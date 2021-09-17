@@ -132,6 +132,9 @@ STATIC_URL = '/static/'
 # Media file handling
 MEDIA_ROOT = path.join(BASE_DIR, 'media')
 
+# Data Export
+DATA_EXPORT_ROOT = path.join(MEDIA_ROOT, 'data_export')
+
 # Redirecc to Home URL after successful login (Default redirects to accounts/profile)
 LOGIN_REDIRECT_URL = '/'
 

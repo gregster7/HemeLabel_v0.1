@@ -1,10 +1,13 @@
 {% extends 'labeller/base.html' %}
+{% load static %}
 
 {% block title %}Projects{% endblock %}
 
 {% block content %}
+<script src="{% static 'labeller/Cell.js' %}"></script>
 
-  <h2>Projects</h2>
+
+  <h2>{{ user.get_username }}'s Projects</h2>
 
   <p>
     <ul>
@@ -13,9 +16,17 @@
 
       <p>
         <a href="{% url 'labeller:label_cells_in_project' project.id %}">
-        Project: {{ project.name }} &nbsp &nbsp &nbsp &nbsp
-        Project ID: {{ project.id }}
-        </a>
+        Project: {{ project.name }} </a>  &nbsp &nbsp &nbsp &nbsp
+        Project ID: {{ project.id }} &nbsp &nbsp &nbsp &nbsp
+        {% include "labeller/partials/export_project_data.html" %}
+
+        {% comment %} <button class='export_button' id='{{ project.id }}'>Export project button</button> {% endcomment %}
+
+        {% comment %} onclick="button_export_handler()">Export project data</button> {% endcomment %}
+        {% comment %} <a href="{% url 'labeller:export_project_data' project.id %}">
+        Export Project Data</a>
+        <a href="{% url 'labeller:blank_request' %}">blank reqest </a>
+         {% endcomment %}
       </p>
 
       {% empty %}
@@ -30,4 +41,29 @@
       <button>Create</button>
     </form>
   </p>
+
+
+{% comment %} <script> 
+  $('.export_button').click(function(){
+      console.log($(this).attr('id'));
+      var project_id = $(this).attr('id');
+      $.get("/export_project_data/", {'project_id':project_id}, function(json){
+
+        console.log('button_export_handler callback');
+
+        console.log(json['filename']);
+
+        window.location.href = json['filename']
+
+      });
+
+  });
+  
+  {% comment %} function button_export_handler(project_id) {
+    $.get("/get_all_cells_in_project/"+project_id, function(json){
+      print('button_export_handler callback');
+    });
+  } {% endcomment %}
+{% comment %} </script>  {% endcomment %}
+
 {% endblock %}

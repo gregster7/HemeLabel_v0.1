@@ -63,12 +63,13 @@
     </div>
 
     <div>
-    {% include "labeller/partials/mini_counter.html" %}
+      {% include "labeller/partials/mini_counter.html" %}
+      <br>
+      {% include "labeller/partials/export_project_data.html" %}
     </div>
   </div>
 
   <div>
-
 
     <form action="dropzone_image_w_projectID" id="my-dropzone" method="POST" enctype="multipart/form-data" class="dropzone js-reference-dropzone">
       {% csrf_token %}
@@ -122,7 +123,7 @@
 
   </div>
   <br>
-
+  
   {% comment %} <div class="cells_list_of_current_project">
   </div> {% endcomment %}
 

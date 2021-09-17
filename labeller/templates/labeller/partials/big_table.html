@@ -64,12 +64,12 @@ $ (document).ready(function() {
 		}
 
 		static addKeyboardEventListeners(){
-			
-			{% comment %} window.addEventListener('keydown', function(e) {
+			// Prevent Ctrl+R from refreshing the page. R will still work to label cell and F5 will work for refresh.
+			window.addEventListener('keydown', function(e) {
 				if(e.key === 'r' && e.ctrlKey) {
 					e.preventDefault();
 				}
-			}); {% endcomment %}
+			});
 			window.addEventListener('keyup', (e) => {
 				var code = e.code;
 				document.getElementById('test_keyboard').innerHTML = 'code = ' + code;

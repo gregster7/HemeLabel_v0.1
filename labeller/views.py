@@ -1,3 +1,4 @@
+from HL_site.settings import DATA_EXPORT_ROOT
 from django.shortcuts import render, redirect 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
@@ -11,13 +12,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 
-from .models import Region, Cell, Patient, Slide, Project
+from .models import Region, Cell, Patient, Slide, Project, User
 from .forms import RegionForm, UserForm, CellForm
 
 from django.conf import settings
 from django.conf.urls.static import static
 from django.core.files import File
 from django.core.files.images import ImageFile
+
+import pandas as pd
+import openpyxl
 
 
 def index(request):
@@ -487,6 +491,10 @@ def new_region(request):
 	context = {'form': form}
 	return render(request, 'labeller/new_region.html', context)
 
+def blank_request(request):
+	print(request)
+	return JsonResponse({'success': True})
+
 
 def get_all_cells_in_project(request):
 	GET = request.GET
@@ -523,7 +531,9 @@ def register(request):
 @login_required
 def projects(request):
 	"""Show all projects"""
-	# user_projects = Project.objects.filter(user=request.user).order_by('id')
+
+	# user_projects = Project.objects.filter(user=request.user.get_username()).order_by('id')
+	# context = {'user_projects': user_projects}
 
 	projects = Project.objects.order_by('id')
 	context = {'projects': projects}
@@ -566,6 +576,62 @@ def create_project(request):
 # 	else:
 # 		form = CellForm()
 # 	return render(request, 'labeller/label_cells_in_project.html', {'form': form})
+
+def export_project_data(request):
+	GET = request.GET
+	project_id = GET['project_id']
+	print(request, project_id)
+	project = Project.objects.get(id=project_id)
+	all_cells = project.cell_set.all()
+	list_of_cell_dicts = []
+	for cell in all_cells:
+		print(cell)
+		list_of_cell_dicts.append(cell.asdict())
+	print(list_of_cell_dicts)
+	df = pd.DataFrame(list_of_cell_dicts)
+	print(df)
+
+	now = datetime.now()
+	date_time = now.strftime("%Y%m%d%H%M%S")
+	filename = project_id + '_' + date_time + '.xlsx'
+	df.to_excel(DATA_EXPORT_ROOT + '/' + filename, index=False)
+
+	results = {'success':True, 'filename': '/data_export/' + filename}
+	return JsonResponse(results)
+
+
+
+# def export_project_data(request):
+# 	projects = Project.objects.filter('id')
+# 	with open(r'.\\labeller\\{{ project_id }}.json', "w") as out:
+# 		mast_point = serializers.serialize("json", projects)
+# 		out.write(mast_point)
+# 	template = __loader__.get_template('')
+# 	project = Project.objects.get('id')
+# 	cells_json = serializers.serialize("json", Cell.objects.filter(project.id))
+# 	context = {'project': project, 'cells_json': cells_json}
+
+# 	return render(request, 'labeller/data_export.html', context)
+
+# def export_project_data(target_path, target_file, data):
+#   data = serializers.serialize("json", Project.objects.GET('id'))
+#   print(data)
+
+#   if not os.path.exists(target_path):
+#     try:
+#       os.makedirs(target_path)
+#     except Exception as e:
+#       print(e)
+#       raise
+#   with open(os.path.join(target_path, target_file), 'w') as f:
+#     json.dump(data, f)
+
+#   file = export_project_data('/hemelabel/', 'project_data.json', data)
+#   print(file)
+#   return file 
+
+# def export_project_data(request, project_id):
+	
 
 def dropzone_image_w_projectID(request, project_id):
 	print("entering dropzone_image_w_projectID")

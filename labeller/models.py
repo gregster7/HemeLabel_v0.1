@@ -172,46 +172,80 @@ class Cell(models.Model):
 	
 
 
-	# def getCellTypeName(self):
-	# 	classLabelDict = {
-	# 		"M1": "Blast",
-	# 		"M2": "Myelocyte",
-	# 		"M3": "Promyelocyte",
-	# 		"M4": "Metamyelocyte",
-	# 		"M5": "Band neutrophil",
-	# 		"M6": "Segmented netrophil",
+	def getCellTypeName(self):
+		classLabelDict = {
+			"M1": "Blast",
+			"M2": "Promyelocyte",
+			"M3": "Myelocyte",
+			"M4": "Metamyelocyte",
+			"M5": "Band neutrophil",
+			"M6": "Segmented netrophil",
 
-	# 		"E1": "Immature Eosinophil",
-	# 		"E2": "Mature Eosinophil",
-	# 		"B1": "Immature Basophil",
-	# 		"B2": "Mature Basophil",
-	# 		"M1": "Monoblast",
-	# 		"M2": "Monocyte",
+			"E1": "Immature Eosinophil",
+			"E2": "Mature Eosinophil",
+			"B1": "Immature Basophil",
+			"B2": "Mature Basophil",
+			"MO1": "Monoblast",
+			"MO2": "Monocyte",
 
-	# 		"L0": "Lymphoblast",
-	# 		"L1": "Hematagone",
-	# 		"L2": "Small Mature Lymphocyte",
-	# 		"L3": "Large Grancular lymphocyte",
-	# 		"L4": "Plasma Cell",
+			"L0": "Lymphoblast",
+			"L1": "Hematagone",
+			"L2": "Small Mature Lymphocyte",
+			"L3": "Large Grancular lymphocyte",
+			"L4": "Plasma Cell",
 
-	# 		"ER1": "Pronormoblast",
-	# 		"ER2": "Basophilic normoblast",
-	# 		"ER3": "Polychromatophilic",
-	# 		"ER4": "Orthochromic (nuc red)",
-	# 		"ER5": "Reticulocyte",
-	# 		"ER6": "Mature RBC",
+			"ER1": "Pronormoblast",
+			"ER2": "Basophilic normoblast",
+			"ER3": "Polychromatophilic",
+			"ER4": "Orthochromic (nuc red)",
+			"ER5": "Reticulocyte",
+			"ER6": "Mature RBC",
 
-	# 		"U1": "Artifact",
-	# 		"U2": "Unknown",
-	# 		"U3": "Other",
-	# 		"U4": "Histiocyte",
-	# 	}
-	# 	return classLabelDict[self.cell_type]	
+			"U1": "Artifact",
+			"U2": "Unknown",
+			"U3": "Other",
+			"U4": "Histiocyte",
+			"UL": "Unlabelled", 
+			
+		}
+		return classLabelDict[self.cell_type]	
 	
 
 
 	class Meta:
 		verbose_name_plural = 'Cells'
+
+	def CellLineage(self):
+		if (self.cell_type == 'M1' or self.cell_type == 'M2' or self.cell_type == 'M3' or self.cell_type == 'M4' or self.cell_type == 'M5' or self.cell_type == 'M6'):
+			return 'myeloid'
+		
+		elif (self.cell_type == 'E1' or self.cell_type == 'E2' or self.cell_type == 'B1' or self.cell_type == 'MO1' or self.cell_type == 'MO2'):
+			return 'myeloid'
+
+		elif (self.cell_type == 'ER1' or self.cell_type == 'ER2' or self.cell_type == 'ER3' or self.cell_type == 'ER4' or self.cell_type == 'ER5'):
+			return 'erythroid'
+
+		elif (self.cell_type == 'ER6'):
+			return 'misc'
+
+		elif (self.cell_type == 'L0' or self.cell_type == 'L1' or self.cell_type == 'L2' or self.cell_type == 'L3' or self.cell_type == 'L4'):
+			return 'lymphoid'
+
+		elif (self.cell_type == 'U1' or self.cell_type == 'U2' or self.cell_type == 'U3' or self.cell_type == 'U4'):
+			return 'misc'
+		
+		elif (self.cell_type == 'UL'):
+			return 'unlabelled'
+			
+		# match self.cell_type:
+		# 	case ['M1' | 'M2' | 'M3' | 'M4' | 'M5' | 'M6']:
+		# 		return 'myeloid'
+		# 	case ['']
+		
+
+
+	def asdict(self):
+		return {'pk': self.pk, 'cid': str(self.cid), 'lineage': self.CellLineage(), 'cell_type': self.cell_type, 'cell_type_name': self.getCellTypeName(), 'cell_name': self.name, 'region': self.region, 'project': self.project, 'center_x': self.center_x, 'center_y': self.center_y, 'width': self.width, 'height': self.height}
 
 	def __str__(self):
 		"""Return a string representation of the model."""
