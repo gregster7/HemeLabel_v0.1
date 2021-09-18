@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from HL_site.settings import DATA_EXPORT_ROOT
+from django.shortcuts import render, redirect 
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.core import serializers
@@ -11,13 +12,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 
-from .models import Region, Cell, Patient, Slide
-from .forms import RegionForm, UserForm
+from .models import Region, Cell, Patient, Slide, Project, User
+from .forms import RegionForm, UserForm, CellForm
 
 from django.conf import settings
 from django.conf.urls.static import static
 from django.core.files import File
 from django.core.files.images import ImageFile
+
+import pandas as pd
+import openpyxl
 
 
 def index(request):
@@ -114,6 +118,10 @@ def label_slide(request, slide_id):
 def get_all_cells_json(region):
 	cells_json = serializers.serialize("json", region.cell_set.all())
 #	print(region, cells_json)
+	return cells_json
+
+def get_all_cells_json_project(project):
+	cells_json = serializers.serialize("json", project.cells_set.all())
 	return cells_json
 
 def change_cell_location(request):
@@ -408,7 +416,15 @@ def update_cell_class(request):
 	cell = Cell.objects.get(cid=POST['cid'])
 	cell.cell_type = POST['cell_label']
 	cell.save()
-	results = {'success':True, 'all_cells_json':get_all_cells_json(cell.region)}
+	results = {'success':True}
+	return JsonResponse(results)
+
+def update_cell_class_in_project(request):
+	POST = request.POST
+	cell = Cell.objects.get(cid=POST['cid'])
+	cell.cell_type = POST['cell_label']
+	cell.save()
+	results = {'success':True, 'all_cells_json':get_all_cells_json_project(cell.project)}
 	return JsonResponse(results)
 
 def data_export(request):
@@ -475,30 +491,207 @@ def new_region(request):
 	context = {'form': form}
 	return render(request, 'labeller/new_region.html', context)
 
-def get_all_cells_in_project(project):
-	regions = region.project_set.all()
-	cells = Cell.objects.filter(regions__in=regions)
+def blank_request(request):
+	print(request)
+	return JsonResponse({'success': True})
+
+
+def get_all_cells_in_project(request):
+	GET = request.GET
+	project_id = GET['project_id']
+	print(project_id)
+	project = Project.objects.get(id=project_id)
+	all_cells_json = serializers.serialize("json", project.cell_set.all())
+	results = {'success':True, 'all_cells_json':all_cells_json}
+	return JsonResponse(results)
 	
 
 # UserForm view
 def register(request):
 
-  if request.method == 'POST':
-    form = UserForm(request.POST)
-    if form.is_valid():
-      new_user = form.save()
-      messages.info(request, "Thank you for registering. You are now logged in.")
-      new_user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
-      login(request, new_user)
-      return HttpResponseRedirect('/')
-    else:
-      print('form not valid')
-      print(form)
+	if request.method == 'POST':
+		form = UserForm(request.POST)
+		if form.is_valid():
+			new_user = form.save()
+			messages.info(request, "Thank you for registering. You are now logged in.")
+			new_user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
+			login(request, new_user)
+			return HttpResponseRedirect('/')
+		else:
+			print('form not valid')
+			print(form)
 
-  else:
-    form = UserForm()
-    
-  return render(request, 'labeller/register.html', {'form': form})
+	else:
+		form = UserForm()
+		
+	return render(request, 'labeller/register.html', {'form': form})
+
+
+# Projects page view
+@login_required
+def projects(request):
+	"""Show all projects"""
+
+	# user_projects = Project.objects.filter(user=request.user.get_username()).order_by('id')
+	# context = {'user_projects': user_projects}
+
+	projects = Project.objects.order_by('id')
+	context = {'projects': projects}
+	print(Project.id)
+
+	return render(request, 'labeller/projects.html', context)
+
+		# def get_queryset(self):
+		# user = self.request.user
+		# return Project.objects.filter(user)
+	
+
+def create_project(request):
+	if request.method == 'POST':
+		if request.POST.get('project') != None:
+			proj = request.POST.get('project')
+			project = Project.objects.create(name=proj)
+			print(proj)
+			print(project)
+		
+		else:
+			return render(request, 'labeller/projects.html')
+
+			# context = {'project': project}
+
+	# return HttpResponseRedirect(reverse('labeller:label_cells_in_project'))
+	return render(request, 'labeller/label_cells_in_project.html')
+
+# # Upload cells
+# def upload_cells(request):
+# 	if request.method == 'POST':
+# 		form = CellForm(request.POST, request.FILES)
+# 		if form.is_valid():
+# 			form.save()
+# 			# Get current instance objecct to dispaly
+# 			img_obj = form.instance
+# 			cell = request.FILES.get('file')
+# 			cid = request.FILES.get('filename')
+# 			return render(request, 'labeller/upload_cells.html', {'form': form, 'cell': cell, 'cid': cid, 'img_obj': img_obj})
+# 	else:
+# 		form = CellForm()
+# 	return render(request, 'labeller/label_cells_in_project.html', {'form': form})
+
+def export_project_data(request):
+	GET = request.GET
+	project_id = GET['project_id']
+	print(request, project_id)
+	project = Project.objects.get(id=project_id)
+	all_cells = project.cell_set.all()
+	list_of_cell_dicts = []
+	for cell in all_cells:
+		print(cell)
+		list_of_cell_dicts.append(cell.asdict())
+	print(list_of_cell_dicts)
+	df = pd.DataFrame(list_of_cell_dicts)
+	print(df)
+
+	now = datetime.now()
+	date_time = now.strftime("%Y%m%d%H%M%S")
+	filename = project_id + '_' + date_time + '.xlsx'
+	df.to_excel(DATA_EXPORT_ROOT + '/' + filename, index=False)
+
+	results = {'success':True, 'filename': '/data_export/' + filename}
+	return JsonResponse(results)
+
+
+
+# def export_project_data(request):
+# 	projects = Project.objects.filter('id')
+# 	with open(r'.\\labeller\\{{ project_id }}.json', "w") as out:
+# 		mast_point = serializers.serialize("json", projects)
+# 		out.write(mast_point)
+# 	template = __loader__.get_template('')
+# 	project = Project.objects.get('id')
+# 	cells_json = serializers.serialize("json", Cell.objects.filter(project.id))
+# 	context = {'project': project, 'cells_json': cells_json}
+
+# 	return render(request, 'labeller/data_export.html', context)
+
+# def export_project_data(target_path, target_file, data):
+#   data = serializers.serialize("json", Project.objects.GET('id'))
+#   print(data)
+
+#   if not os.path.exists(target_path):
+#     try:
+#       os.makedirs(target_path)
+#     except Exception as e:
+#       print(e)
+#       raise
+#   with open(os.path.join(target_path, target_file), 'w') as f:
+#     json.dump(data, f)
+
+#   file = export_project_data('/hemelabel/', 'project_data.json', data)
+#   print(file)
+#   return file 
+
+# def export_project_data(request, project_id):
+	
+
+def dropzone_image_w_projectID(request, project_id):
+	print("entering dropzone_image_w_projectID")
+	if request.method == "POST":
+		print(request)
+		print(request.FILES)
+		print(request.FILES.getlist('file'))
+		i = 0
+		#proj = request.POST.get('project')
+		# project_id = Project.name 
+		project = Project.objects.get(id=project_id)
+		cell_list = []
+		for image in request.FILES.getlist('file'):
+			print(image)
+			print(type(image))
+			cid = int(create_new_cid()+str(i))
+			i+=1
+			name = image.name
+			cell_type = request.POST.get('cell_type')
+			cells_json = serializers.serialize("json", project.cell_set.all())
+
+			# project = request.POST.get('project')
+			# print(proj)
+			print(cell_type)
+			print(project)
+			print(project_id)
+			print(name)
+			print(image)
+			print(cid)
+			print(cells_json)
+			cell = Cell.objects.create(image = image, cid = cid, name = name, project = project, project_id = project_id, cell_type = cell_type)
+			cell.save()
+			cell_list.append(cell)
+		cells_json = serializers.serialize("json", cell_list)	
+		print('cell list: ' + str(cell_list))
+		print('cells json: ' + str(cells_json))
+		results = {'success': True,  'cells_json': cells_json}
+		return JsonResponse(results)
+		#return HttpResponse()
+
+	return HttpResponse()
+
+def label_cells_in_project(request, project_id):
+	"""label cells in a given project"""
+	print(project_id)
+	project = Project.objects.get(id=project_id)
+	print(project)
+	cells = project.cell_set.all()
+	name = project.name
+
+	if (cells.count() == 0):
+		cells = "none"
+		cells_json = "none"
+	else:
+		cells_json = serializers.serialize("json", project.cell_set.all())
+
+	context = {'project': project, 'name': name, 'cells': cells, 'cells_json': cells_json}
+	print(context)
+
+	return render(request, 'labeller/label_cells_in_project.html', context)
 
 # def update_cell_class(request):
 # 	results = {'success':False}

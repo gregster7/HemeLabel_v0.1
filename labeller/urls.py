@@ -55,6 +55,9 @@ urlpatterns = [
 	# # Page for exporting data
 	# re_path(r'^data_export/$', views.data_export, name='data_export'),
 
+  # Page for exporting Project Data
+  re_path(r'^export_project_data/$', views.export_project_data, name='export_project_data'),
+
 	# Page for viewing labelling stats/progress
 	re_path(r'^stats/$', views.stats, name='stats'),
 
@@ -78,6 +81,10 @@ urlpatterns = [
 	# Get cell information (AJAX)
 	re_path(r'^get_all_cells_in_region/', views.get_all_cells_in_region, name='get_all_cells_in_region'),
 
+  re_path(r'^get_all_cells_in_project/', views.get_all_cells_in_project, name='get_all_cells_in_project'),
+
+  re_path(r'^blank_request/', views.blank_request, name='blank_request'),
+  
 	# Get cell information (AJAX)
 	re_path(r'^get_all_cells_in_slide/', views.get_all_cells_in_slide, name='get_all_cells_in_slide'),
 
@@ -114,6 +121,23 @@ urlpatterns = [
 
   # Add user registration page
   path('register/', views.register, name='register'),
+
+  # Page for viewing all projects created when uploading cells
+  re_path(r'^projects/$', views.projects, name='projects'),
+
+  # Page for directly uploading cells enmasse.
+  # re_path(r'^upload_cells/$', views.upload_cells, name='upload_cells'),
+
+  # Handles uploaded cell images
+  #path('dropzone_image', views.dropzone_image, name='dropzone_image'),
+  #re_path(r'^label_cell_fabric/(?P<project_id>\d+)/dropzone_image', views.dropzone_image_w_projectID, name='dropzone_image_w_projectID'),
+  re_path(r'^label_cells_in_project/(?P<project_id>\d+)/dropzone_image', views.dropzone_image_w_projectID, name='dropzone_image_w_projectID'),
+
+
+  path('create_project', views.create_project, name="create_project"),
+
+  # Page for labelling a cell in given project
+	re_path(r'^label_cells_in_project/(?P<project_id>\d+)/$', views.label_cells_in_project, name='label_cells_in_project'),
 
 
 	# # Page for AJAX updates to cell

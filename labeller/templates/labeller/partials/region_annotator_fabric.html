@@ -11,7 +11,7 @@
 		<canvas id="region_canvas_original" style="position:relative"></canvas>
 	</div>
  -->	<button id="fabric_add_square_button">Add cell (m)</button>
-	<button id="delete_cell_button">Delete cell (/)</button>
+	<button id="delete_cell_button">Delete cell (\)</button>
 	<button id="toggle_annotation_mode">Toggle annotation mode (,)</button>
 <!-- 	<button id="toggle_circles_button">Toggle annotation mode (,)</button>
  --><!-- 	<button id="toggle_squares_button">Toggle squares (.)</button> -->
@@ -337,11 +337,21 @@ class RegionLabellerFabric {
 				// var all_cells = Cell.LoadCellsFromJson(json['all_cells_json']);
 				cell = new Cell(cell);
 				var new_cell_div = cell.getDivForCellList();
+        $('#UL_cells_inline').prepend($(new_cell_div).clone());
+        
+        //$(new_cell_div).addClass('clicked_cell');
 				$('#unlabelled_cells_inline').prepend(new_cell_div);
+        
+
 				Cell.selectCellByCID(cell.getCID())
 				RegionLabellerFabric.addBoundingBoxFromCell(canvas, cell);
 				RegionLabellerFabric.selectBoxAsActiveFromCID(cell.getCID());
 				RegionLabellerFabric.addNewCircle(cell, canvas);
+        CellCounter.updateCountsOnPageWrapper();
+        Cell.UpdateHorizontalCellCounts();
+        $('.clicked_cell').removeClass('clicked_cell');
+        $('#unlabelled_cells_inline').children().first().addClass('clicked_cell');
+        //CellCounter.updateCountsOnPageAJAX(rid);
 //				RegionLabellerFabric.drawBoundingBox(canvas, left, top, width, height, cell.getCID());
 			}
 		});
@@ -377,16 +387,18 @@ class RegionLabellerFabric {
 		var cid = canvas.getActiveObject().name
 		canvas.remove(canvas.getActiveObject());
 		//Cell.deleteCellByCID( cid);
-		Cell.deleteCellFromDatabase(cid);
-		var nextCellCID = HorizontalCellList.nextCell(1);
-		console.log('removeSelectedBox', 'nextCellCID', nextCellCID )
-		if (nextCellCID!=false) {
+		Cell.deleteCellByCID(cid);
+    console.log('removeSelectedBox new cid', Cell.currentCellCID())
+    RegionLabellerFabric.selectBoxAsActiveFromCID(Cell.currentCellCID());
+		//var nextCellCID = HorizontalCellList.nextCell(1);
+		console.log('removeSelectedBox')
+		{% comment %} if (nextCellCID!=false) {
 
 			Cell.selectCellByCID(nextCellCID);
 			RegionLabellerFabric.selectBoxAsActiveFromCID(nextCellCID);
-		}
-		$('.cell.'+cid).remove();
-		$('#centroid'+cid).remove();
+		} {% endcomment %}
+		{% comment %} $('.cell.'+cid).remove();
+		$('#centroid'+cid).remove(); {% endcomment %}
 		
 	}
 
@@ -690,7 +702,8 @@ $ (document).ready(function() {
 			RegionLabellerFabric.addBoundingBoxFromCell(canvas, cell);
 			RegionLabellerFabric.addNewCircle(cell, canvas);
 		}
-		CellCounter.updateCountsOnPageAJAX('{{region.rid}}');
+    CellCounter.updateCountsOnPageWrapper();
+		//CellCounter.updateCountsOnPageAJAX('{{region.rid}}');
 	}
 	RegionLabellerFabric.toggleCanvasModes();
 });
