@@ -366,6 +366,7 @@ class Cell {
 		
 	}
 
+
 	static deleteCellFromDatabase(cell_cid) {
 		$.post("/delete_cell/", {'cid':cell_cid}, function(json){
 			if (json['success'] == true) {

@@ -110,6 +110,7 @@ def label_slide_overlay(request, slide_id):
 	return render(request, 'labeller/label_slide_overlay.html', context)
 
 def label_slide(request, slide_id):
+	#print('label_slide', request, slide_id)
 	slide = Slide.objects.get(sid=slide_id)
 	regions = slide.region_set.all()
 	context = {'slide': slide, 'regions': regions}
@@ -333,6 +334,13 @@ def add_new_cell(request):
 	# 	results = {'success':False, 'error':'too close to boundary'}
 	
 	# return JsonResponse(results)
+
+def delete_region(request):
+	rid = request.POST['rid']
+	print('deleting region %s' %rid)
+	region = Region.objects.filter(rid=rid).delete()
+	results = {'success':True}
+	return JsonResponse(results)
 
 def delete_cell(request):
 	POST = request.POST
@@ -631,7 +639,35 @@ def export_project_data(request):
 #   return file 
 
 # def export_project_data(request, project_id):
-	
+
+def create_slide_pyramid_with_vips(sid):
+	command = "vips dzsave "+ settings.MEDIA_ROOT + '/slides/' + sid + '.svs ' + \
+		settings.MEDIA_ROOT + '/slides/' + sid 
+	os.system(command)
+
+def generate_cell_image_with_vips(region, cid, left, top, width, height):
+	cid = str(cid)
+	region_path = settings.MEDIA_ROOT + region.image.url
+	cell_path = settings.MEDIA_ROOT + '/cells/' + cid + '.jpg'
+	command = "vips crop "+ region_path + " " + cell_path + " " + \
+		str(left) + " " + str(top) + " " + \
+		str(width) + " " + str(height) 
+	os.system(command)
+
+# Upload handler for dzi WSIs and also Excel files relating to them
+def dropzone_slide(request):
+	print('entering dropzone_slide')
+	# Check if it is a .dzi file or a .xlsx file
+	# If .dzi files
+		
+		# Create new slide object
+		# Save slide object
+		# get slide sid
+		# create_slide_pyramid_with_vips(sid)
+	# If .xlsx
+		# Do something else to be written
+	return
+
 
 def dropzone_image_w_projectID(request, project_id):
 	print("entering dropzone_image_w_projectID")

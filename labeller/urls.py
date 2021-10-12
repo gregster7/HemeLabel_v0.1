@@ -100,6 +100,9 @@ urlpatterns = [
 	# Add new cell with box (AJAX)
 	re_path(r'^add_new_cell_box/', views.add_new_cell_box, name='add_new_cell_box'),
 
+	# Delete region (AJAX)
+	re_path(r'^delete_region/', views.delete_region, name='delete_region'),
+
 	# Delete cell (AJAX)
 	re_path(r'^delete_cell/', views.delete_cell, name='delete_cell'),
 
@@ -133,6 +136,8 @@ urlpatterns = [
   #re_path(r'^label_cell_fabric/(?P<project_id>\d+)/dropzone_image', views.dropzone_image_w_projectID, name='dropzone_image_w_projectID'),
   re_path(r'^label_cells_in_project/(?P<project_id>\d+)/dropzone_image', views.dropzone_image_w_projectID, name='dropzone_image_w_projectID'),
 
+  # Handles dropzone uploaded slides or slide spreadsheets
+  re_path(r'^label_cells_in_project/dropzone_slide', views.dropzone_slide, name='dropzone_slide_upload'),
 
   path('create_project', views.create_project, name="create_project"),
 

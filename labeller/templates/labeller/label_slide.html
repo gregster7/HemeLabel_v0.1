@@ -3,10 +3,10 @@
 
 {% block title %}Label Region{% endblock %}
 {% block content %}
-
 <script type="text/javascript">
-function createRegionDiv(rid, path) {
-  new_div = '<p> RID: '+rid+'    '+'<img src="'+path+'" id="region_img_'+rid+'"></p>'
+function createRegionDiv(rid, img_path, region_path) {
+  new_div = '<p id="regionSummary_'+rid+'"> RID: '+'<a href="'+ region_path + '">' + rid + '</a>    '+'\
+    <img src="'+img_path+'" id="region_img_'+rid+'"> <button id="delete_region_button_'+rid+'" class="delete_region_button rid='+rid+'">delete</button></p>'
   console.log(new_div);
   return new_div;
 }
@@ -28,12 +28,16 @@ function fadeRegionInAndOut(rid){
 }
 
 function addNewRegion(sid, x1, y1, x2, y2){
-     $.post("/add_new_region/", {'sid':slide_id, 'x1':x1, 'y1':y1, 'x2':x2, 'y2':y2}, function(json){
+     $.post("/add_new_region/", {'sid':sid, 'x1':x1, 'y1':y1, 'x2':x2, 'y2':y2}, function(json){
      console.log("Was successful?: " + json['success'] +' '+ json['rid']+' '+ json['region_path']);
       
       //Add new region to top of regions div
       $('#regions').prepend(createRegionDiv(json['rid'],json['region_path']));
+      $('#delete_region_button_'+json['rid']).click(function(){ 
+        region_delete_click_handler(this.classList)
+      });
       fadeRegionInAndOut(json['rid'])
+
     });
  }
 </script>
@@ -45,14 +49,16 @@ function addNewRegion(sid, x1, y1, x2, y2){
 
 
 <div id="openseadragon1" style="width: 100%; height: 700px;"></div>
-<p id="slide_info" style="text-align: center;"> SID: {{slide.sid}} &nbsp &nbsp &nbsp &nbsp  <button id="button">Crop New Region</button></p>
+<p id="slide_info" style="text-align: center;"> SID: {{slide.sid}} &nbsp &nbsp &nbsp &nbsp  <button id="add_new_region_button">Crop New Region</button></p>
 
 <h2 id="regions_banner">Regions</h2>
 <div id="regions">
 <u1>
   {% for region in regions %}
   <script>
-     $('#regions').append(createRegionDiv('{{region.rid}}', '{{region.image.url}}'))
+    var region_path =  "{% url 'labeller:label_region_fabric' region.rid %}";
+    // console.log('path', region_path)
+    $('#regions').append(createRegionDiv('{{region.rid}}', '{{region.image.url}}', region_path));
   </script>
 
   {% empty %}
@@ -68,11 +74,18 @@ function addNewRegion(sid, x1, y1, x2, y2){
 <script src="{% static 'labeller/openseadragon/openseadragon.min.js' %}"></script>
 
 <script type="text/javascript">
-  console.log('static', '{% static media %}')
+  // console.log('static', '{% static media %}');
+  // console.log('dzi_path', '{{ slide.dzi_path }}');
+  // console.log('new_path', '{% static media %}{{ slide.dzi_path }}');
+  dzi_path = '/{{ slide.dzi_path }}';
+  var prefix_url = "{% static 'labeller/openseadragon/images/' %}";
 
-    var dzi_path = "{% static 'labeller/images/zoom/' %}" + '{{slide.sid}}' + '.dzi';
-    var prefix_url = "{% static 'labeller/openseadragon/images/' %}";
-    var slide_id = "{{slide.sid}}"
+//  new_path = '/slides/23.dzi'
+  // var dzi_path = "{% static 'labeller/images/zoom/' %}" + '{{slide.sid}}' + '.dzi';
+  // console.log('old dzi path', dzi_path);
+  // console.log('prefix_url', prefix_url)
+  // var slide_id = "{{slide.sid}}"
+  // console.log('slide_id', slide_id)
 
 </script>
 
@@ -158,6 +171,7 @@ new OpenSeadragon.MouseTracker({
 
 
     console.log(x1, y1, x2, y2)
+    var slide_id = '{{slide.sid}}'
     addNewRegion(slide_id, x1, y1, x2, y2)
 
     
@@ -198,14 +212,39 @@ new OpenSeadragon.MouseTracker({
   }
 
 });
-if (document.getElementById('button')!=null) {
-  document.getElementById('button').addEventListener('click', function() {
+if (document.getElementById('add_new_region_button')!=null) {
+  document.getElementById('add_new_region_button').addEventListener('click', function() {
     selectionMode = true;
     console.log('button pressed');
     viewer.setMouseNavEnabled(false);
   });
 }
-  
+
+function region_delete_click_handler(classList) {
+  console.log('region_delete_click_handler', classList)
+  for (i=0; i<classList.length; i++){
+    rid_loc = classList[i].indexOf("rid=");
+    if (rid_loc!=-1) {
+      console.log(classList[i].substr(rid_loc+4))
+      var rid = classList[i].substr(rid_loc+4);
+      $.post("/delete_region/", {'rid':rid}, function(json){
+        if (json['success'] == true) {
+          console.log('deleteRegionFromDatabase success')
+          $('#regionSummary_'+rid).remove();
+        }
+        else {
+          console.log("Error in deleteRegionFromDatabase: ", json); 
+          return false;
+        } 
+      });
+
+    }
+  }
+}  
+
+$('.delete_region_button').click(function(){ 
+  region_delete_click_handler(this.classList)
+});
 
 
 </script>
