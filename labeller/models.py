@@ -29,8 +29,11 @@ class Slide (models.Model):
 	date_added = models.DateTimeField(auto_now_add=True)
 	dzi_path = models.FileField(upload_to="slides", max_length=300)
 	svs_path = models.FileField(upload_to="slides", max_length=300)
-	# primary_diagnosis = models.CharField(max_length=200, default="default", blank=True, null=True)
-	# slide_name = models.CharField(max_length=200, default="default", blank=True, null=True)
+
+	
+	# Store filename as name
+	name = models.CharField(max_length=200, blank=True, null=True)
+	primary_diagnosis = models.CharField(max_length=200, blank=True, null=True)
 
 	class Meta:
 		verbose_name_plural = 'Slides'
