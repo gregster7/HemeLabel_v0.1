@@ -657,6 +657,35 @@ def generate_cell_image_with_vips(region, cid, left, top, width, height):
 # Upload handler for dzi WSIs and also Excel files relating to them
 def dropzone_slide(request):
 	print('entering dropzone_slide')
+	if request.method == "POST":
+		i = 0
+
+		for image in request.FILES.getlist('file'):
+			print(image)
+			extension = image.name[-4:]
+			print(extension)
+			if extension == ".svs":
+				sid = int(create_new_cid()+str(i))
+				i += 1
+				date_added = str(datetime.now())
+				name = image.name
+				image.name = str(sid) + '.svs'
+				slide = Slide.objects.create(sid = sid, date_added = date_added, name = name, svs_path = image)
+				slide.save()
+				print(slide.sid)
+				print(slide.name)
+				print(slide.date_added)
+				sid = str(slide.sid)
+				create_slide_pyramid_with_vips(sid)
+				results = {'success': True}
+				return JsonResponse(results)
+
+				
+
+
+
+
+
 	# Check if it is a .dzi file or a .xlsx file
 	# If .dzi files
 		
