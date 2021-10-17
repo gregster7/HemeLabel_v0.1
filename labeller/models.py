@@ -25,10 +25,10 @@ class Patient (models.Model):
 class Slide (models.Model):
 	"""A slide comes from a single patient, but can have many regions"""
 	sid = models.IntegerField(unique=True)
-	patient = models.ForeignKey('Patient', on_delete=models.RESTRICT)
+	patient = models.ForeignKey('Patient', on_delete=models.RESTRICT, blank=True, null=True)
 	date_added = models.DateTimeField(auto_now_add=True)
-	dzi_path = models.FileField(upload_to="slides", max_length=300)
-	svs_path = models.FileField(upload_to="slides", max_length=300)
+	dzi_path = models.FileField(upload_to="slides", max_length=300, blank=True, null=True)
+	svs_path = models.FileField(upload_to="slides", max_length=300, blank=True, null=True)
 
 	
 	# Store filename as name
