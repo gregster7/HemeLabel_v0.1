@@ -1,7 +1,48 @@
 {% extends "labeller/base.html" %}
+{% load static %}
 
 
 {% block content %}
+
+<script src="{% static 'labeller/Cell.js' %}"></script>
+
+<script src="{% static 'labeller/dropzone-5.7.0/dist/dropzone.js' %}"></script>
+
+<link rel="stylesheet" href="{% static 'labeller/dropzone-5.7.0/dist/dropzone.css' %}">
+
+<script>
+	// My own Dropzone //
+	Dropzone.options.mySlideDropzone = {
+    paramName: function() {
+      return "file";
+    },
+
+    autoProcessQueue: false,
+    maxFilesize: 1000,
+    parallelUploads: 100,
+    uploadMultiple: true,
+    timeout: 100000,
+
+    init: function() {
+      var submitButton = document.querySelector("#upload-btn");
+      var mySlideDropzone = this;
+
+      submitButton.addEventListener("click", function() {
+        mySlideDropzone.processQueue();
+      });
+
+      mySlideDropzone.on("complete", function(file) {
+        mySlideDropzone.removeFile(file);
+      });
+
+      mySlideDropzone.on("success", function(file, serverResponse) {
+        console.log('entering mydropzone.on("success")');
+        success = serverResponse['success'];
+      });
+    }
+  };
+ 
+ </script>
 
 	<h2>Slides</h2>
 	
@@ -22,6 +63,16 @@
 		{% endfor %}
 
 	</u1></p>
+
+	<p>
+
+		<form action="dropzone_slide" id="my-slide-dropzone" method="POST" enctype="multipart/form-data" class="dropzone js-reference-dropzone">
+			{% csrf_token %}
+		  </form>
+		  <br>
+		  <button id="upload-btn" type="button">Add Slides</button>
+	
+	</p>
 
 
 

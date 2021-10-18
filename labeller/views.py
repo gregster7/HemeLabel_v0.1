@@ -641,9 +641,12 @@ def export_project_data(request):
 # def export_project_data(request, project_id):
 
 def create_slide_pyramid_with_vips(sid):
-	command = "vips dzsave "+ settings.MEDIA_ROOT + '/slides/' + sid + '.svs ' + \
+	slide_svs = '/slides/' + sid + '.svs '
+	command = "vips dzsave "+ settings.MEDIA_ROOT + slide_svs + \
 		settings.MEDIA_ROOT + '/slides/' + sid 
+	 
 	os.system(command)
+	return('slides/' + sid + '.dzi')
 
 def generate_cell_image_with_vips(region, cid, left, top, width, height):
 	cid = str(cid)
@@ -664,21 +667,23 @@ def dropzone_slide(request):
 			print(image)
 			extension = image.name[-4:]
 			print(extension)
+			
 			if extension == ".svs":
-				sid = int(create_new_cid()+str(i))
+				sid = (create_new_cid()+(str(i)))
 				i += 1
-				date_added = str(datetime.now())
-				name = image.name
+				print(i)
 				image.name = str(sid) + '.svs'
-				slide = Slide.objects.create(sid = sid, date_added = date_added, name = name, svs_path = image)
-				slide.save()
+				slide = Slide.objects.create(sid = sid, date_added = str(datetime.now()), name = image.name, svs_path = image)
 				print(slide.sid)
 				print(slide.name)
 				print(slide.date_added)
-				sid = str(slide.sid)
-				create_slide_pyramid_with_vips(sid)
-				results = {'success': True}
-				return JsonResponse(results)
+				print(id)
+				slide.dzi_path = create_slide_pyramid_with_vips(sid)
+				print(slide.dzi_path)
+				slide.save()
+
+				
+				return JsonResponse({'success': True})
 
 				
 

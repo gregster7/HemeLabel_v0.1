@@ -138,7 +138,7 @@ urlpatterns = [
 
   # Handles dropzone uploaded slides or slide spreadsheets
 #   re_path(r'^label_cells_in_project/dropzone_slide', views.dropzone_slide, name='dropzone_slide_upload'),
-	re_path(r'^projects/dropzone_slide', views.dropzone_slide, name='dropzone_slide_upload'),
+	re_path(r'^slides/dropzone_slide', views.dropzone_slide, name='dropzone_slide_upload'),
 
   path('create_project', views.create_project, name="create_project"),
 
