@@ -46,7 +46,13 @@ def cells(request):
 def slides(request):
 	"""Show all regions."""
 	slides = Slide.objects.order_by('sid')
-	context = {'slides': slides}
+	slides_json = serializers.serialize("json", slides)
+	if (len(slides) > 0):
+		slides_json = serializers.serialize("json", slides)
+	else:
+		slides_json = 'none'
+
+	context = {'slides': slides, 'slides_json': slides_json}
 	return render(request, 'labeller/slides.html', context)	
 
 
@@ -190,6 +196,14 @@ def get_cell_json(request):
 	cell_json = serializers.serialize("json", [cell])
 	results = {'success':True, 'cell_json':cell_json}
 	return JsonResponse(results);
+
+def get_slide_json(request):
+	GET = request.GET
+	sid = GET['sid']
+	slide = Slide.objects.get(sid=sid)
+	slide_json = serializers.serialize("json", [slide])
+	results = {'success': True, 'slide_json': slide_json}
+	return JsonResponse(results)
 
 
 # vips crop
@@ -641,9 +655,12 @@ def export_project_data(request):
 # def export_project_data(request, project_id):
 
 def create_slide_pyramid_with_vips(sid):
-	command = "vips dzsave "+ settings.MEDIA_ROOT + '/slides/' + sid + '.svs ' + \
+	slide_svs = '/slides/' + sid + '.svs '
+	command = "vips dzsave "+ settings.MEDIA_ROOT + slide_svs + \
 		settings.MEDIA_ROOT + '/slides/' + sid 
+	 
 	os.system(command)
+	return('slides/' + sid + '.dzi')
 
 def generate_cell_image_with_vips(region, cid, left, top, width, height):
 	cid = str(cid)
@@ -657,6 +674,37 @@ def generate_cell_image_with_vips(region, cid, left, top, width, height):
 # Upload handler for dzi WSIs and also Excel files relating to them
 def dropzone_slide(request):
 	print('entering dropzone_slide')
+	if request.method == "POST":
+		i = 0
+
+		slide_list = []
+
+		for image in request.FILES.getlist('file'):
+			print(image)
+			extension = image.name[-4:]
+			print(extension)
+			
+			if extension == ".svs":
+				sid = create_new_cid()+str(i)
+				i += 1
+				print(i)
+				image.name = str(sid) + '.svs'
+				slide = Slide.objects.create(sid = sid, date_added = str(datetime.now()), name = image.name, svs_path = image)
+				print(slide.sid)
+				print(slide.name)
+				print(slide.date_added)
+				print(id)
+				slide.dzi_path = create_slide_pyramid_with_vips(sid)
+				print(slide.dzi_path)
+				slide.save()
+				slide_list.append(slide)
+		slides_json = serializers.serialize("json", slide_list)
+		print(slides_json)
+		results = {'success': True, 'slides_json': slides_json}
+		return JsonResponse(results)
+
+	# return HttpResponse()
+
 	# Check if it is a .dzi file or a .xlsx file
 	# If .dzi files
 		

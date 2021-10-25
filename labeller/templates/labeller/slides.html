@@ -1,28 +1,139 @@
 {% extends "labeller/base.html" %}
+{% load static %}
+
 
 
 {% block content %}
 
-	<h2>Slides</h2>
-	
-	<p>
-	<u1>
-		{% for slide in slides %}
+  <script src="{% static 'labeller/Cell.js' %}"></script>
+  <script src="{% static 'labeller/dropzone-5.7.0/dist/dropzone.js' %}"></script>
+
+  <link rel="stylesheet" type="text/css" href="{% static 'labeller/style.css' %}">
+  <link rel="stylesheet" href="{% static 'labeller/dropzone-5.7.0/dist/dropzone.css' %}">
+
+  <script>
+
+    function getULForSlide(id, sid) {
+
+      slide_path = '/label_slide/'+sid+ '/';
+      var ul = '<ul id="slide_list_{{ slide.id }}" class="slide_list">';
+      ul = ul + '<li class="slide_id">ID: '+ id +'</li>';
+      ul = ul + '<li class="slide_sid">SID: '+ sid +'</li>';
+      ul = ul + '<li class="label_btn"><a class="slide_label_btn" href= "'+ slide_path+'">Label</a></li></ul>';
+
+      return ul;
+    }
+
+    // My own Dropzone //
+    Dropzone.options.mySlideDropzone = {
+      paramName: function() {
+        return "file";
+      },
+
+      autoProcessQueue: false,
+      maxFilesize: 1000,
+      parallelUploads: 100,
+      uploadMultiple: true,
+      timeout: 100000,
+
+      init: function() {
+        var submitButton = document.querySelector("#upload-btn");
+        var mySlideDropzone = this;
+
+        submitButton.addEventListener("click", function() {
+          mySlideDropzone.processQueue();
+        });
+
+        mySlideDropzone.on("complete", function(file) {
+          mySlideDropzone.removeFile(file);
+
+          // var $newSlideItem = getDivForSlideList(file);
+          // $('div:last').after($newSlideItem);
+
+        });
 
 
-			<p> 
-				ID: {{slide.id}} &nbsp &nbsp &nbsp &nbsp
-				SID: {{slide.sid}} &nbsp &nbsp &nbsp &nbsp  
-				<a href={% url 'labeller:label_slide' slide.sid %}>label</a>
-			</p>			
+        mySlideDropzone.on("success", function(file, serverResponse) {
+          console.log('entering mydropzone.on("success")');
+          if (serverResponse['success']) {
+            var slides_json = serverResponse['slides_json'];
+            console.log(slides_json);
+            var slides = $.parseJSON(slides_json.replace(/&quot;/ig,'"'));
+            console.log(slides);
+            if (slides.length > 0) {
+              $('#no_slide').remove();
+            }
 
+            for (var i=0; i<slides.length; i++) {
+              console.log(slides[i]);
+              var slide = slides[i];
+              $('#slides').append(getULForSlide(slide.pk, slide.fields.sid));
+            }
 
-		{% empty %}
-			<li>No cells have been added yet</li>
-		{% endfor %}
+          }
 
-	</u1></p>
+        });
+      }
+    };
+  
+  </script>
 
+    <h2>Slides</h2>
+       
 
+    <div id="slides">
+
+      {% for slide in slides %}
+
+      <script>
+        $('#slides').append(getULForSlide({{slide.pk}}, {{slide.sid}}))
+      </script>
+
+      {% empty %}
+        <p id="no_slide">No Slides</p>
+      {% endfor %}
+
+    </div>
+
+    <form action="dropzone_slide" id="my-slide-dropzone" method="POST" enctype="multipart/form-data" class="dropzone js-reference-dropzone">
+      {% csrf_token %}
+    </form>
+
+      <br>
+
+      <button id="upload-btn" type="button">Add Slides</button>
+  
 
 {% endblock content %}
+
+
+<script>
+
+//$ (document).ready(function() {
+  //  console.log('ready');
+    
+    // if ('{{slides_json}}'!='none') {
+      
+    //   var slides_json_reformat = $.parseJSON(slides_json.replace(/&quot;/ig,'"'));
+    //     // var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig,'"'));
+    //     for (var i=0; i<slides_json_reformat.length; i++) {
+    //       console.log(slides_json_reformat[i]);
+    //       var slide = slides_json_reformat[i];
+    //       $('#slides').append(getULForSlide(id, sid))
+    //     }
+    // }
+    // else{
+    //   $('#slides').append('<p id="no_slide">No Slides</p>');
+    // }
+
+
+      
+  //    var cells_json = '{{cells_json}}';
+  //    var all_cells = Cell.LoadCellsFromJson(cells_json);
+  //		console.log(all_cells)
+//        CellCounter.updateCountsOnPageWrapper();
+    
+    
+  //});
+
+</script>

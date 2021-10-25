@@ -5,7 +5,45 @@
 
 {% block content %}
 <script src="{% static 'labeller/Cell.js' %}"></script>
+<script src="{% static 'labeller/CellCounter.js' %}"></script>
+<script src="{% static 'labeller/dropzone-5.7.0/dist/dropzone.js' %}"></script>
 
+<link rel="stylesheet" href="{% static 'labeller/dropzone-5.7.0/dist/dropzone.css' %}">
+
+<script>
+  // My own Dropzone
+
+  Dropzone.options.mySlideDropzone = {
+    paramName: function() {
+      return "file";
+    },
+
+    autoProcessQueue: false,
+    maxFilesize: 1000,
+    parallelUploads: 100,
+    uploadMultiple: true,
+    timeout: 100000,
+
+    init: function() {
+      var submitButton = document.querySelector("#upload-btn");
+      var mySlideDropzone = this;
+
+      submitButton.addEventListener("click", function() {
+        mySlideDropzone.processQueue();
+      });
+
+      mySlideDropzone.on("complete", function(file) {
+        mySlideDropzone.removeFile(file);
+      });
+
+      mySlideDropzone.on("success", function(file, serverResponse) {
+        console.log('entering mydropzone.on("success")');
+        success = serverResponse['success'];
+      });
+    }
+  };
+
+</script>
 
   <h2>{{ user.get_username }}'s Projects</h2>
 
@@ -18,15 +56,6 @@
         <a href="{% url 'labeller:label_cells_in_project' project.id %}">
         Project: {{ project.name }} </a>  &nbsp &nbsp &nbsp &nbsp
         Project ID: {{ project.id }} &nbsp &nbsp &nbsp &nbsp
-        {% include "labeller/partials/export_project_data.html" %}
-
-        {% comment %} <button class='export_button' id='{{ project.id }}'>Export project button</button> {% endcomment %}
-
-        {% comment %} onclick="button_export_handler()">Export project data</button> {% endcomment %}
-        {% comment %} <a href="{% url 'labeller:export_project_data' project.id %}">
-        Export Project Data</a>
-        <a href="{% url 'labeller:blank_request' %}">blank reqest </a>
-         {% endcomment %}
       </p>
 
       {% empty %}
@@ -42,28 +71,15 @@
     </form>
   </p>
 
+  <div>
 
-{% comment %} <script> 
-  $('.export_button').click(function(){
-      console.log($(this).attr('id'));
-      var project_id = $(this).attr('id');
-      $.get("/export_project_data/", {'project_id':project_id}, function(json){
+    <form action="dropzone_slide" id="my-slide-dropzone" method="POST" enctype="multipart/form-data" class="dropzone js-reference-dropzone">
+      {% csrf_token %}
+    </form>
+    <br>
+    <button id="upload-btn" type="button">Add Slides</button>
 
-        console.log('button_export_handler callback');
+  </div>
 
-        console.log(json['filename']);
-
-        window.location.href = json['filename']
-
-      });
-
-  });
-  
-  {% comment %} function button_export_handler(project_id) {
-    $.get("/get_all_cells_in_project/"+project_id, function(json){
-      print('button_export_handler callback');
-    });
-  } {% endcomment %}
-{% comment %} </script>  {% endcomment %}
 
 {% endblock %}

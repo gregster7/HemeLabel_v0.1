@@ -31,20 +31,20 @@
 
         myDropzone.on("complete", function(file) {
           myDropzone.removeFile(file);
-          {% comment %} CellCounter.updateCountsOnPageAJAXProject(project_id); {% endcomment %}
+          // CellCounter.updateCountsOnPageAJAXProject(project_id);
         });
 
         myDropzone.on("successmultiple", function(file, serverResponse) {
           console.log('entering mydropzone.on("successmultiple")');
-          {% comment %} console.log(file)
-          console.log(serverResponse)  {% endcomment %}
+          // console.log(file)
+          // console.log(serverResponse)
           success = serverResponse['success']
           cells_json = serverResponse['cells_json']
-          {% comment %} console.log(success)
-          console.log(cells_json) {% endcomment %}
+          // console.log(success)
+          // console.log(cells_json)
           HorizontalCellList.populateCellLists(cells_json);
           CellCounter.updateCountsOnPageWrapper();
-          {% comment %} this.createThumbnailFromUrl(file, serverResponse.imageUrl); {% endcomment %}
+          // this.createThumbnailFromUrl(file, serverResponse.imageUrl);
         });
 
       }
@@ -57,7 +57,6 @@
   <h2>Cell Labeler</h2>
 
   <div id='labeller'>
-	{% comment %} {% include "labeller/partials/region_annotator_fabric.html" %} {% endcomment %}
     <div id="column2_wrapper" >
       {% include "labeller/partials/current_cell.html" %}
     </div>
@@ -124,8 +123,8 @@
   </div>
   <br>
   
-  {% comment %} <div class="cells_list_of_current_project">
-  </div> {% endcomment %}
+  <!-- <div class="cells_list_of_current_project"> -->
+  <!-- </div> -->
 
   {% include "labeller/partials/big_table.html" %}
   {% include "labeller/partials/main_lineages_horizontal.html" %}
