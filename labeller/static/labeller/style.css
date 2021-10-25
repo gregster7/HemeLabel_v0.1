@@ -10,10 +10,10 @@ body {
 
 
 .rectangle {
-        border: 5px solid #FF0000;
-        position: absolute;
-        /*z-index: 50;*/
-        resize: both;
+		border: 5px solid #FF0000;
+		position: absolute;
+		/*z-index: 50;*/
+		resize: both;
 		overflow: auto;
 /*        background:green;
 */ }
@@ -37,9 +37,9 @@ h2 {
 .row_menu {
 	background-color: white;
 	padding: 10px;
-  list-style-type: none;
-  display: flex;
-  justify-content: center;
+	list-style-type: none;
+	display: flex;
+	justify-content: center;
 }
 
 .row_menu li {
@@ -55,6 +55,7 @@ h2 {
 
 .row_menu a:hover {
   text-decoration: underline;
+  color: #fff;
 }
 
 /* .row_menu {
@@ -263,11 +264,11 @@ Image height is 665px
 /********** Label Region Fabric **********/
 #region_canvas_fabric {
 	display:inline-block;
-    margin: 0 auto; 
-    position:relative; 
-    border:1px solid black; 
+	margin: 0 auto; 
+	position:relative; 
+	border:1px solid black; 
 /*    border-radius: 10px; 
-    box-shadow: 0 5px 50px #333
+	box-shadow: 0 5px 50px #333
 */}
 
 .region_image_fabric {
@@ -278,9 +279,23 @@ Image height is 665px
 }
 
 .region_canvas_fabric{
-    position:absolute;
-    top:0;
-    left:0;
-    z-index:20;
+	position:absolute;
+	top:0;
+	left:0;
+	z-index:20;
 }
 
+/* SLIDES.HTML STYLES */
+
+.slide_list {
+	list-style-type: none;
+	display: flex;
+}
+
+.slide_list li {
+	padding: 0 10px 0 0;
+}
+
+.slide_label_btn{
+	text-decoration: none;
+}

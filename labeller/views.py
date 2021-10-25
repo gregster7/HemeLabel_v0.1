@@ -46,7 +46,13 @@ def cells(request):
 def slides(request):
 	"""Show all regions."""
 	slides = Slide.objects.order_by('sid')
-	context = {'slides': slides}
+	slides_json = serializers.serialize("json", slides)
+	if (len(slides) > 0):
+		slides_json = serializers.serialize("json", slides)
+	else:
+		slides_json = 'none'
+
+	context = {'slides': slides, 'slides_json': slides_json}
 	return render(request, 'labeller/slides.html', context)	
 
 
@@ -190,6 +196,14 @@ def get_cell_json(request):
 	cell_json = serializers.serialize("json", [cell])
 	results = {'success':True, 'cell_json':cell_json}
 	return JsonResponse(results);
+
+def get_slide_json(request):
+	GET = request.GET
+	sid = GET['sid']
+	slide = Slide.objects.get(sid=sid)
+	slide_json = serializers.serialize("json", [slide])
+	results = {'success': True, 'slide_json': slide_json}
+	return JsonResponse(results)
 
 
 # vips crop
@@ -663,13 +677,15 @@ def dropzone_slide(request):
 	if request.method == "POST":
 		i = 0
 
+		slide_list = []
+
 		for image in request.FILES.getlist('file'):
 			print(image)
 			extension = image.name[-4:]
 			print(extension)
 			
 			if extension == ".svs":
-				sid = (create_new_cid()+(str(i)))
+				sid = create_new_cid()+str(i)
 				i += 1
 				print(i)
 				image.name = str(sid) + '.svs'
@@ -681,15 +697,13 @@ def dropzone_slide(request):
 				slide.dzi_path = create_slide_pyramid_with_vips(sid)
 				print(slide.dzi_path)
 				slide.save()
+				slide_list.append(slide)
+		slides_json = serializers.serialize("json", slide_list)
+		print(slides_json)
+		results = {'success': True, 'slides_json': slides_json}
+		return JsonResponse(results)
 
-				
-				return JsonResponse({'success': True})
-
-				
-
-
-
-
+	# return HttpResponse()
 
 	# Check if it is a .dzi file or a .xlsx file
 	# If .dzi files
