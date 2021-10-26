@@ -688,8 +688,9 @@ def dropzone_slide(request):
 				sid = create_new_cid()+str(i)
 				i += 1
 				print(i)
+				name=image.name
 				image.name = str(sid) + '.svs'
-				slide = Slide.objects.create(sid = sid, date_added = str(datetime.now()), name = image.name, svs_path = image)
+				slide = Slide.objects.create(sid = sid, date_added = str(datetime.now()), name = name, svs_path = image)
 				print(slide.sid)
 				print(slide.name)
 				print(slide.date_added)
