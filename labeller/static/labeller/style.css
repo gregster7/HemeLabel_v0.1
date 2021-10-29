@@ -51,11 +51,13 @@ h2 {
 .row_menu a {
   text-decoration: none;
   text-align: center;
+  color: black;
 }
 
 .row_menu a:hover {
-  text-decoration: underline;
-  color: #fff;
+  text-decoration: none;
+  color: #663399FF;
+  font-weight: bold;
 }
 
 /* .row_menu {
@@ -155,8 +157,8 @@ img { margin: auto; }
 	align-content: center;
  }
 
-#dot_legend {
-}
+/* #dot_legend {
+} */
 
 #legend_table {
 	border:0px;
@@ -287,15 +289,247 @@ Image height is 665px
 
 /* SLIDES.HTML STYLES */
 
+#slides_container {
+	margin-bottom: 12px;
+	align-items: center;
+	vertical-align: center;
+}
+
 .slide_list {
 	list-style-type: none;
 	display: flex;
+	padding: 5px;
+	border-radius: 8px;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.slide_list_box {
+	box-shadow: 5px 5px 5px rgba(102, 51, 153, .08);
+}
+
+#slides {
+	list-style-type: none;
+	border-radius: 8px;
+	align-items: center;
+	margin-bottom: 25px;
 }
 
 .slide_list li {
 	padding: 0 10px 0 0;
 }
 
-.slide_label_btn{
+.bigtable {
+	padding-bottom: 10px;
+	padding-left: 10px;
+	border: none;
+}
+
+.bigtable_box {
+	box-shadow: 5px 5px 5px rgba(102, 51, 153, .08);
+	border-radius: 8px;
+	border: none;
+
+}
+
+.label_btn > a {
+	color: black;
+	text-decoration: none;
+} 
+
+.label_btn > a:hover {
+	color: #663399FF;
+	font-weight: bold;
+}
+
+#upload-btn {
+	margin-left: 46%;
+	/* background-color: rgba(102, 51, 153, .5); */
+	padding: 5px  25px; 
+	border-radius: 12px;
+}
+
+#upload-btn:hover {
+	background-color: #663399FF;
+	border-radius: 12px;
+	color: white;
+}
+
+.slide_info {
+	padding: 5px 20px;
+	border-radius: 12px;
+}
+
+.slide_info:hover {
+	background-color:#663399FF;
+	border-radius: 12px;
+	color: white;
+}
+
+.slide_info_down {
+	background-color:#663399FF;
+	border-radius: 12px;
+	color: white;
+}
+
+/* LABEL_SLIDE.HTML STYLE */
+
+.region_summary_div {
+	border-bottom: 1px solid #663399FF;
+	padding: 5px;
+}
+
+.region_summary_ul {
+	list-style-type: none;
+	display: flex;
+	align-items: center;
+}
+
+.region_summary_ul li {
+	padding-left: 10px;
+}
+
+.region_summary_li > a {
+	color: black;
 	text-decoration: none;
 }
+
+.region_summary_li > a:hover {
+	color: #663399FF;
+	font-weight: bold;
+}
+
+.region_summary_img {
+	list-style-type: none;
+}
+
+.delete_region_button {
+	padding: 5px 20px;
+	border-radius: 12px;
+}
+
+.delete_region_button:hover {
+	background-color:#663399FF;
+	border-radius: 12px;
+	color: white;
+}
+
+#add_new_region_button {
+	padding: 5px  25px; 
+	border-radius: 12px;
+}
+
+#add_new_region_button:hover {
+	background-color: #663399FF;
+	border-radius: 12px;
+	color: white;
+}
+
+/* PROJECTS.HTML STYLE */
+
+.project_list {
+	list-style-type: none;
+	display: flex;
+	padding: 5px;
+	border-radius: 8px;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.project_list_box {
+	box-shadow: 5px 5px 5px rgba(102, 51, 153, .08);
+}
+
+#projects {
+	list-style-type: none;
+	border-radius: 8px;
+	align-items: center;
+	margin-bottom: 25px;
+}
+
+.project_list li {
+	padding: 0 10px 0 0;
+}
+
+.project_name > a {
+	color: black;
+	text-decoration: none;
+}
+
+.project_name > a:hover {
+	color: #663399FF;
+	font-weight: bold;
+}
+
+#create_project_button {
+	padding: 5px  25px; 
+	border-radius: 12px;
+}
+
+#create_project_button:hover {
+	background-color: #663399FF;
+	border-radius: 12px;
+	color: white;
+}
+
+.total_cells_in_project {
+	padding: 5px 20px;
+	border-radius: 12px;
+}
+
+.total_cells_in_project:hover {
+	background-color:#663399FF;
+	border-radius: 12px;
+	color: white;
+}
+
+
+
+/* REGIONS.HTML STYLE */
+
+.regions_list_div {
+	border-bottom: 1px solid #663399FF;
+	padding: 5px;
+}
+
+.regions_list {
+	list-style-type: none;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.regions_list li {
+	padding-left: 10px;
+}
+
+.region_link_list {
+	list-style-type: none;
+}
+
+img.region_thumb {
+	width: 50%;
+}
+
+/* CELLS.HTML STYLES */
+
+.cells_list_div {
+	border-bottom: 1px solid #663399FF;
+	padding-bottom: 5px;
+}
+.cells_list {
+	list-style-type: none;
+	display: flex;
+}
+
+.cells_list li {
+	padding-left: 10px;
+}
+
+.cell_link_list {
+	list-style-type: none;
+}
+
+img.cell_thumb {
+	width: 10%;
+}
+

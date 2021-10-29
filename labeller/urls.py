@@ -88,6 +88,10 @@ urlpatterns = [
 	# Get cell information (AJAX)
 	re_path(r'^get_all_cells_in_slide/', views.get_all_cells_in_slide, name='get_all_cells_in_slide'),
 
+	# AJAX PRACTICE
+	re_path(r'^get_slide_date_added/', views.get_slide_date_added, name='get_slide_date_added'),
+	re_path(r'^total_cell_count/', views.total_cell_count, name="total_cell_count"),
+
 	# toggle_region_complete_seg (AJAX)
 	re_path(r'^toggle_region_complete_seg/', views.toggle_region_complete_seg, name='toggle_region_complete_seg'),
 

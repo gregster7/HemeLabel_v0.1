@@ -32,14 +32,20 @@ def index(request):
 def regions(request):
 	"""Show all regions."""
 	regions = Region.objects.order_by('rid')
-	context = {'regions': regions}
+	regions_json = serializers.serialize("json", regions)
+
+	print('regions_json', regions_json)
+	context = {'regions': regions, 'regions_json': regions_json}
 	return render(request, 'labeller/regions.html', context)
 
 @login_required
 def cells(request):
 	"""Show all regions."""
 	cells = Cell.objects.order_by('cid')
-	context = {'cells': cells}
+	cells_json = serializers.serialize("json", cells)
+	print(cells_json)
+
+	context = {'cells': cells, 'cells_json': cells_json}
 	return render(request, 'labeller/cells.html', context)	
 
 @login_required
@@ -181,12 +187,35 @@ def get_all_cells_in_region(request):
 	results = {'success':True, 'all_cells_json':all_cells_json}
 	return JsonResponse(results);
 
+# AJAX PRACTICE
+def get_slide_date_added(request):
+	GET = request.GET
+	sid = GET['sid']
+	print(sid)
+	slide = Slide.objects.get(sid=sid)
+	print(slide.date_added)
+	date_added = slide.date_added
+	results = {'success': True, 'date_added': date_added}
+
+	return JsonResponse(results);
+
+def total_cell_count(request):
+	POST = request.POST
+	cells = Cell.objects
+	print(cells)
+	results = {'success': True}
+
+	return JsonResponse(results);
+
 def get_all_cells_in_slide(request):
 	GET = request.GET
 	sid = GET['sid']
+	print(sid)
 	cells = Cell.objects.filter(region__slide__sid=sid)
+	print(len(cells))
+	cell_count = len(cells)
 	all_cells_json = serializers.serialize("json", cells)
-	results = {'success':True, 'all_cells_json':all_cells_json}
+	results = {'success':True, 'all_cells_json':all_cells_json, 'cell_count': cell_count}
 	return JsonResponse(results);
 
 def get_cell_json(request):
@@ -522,9 +551,11 @@ def get_all_cells_in_project(request):
 	GET = request.GET
 	project_id = GET['project_id']
 	print(project_id)
+	cells = Cell.objects.filter(project_id=project_id)
+	cell_count = len(cells)
 	project = Project.objects.get(id=project_id)
 	all_cells_json = serializers.serialize("json", project.cell_set.all())
-	results = {'success':True, 'all_cells_json':all_cells_json}
+	results = {'success':True, 'all_cells_json':all_cells_json, 'cell_count': cell_count}
 	return JsonResponse(results)
 	
 
@@ -558,7 +589,9 @@ def projects(request):
 	# context = {'user_projects': user_projects}
 
 	projects = Project.objects.order_by('id')
-	context = {'projects': projects}
+	projects_json = serializers.serialize("json", projects)
+	print(projects_json)
+	context = {'projects': projects, 'projects_json': projects_json}
 	print(Project.id)
 
 	return render(request, 'labeller/projects.html', context)
@@ -727,6 +760,8 @@ def dropzone_image_w_projectID(request, project_id):
 		#proj = request.POST.get('project')
 		# project_id = Project.name 
 		project = Project.objects.get(id=project_id)
+		projects_json = serializers.serialize("json", [project])
+		print(projects_json)
 		cell_list = []
 		for image in request.FILES.getlist('file'):
 			print(image)
@@ -752,7 +787,7 @@ def dropzone_image_w_projectID(request, project_id):
 		cells_json = serializers.serialize("json", cell_list)	
 		print('cell list: ' + str(cell_list))
 		print('cells json: ' + str(cells_json))
-		results = {'success': True,  'cells_json': cells_json}
+		results = {'success': True,  'cells_json': cells_json, 'projects_json': projects_json}
 		return JsonResponse(results)
 		#return HttpResponse()
 
