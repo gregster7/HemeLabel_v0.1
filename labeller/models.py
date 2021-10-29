@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from math import ceil
 from math import floor
+
 from django.contrib.auth.models import User 
 
 
@@ -9,7 +10,13 @@ User._meta.get_field('email')._unique = True
 
 class Patient (models.Model):
 	"""An individual patient, who can have many slides"""
-	pid = models.IntegerField(unique=True)
+	pid = models.IntegerField(unique=True, blank=True, null=True)
+	# Likely a UUID, but since not guaraneed, deglared as a CharField
+	fakeMRN = models.CharField(max_length=32, blank=True, null=True)
+	age = models.IntegerField(blank=True, null=True)
+	race = models.CharField(max_length=16, blank=True, null=True)
+	gender = models.CharField(max_length=16, blank=True, null=True)
+
 #	slides = models.ForeignKey('Slide', on_delete=models.RESTRICT)
 	date_added = models.DateTimeField(auto_now_add=True)
 	name = models.CharField(max_length=200, default="default")
@@ -30,10 +37,22 @@ class Slide (models.Model):
 	dzi_path = models.FileField(upload_to="slides", max_length=300, blank=True, null=True)
 	svs_path = models.FileField(upload_to="slides", max_length=300, blank=True, null=True)
 
-	
 	# Store filename as name
 	name = models.CharField(max_length=200, blank=True, null=True)
 	primary_diagnosis = models.CharField(max_length=200, blank=True, null=True)
+
+	fDx = models.CharField(max_length=1000, blank=True, null=True)
+	dxCom =models.CharField(max_length=3000, blank=True, null=True)
+	clinDx = models.CharField(max_length=3000, blank=True, null=True)	
+	addCom = models.CharField(max_length=10000, blank=True, null=True)	
+	micro = models.CharField(max_length=10000, blank=True, null=True)
+	notes = models.CharField(max_length=3000, blank=True, null=True)
+	scanner	= models.CharField(max_length=100, blank=True, null=True)
+	magnification = models.IntegerField(blank=True, null=True)
+	tissue = models.CharField(max_length=100, blank=True, null=True)
+	
+	# Likely a UUID, but since not guaraneed, deglared as a CharField
+	fakeCaseNumber = models.CharField(max_length=32, blank=True, null=True)
 
 	class Meta:
 		verbose_name_plural = 'Slides'

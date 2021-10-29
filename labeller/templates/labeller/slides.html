@@ -10,11 +10,10 @@
 <script src="{% static 'labeller/CellCounter.js' %}"></script>
 <script src="{% static 'labeller/dropzone-5.7.0/dist/dropzone.js' %}"></script>
 
+
 <link rel="stylesheet" type="text/css" href="{% static 'labeller/style.css' %}">
 <link rel="stylesheet" href="{% static 'labeller/dropzone-5.7.0/dist/dropzone.css' %}">
-
 <script>
-
   function createBigTable(sid) {
 
     var table = '<table style="border:none" class="slide_page_table" id="classification_table classification_table_' +sid+'">';
@@ -126,7 +125,6 @@
             $('#slides').append(getULForSlide(slide.pk, slide.fields.sid));
             $('#bigtable_'+slide.fields.sid).hide();
             infoButtonOnClick(slide.fields.sid);
-
           }
         }
       });
@@ -148,8 +146,6 @@
     </div>
 
     <div id="slides"></div>
-
-
 
 <script>
 
