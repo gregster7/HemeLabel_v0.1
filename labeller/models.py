@@ -28,6 +28,10 @@ class Patient (models.Model):
 		"""Return a string representation of the model."""
 		return self.name
 
+class CellFeature(models.Model):
+	featureName = models.CharField(max_length=64, blank=True, null=True)
+	featureAbbreviation = models.CharField(max_length=64, blank=True, null=True)
+	
 
 class Slide (models.Model):
 	"""A slide comes from a single patient, but can have many regions"""
@@ -193,7 +197,7 @@ class Cell(models.Model):
 
 	cell_type = models.CharField(max_length=50, default = 'UL')
 	
-
+	cellFeatures = models.ManyToManyField('CellFeature', blank=True)
 
 	def getCellTypeName(self):
 		classLabelDict = {

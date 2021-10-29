@@ -2,6 +2,7 @@ from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from labeller.models import CellFeature
 
 from .models import Project, Region, Cell
 
@@ -35,3 +36,13 @@ class UserForm(UserCreationForm):
     fields = ('first_name', 'last_name', 'username', 'email', 'password1', 'password2')
 
 
+class CellFeatureForm(forms.ModelForm): 
+  
+  class Meta:
+    model = Cell
+    fields = ['cellFeatures']
+
+  cellFeatures = forms.ModelMultipleChoiceField(
+      queryset=CellFeature.objects.all(),
+      widget=forms.CheckboxSelectMultiple
+  )    
