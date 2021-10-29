@@ -5,8 +5,11 @@
 {% block content %}
 <script type="text/javascript">
 function createRegionDiv(rid, img_path, region_path) {
-  new_div = '<p id="regionSummary_'+rid+'"> RID: '+'<a href="'+ region_path + '">' + rid + '</a>    '+'\
-    <img src="'+img_path+'" id="region_img_'+rid+'"> <button id="delete_region_button_'+rid+'" class="delete_region_button rid='+rid+'">delete</button></p>'
+  new_div = '<div class="region_summary_div"><ul class="region_summary_ul"><li class="region_summary_li" id="regionSummary_' +rid+ '">RID: '+'<a href="' +region_path+ '">' +rid+ '</a>';
+  new_div += '<li><button id="delete_region_button_'+rid+'" class="delete_region_button rid=' +rid+' ">Delete</button></li></ul>';
+  new_div += '<ul class="region_summary_img"><li><img class="region_thumb" src="' +img_path+ '" id="region_img_' +rid+ '"></li></ul></div>';
+  // new_div = '<p id="regionSummary_'+rid+'"> RID: '+'<a href="'+ region_path + '">' + rid + '</a>    '+'\
+  //   <img class="region_thumb" src="'+img_path+'" id="region_img_'+rid+'"> <button id="delete_region_button_'+rid+'" class="delete_region_button rid='+rid+'">delete</button></p>'
   console.log(new_div);
   return new_div;
 }

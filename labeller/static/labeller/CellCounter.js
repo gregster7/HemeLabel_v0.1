@@ -107,6 +107,8 @@ class CellCounter {
 	static updateCountsOnPageNotJson(cells){
 		var counts = CellCounter.countCells(cells);
 		var sum = 0;
+
+		// Update Minicounter
 		for (var i=0; i<Cell.lineage_labels.length; i++){
 			//console.log(Cell.lineage_labels[i], counts[Cell.lineage_labels[i]])
 			CellCounter.replaceOldCountWithNewCount("#"+Cell.lineage_labels[i]+".counter", counts[Cell.lineage_labels[i]])
@@ -115,10 +117,12 @@ class CellCounter {
 		CellCounter.replaceOldCountWithNewCount("#total.counter", sum);
 		CellCounter.updateMERatio(counts);
 
+		// Update Counts on Big Table
 		for (var key in Cell.classLabelDict) {
-			if (key != 'UL') {
-				CellCounter.replaceOldCountWithNewCount("#count_"+key, counts[key]);
-			}
+			// if (key != 'UL') {
+			// 	CellCounter.replaceOldCountWithNewCount("#count_"+key, counts[key]);
+			// }
+			CellCounter.replaceOldCountWithNewCount("#count_"+key, counts[key]);
 		}
 
 	} 
