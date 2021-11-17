@@ -13,7 +13,7 @@ from django.contrib import messages
 from django.contrib.auth import login, authenticate
 
 from .models import Region, Cell, Patient, Slide, Project, User
-from .forms import RegionForm, UserForm, CellForm
+from .forms import RegionForm, UserForm, CellForm, CellFeatureForm
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -39,13 +39,49 @@ def regions(request):
 	return render(request, 'labeller/regions.html', context)
 
 @login_required
+def cells2(request):
+	slide_array = []
+	slides = Slide.objects.order_by('date_added')
+	for slide in slides: 
+		slide_regions = Region.objects.filter(slide=slide)
+		region_list = []
+		for region in slide_regions:
+			cell_tuple_array = []
+			cells = Cell.objects.filter(region=region)
+			for cell in cells:
+				# Append tuple-array of cells and cellfeautureforms and add to array
+				cell_tuple_array.append([cell, CellFeatureForm(instance=cell)])
+			#Append tuple-array of region with lists of {cell, cell form} tuples
+			region_list.append([region, cell_tuple_array])
+		#Append tuple-array of slide with region list tuples
+		slide_array.append([slide, region_list])
+	print(slide_array)
+	context = {'slide_list': slide_array}
+	
+	return render(request, 'labeller/cells2.html', context)	
+
+@login_required
+def get_cell_feature_form(request):
+	print('entering get_cell_feature_form', request)
+	GET = request.GET
+	cid = GET['cid']
+	cell = Cell.objects.get(cid=cid)
+	form = CellFeatureForm(instance=cell)
+	#context = {'cellForm': cellForm}
+	return HttpResponse(form.as_p())
+
+@login_required
 def cells(request):
 	"""Show all regions."""
 	cells = Cell.objects.order_by('cid')
 	cells_json = serializers.serialize("json", cells)
-	print(cells_json)
+	cell_forms_dict = {}
+	cell_forms_array = []
+	for cell in cells:
+		cell_forms_dict[cell.cid] = CellFeatureForm(instance=cell)
+		cell_forms_array.append(CellFeatureForm(instance=cell))
 
-	context = {'cells': cells, 'cells_json': cells_json}
+	context = {'cells': cells, 'cells_json': cells_json, 'cell_forms_dict': cell_forms_dict, 'cell_forms_array': cell_forms_array}
 	return render(request, 'labeller/cells.html', context)	
 
 @login_required
@@ -187,35 +223,12 @@ def get_all_cells_in_region(request):
 	results = {'success':True, 'all_cells_json':all_cells_json}
 	return JsonResponse(results);
 
-# AJAX PRACTICE
-def get_slide_date_added(request):
-	GET = request.GET
-	sid = GET['sid']
-	print(sid)
-	slide = Slide.objects.get(sid=sid)
-	print(slide.date_added)
-	date_added = slide.date_added
-	results = {'success': True, 'date_added': date_added}
-
-	return JsonResponse(results);
-
-def total_cell_count(request):
-	POST = request.POST
-	cells = Cell.objects
-	print(cells)
-	results = {'success': True}
-
-	return JsonResponse(results);
-
 def get_all_cells_in_slide(request):
 	GET = request.GET
 	sid = GET['sid']
-	print(sid)
 	cells = Cell.objects.filter(region__slide__sid=sid)
-	print(len(cells))
-	cell_count = len(cells)
 	all_cells_json = serializers.serialize("json", cells)
-	results = {'success':True, 'all_cells_json':all_cells_json, 'cell_count': cell_count}
+	results = {'success':True, 'all_cells_json':all_cells_json}
 	return JsonResponse(results);
 
 def get_cell_json(request):
@@ -551,13 +564,13 @@ def get_all_cells_in_project(request):
 	GET = request.GET
 	project_id = GET['project_id']
 	print(project_id)
-	cells = Cell.objects.filter(project_id=project_id)
-	cell_count = len(cells)
 	project = Project.objects.get(id=project_id)
 	all_cells_json = serializers.serialize("json", project.cell_set.all())
-	results = {'success':True, 'all_cells_json':all_cells_json, 'cell_count': cell_count}
+	results = {'success':True, 'all_cells_json':all_cells_json}
 	return JsonResponse(results)
 	
+
+
 
 # UserForm view
 def register(request):
@@ -580,6 +593,7 @@ def register(request):
 	return render(request, 'labeller/register.html', {'form': form})
 
 
+
 # Projects page view
 @login_required
 def projects(request):
@@ -589,9 +603,7 @@ def projects(request):
 	# context = {'user_projects': user_projects}
 
 	projects = Project.objects.order_by('id')
-	projects_json = serializers.serialize("json", projects)
-	print(projects_json)
-	context = {'projects': projects, 'projects_json': projects_json}
+	context = {'projects': projects}
 	print(Project.id)
 
 	return render(request, 'labeller/projects.html', context)
@@ -655,6 +667,11 @@ def export_project_data(request):
 	return JsonResponse(results)
 
 
+# class AddCellFeatures(CreateView):
+# 	model = Cell
+# 	form_class = CreateMyeloidForm
+# 	template_name = '/cells/addCellFeatures.html'
+# 	success_url = reverse_lazy('index')
 
 # def export_project_data(request):
 # 	projects = Project.objects.filter('id')
@@ -761,8 +778,6 @@ def dropzone_image_w_projectID(request, project_id):
 		#proj = request.POST.get('project')
 		# project_id = Project.name 
 		project = Project.objects.get(id=project_id)
-		projects_json = serializers.serialize("json", [project])
-		print(projects_json)
 		cell_list = []
 		for image in request.FILES.getlist('file'):
 			print(image)
@@ -788,7 +803,7 @@ def dropzone_image_w_projectID(request, project_id):
 		cells_json = serializers.serialize("json", cell_list)	
 		print('cell list: ' + str(cell_list))
 		print('cells json: ' + str(cells_json))
-		results = {'success': True,  'cells_json': cells_json, 'projects_json': projects_json}
+		results = {'success': True,  'cells_json': cells_json}
 		return JsonResponse(results)
 		#return HttpResponse()
 

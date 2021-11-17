@@ -40,7 +40,7 @@ class CellFeatureForm(forms.ModelForm):
   
   class Meta:
     model = Cell
-    fields = ['cellFeatures']
+    fields = ['name','cellFeatures']
 
   cellFeatures = forms.ModelMultipleChoiceField(
       queryset=CellFeature.objects.all(),

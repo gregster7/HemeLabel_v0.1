@@ -1,7 +1,7 @@
 {% extends "labeller/base.html" %}
 {% load static %}
 
-{% block title %}Label Region{% endblock %}
+{% block title %}Label Slide{% endblock %}
 {% block content %}
 <script type="text/javascript">
 function createRegionDiv(rid, img_path, region_path) {
@@ -21,11 +21,11 @@ function fadeRegionInAndOut(rid){
   clone.addClass('floating_region')
   console.log(clone)
   clone.click(function() { 
-    $(this).fadeOut(2000);
+    $(this).fadeOut(500);
     //$(this).remove()
   });
   $('#regions').prepend(clone)
-  $('.floating_region').fadeIn(2000);
+  $('.floating_region').fadeIn(500);
   //clone.fadeOut(500);
   //clone.delete();
 }

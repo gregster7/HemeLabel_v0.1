@@ -32,6 +32,9 @@ urlpatterns = [
 	# Show all cells
 	re_path(r'^cells/$', views.cells, name='cells'),
 
+	# Show all cells
+	re_path(r'^cells2/$', views.cells2, name='cells2'),
+
 	# Show all slides
 	re_path(r'^slides/$', views.slides, name='slides'),
 
@@ -71,6 +74,9 @@ urlpatterns = [
 	# Change cell location (AJAX)
 	re_path(r'^change_cell_location/', views.change_cell_location, name='change_cell_location'),
 
+
+	re_path(r'^get_cell_feature_form/', views.get_cell_feature_form, name='get_cell_feature_form'),
+
 	# Change cell location (AJAX)
 	re_path(r'^get_cell_center_relative_to_slide/', views.get_cell_center_relative_to_slide, name='get_cell_center_relative_to_slide'),
 
@@ -87,10 +93,6 @@ urlpatterns = [
   
 	# Get cell information (AJAX)
 	re_path(r'^get_all_cells_in_slide/', views.get_all_cells_in_slide, name='get_all_cells_in_slide'),
-
-	# AJAX PRACTICE
-	re_path(r'^get_slide_date_added/', views.get_slide_date_added, name='get_slide_date_added'),
-	re_path(r'^total_cell_count/', views.total_cell_count, name="total_cell_count"),
 
 	# toggle_region_complete_seg (AJAX)
 	re_path(r'^toggle_region_complete_seg/', views.toggle_region_complete_seg, name='toggle_region_complete_seg'),
@@ -125,9 +127,9 @@ urlpatterns = [
 
   # Add Django site authentication URLS (login, logout, password management...)
 	path('accounts/', include('django.contrib.auth.urls'), name='accounts'),
-
-  # Add user registration page
-  path('register/', views.register, name='register'),
+	
+	# Add user registration page
+	path('register/', views.register, name='register'),
 
   # Page for viewing all projects created when uploading cells
   re_path(r'^projects/$', views.projects, name='projects'),

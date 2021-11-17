@@ -31,7 +31,8 @@ class Patient (models.Model):
 class CellFeature(models.Model):
 	featureName = models.CharField(max_length=64, blank=True, null=True)
 	featureAbbreviation = models.CharField(max_length=64, blank=True, null=True)
-	
+	def __str__(self):
+		return self.featureName
 
 class Slide (models.Model):
 	"""A slide comes from a single patient, but can have many regions"""
@@ -54,6 +55,8 @@ class Slide (models.Model):
 	scanner	= models.CharField(max_length=100, blank=True, null=True)
 	magnification = models.IntegerField(blank=True, null=True)
 	tissue = models.CharField(max_length=100, blank=True, null=True)
+
+	userNotes = models.CharField(max_length=10000, blank=True, null=True)
 	
 	# Likely a UUID, but since not guaraneed, deglared as a CharField
 	fakeCaseNumber = models.CharField(max_length=32, blank=True, null=True)
@@ -82,7 +85,8 @@ class Region(models.Model):
 	height = models.FloatField(default=-1)
 	all_wc_located = models.BooleanField(default=False)
 	all_wc_classified = models.BooleanField(default=False)
-	
+	userNotes = models.CharField(max_length=10000, blank=True, null=True)
+
 
 	def floor_width(self):
 		return floor(self.width)
@@ -175,6 +179,10 @@ class Cell(models.Model):
 	center_x_slide = models.FloatField(default=-1)
 	center_y_slide = models.FloatField(default=-1)
 
+	def getCellFeatureForm(self):
+		cellFeatureForm = CellFeatureForm(instance=self)
+		return cellFeatureForm
+
 	def GetCenter_x_slide(self):
 		"return center_x relative to slide instead of region"
 		if (self.region is None):
@@ -198,6 +206,7 @@ class Cell(models.Model):
 	cell_type = models.CharField(max_length=50, default = 'UL')
 	
 	cellFeatures = models.ManyToManyField('CellFeature', blank=True)
+#	cellFeatures2 = 
 
 	def getCellTypeName(self):
 		classLabelDict = {
