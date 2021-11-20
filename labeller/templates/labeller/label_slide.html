@@ -3,6 +3,10 @@
 
 {% block title %}Label Slide{% endblock %}
 {% block content %}
+
+<script src="{% static 'labeller/Cell.js' %}"></script>
+<script src="{% static 'labeller/CellCounter.js' %}"></script>
+
 <script type="text/javascript">
 function createRegionDiv(rid, img_path, region_path) {
   new_div = '<div class="region_summary_div"><ul class="region_summary_ul"><li class="region_summary_li" id="regionSummary_' +rid+ '">RID: '+'<a href="' +region_path+ '">' +rid+ '</a>';
@@ -10,7 +14,7 @@ function createRegionDiv(rid, img_path, region_path) {
   new_div += '<ul class="region_summary_img"><li><img class="region_thumb" src="' +img_path+ '" id="region_img_' +rid+ '"></li></ul></div>';
   // new_div = '<p id="regionSummary_'+rid+'"> RID: '+'<a href="'+ region_path + '">' + rid + '</a>    '+'\
   //   <img class="region_thumb" src="'+img_path+'" id="region_img_'+rid+'"> <button id="delete_region_button_'+rid+'" class="delete_region_button rid='+rid+'">delete</button></p>'
-  console.log(new_div);
+  //console.log(new_div);
   return new_div;
 }
 
@@ -52,7 +56,17 @@ function addNewRegion(sid, x1, y1, x2, y2){
 
 
 <div id="openseadragon1" style="width: 100%; height: 700px;"></div>
+
+
+
 <p id="slide_info" style="text-align: center;"> SID: {{slide.sid}} &nbsp &nbsp &nbsp &nbsp  <button id="add_new_region_button">Crop New Region</button></p>
+
+
+<!-- Image Control Region -->
+<!-- http://css3.bradshawenterprises.com/filters/ -->
+{% include "labeller/partials/image_control_bars.html" %}
+{% include "labeller/partials/slide_summary.html" %}
+
 
 <h2 id="regions_banner">Regions</h2>
 <div id="regions">
@@ -75,21 +89,19 @@ function addNewRegion(sid, x1, y1, x2, y2){
 
 {% block scripts %} 
 <script src="{% static 'labeller/openseadragon/openseadragon.min.js' %}"></script>
+<!-- <script src="{% static 'labeller/slide_summary.js' %}"></script>
+<script>
+  cs = new CellSummary('sid', 5)
+  console.log(cs)
+  cs.printMe()
+  console.log(cs.id_type)
+  console.log(cs.getIDType())
+
+</script> -->
 
 <script type="text/javascript">
-  // console.log('static', '{% static media %}');
-  // console.log('dzi_path', '{{ slide.dzi_path }}');
-  // console.log('new_path', '{% static media %}{{ slide.dzi_path }}');
   dzi_path = '/{{ slide.dzi_path }}';
   var prefix_url = "{% static 'labeller/openseadragon/images/' %}";
-
-//  new_path = '/slides/23.dzi'
-  // var dzi_path = "{% static 'labeller/images/zoom/' %}" + '{{slide.sid}}' + '.dzi';
-  // console.log('old dzi path', dzi_path);
-  // console.log('prefix_url', prefix_url)
-  // var slide_id = "{{slide.sid}}"
-  // console.log('slide_id', slide_id)
-
 </script>
 
 <script>
@@ -251,5 +263,6 @@ $('.delete_region_button').click(function(){
 
 
 </script>
+
 {% endblock scripts %}
 

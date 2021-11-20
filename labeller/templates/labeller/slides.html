@@ -180,7 +180,7 @@
 
       } else {
 
-        $.get('/get_all_cells_in_slide/', {'sid':sid}, function(json) {
+        $.get('/get_all_cells_in_slide/', {'sid':sid}, function(json) { 
 
           console.log('lets get them cells!');
           console.log(json);
@@ -190,15 +190,15 @@
           var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig, '"'));
           console.log(cells_json_reformat);
 
-        $this.addClass("clicked_once");
-        $this.addClass('slide_info_down');
-        $('#slide_list_' +sid).removeClass("slide_list_box");
-        $('#bigtable_' +sid).slideDown().addClass("bigtable_box");
-        $('#cell_total_'+sid).html('Total: ' + cells_json_reformat.length).fadeIn();
+          $this.addClass("clicked_once");
+          $this.addClass('slide_info_down');
+          $('#slide_list_' +sid).removeClass("slide_list_box");
+          $('#bigtable_' +sid).slideDown().addClass("bigtable_box");
+          $('#cell_total_'+sid).html('Total: ' + cells_json_reformat.length).fadeIn();
 
-        UpdateCountsOnPage(cells_json, sid);
+          UpdateCountsOnPage(cells_json, sid);
 
-      });      
+        });      
       };
     });
   };

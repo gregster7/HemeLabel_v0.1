@@ -39,7 +39,7 @@
 <script src="{% static 'labeller/fabric.min.js' %}"></script>
 
 <script>
-
+var toggleStatus = true;
 //Adapted from https://www.w3schools.com/howto/howto_js_draggable.asp
 
 
@@ -337,9 +337,9 @@ class RegionLabellerFabric {
 				// var all_cells = Cell.LoadCellsFromJson(json['all_cells_json']);
 				cell = new Cell(cell);
 				var new_cell_div = cell.getDivForCellList();
-        $('#UL_cells_inline').prepend($(new_cell_div).clone());
+        		$('#UL_cells_inline').prepend($(new_cell_div).clone());
         
-        //$(new_cell_div).addClass('clicked_cell');
+        		//$(new_cell_div).addClass('clicked_cell');
 				$('#unlabelled_cells_inline').prepend(new_cell_div);
         
 
@@ -347,12 +347,12 @@ class RegionLabellerFabric {
 				RegionLabellerFabric.addBoundingBoxFromCell(canvas, cell);
 				RegionLabellerFabric.selectBoxAsActiveFromCID(cell.getCID());
 				RegionLabellerFabric.addNewCircle(cell, canvas);
-        CellCounter.updateCountsOnPageWrapper();
-        Cell.UpdateHorizontalCellCounts();
-        $('.clicked_cell').removeClass('clicked_cell');
-        $('#unlabelled_cells_inline').children().first().addClass('clicked_cell');
-        //CellCounter.updateCountsOnPageAJAX(rid);
-//				RegionLabellerFabric.drawBoundingBox(canvas, left, top, width, height, cell.getCID());
+		        CellCounter.updateCountsOnPageWrapper();
+		        Cell.UpdateHorizontalCellCounts();
+		        $('.clicked_cell').removeClass('clicked_cell');
+		        $('#unlabelled_cells_inline').children().first().addClass('clicked_cell');
+        		//CellCounter.updateCountsOnPageAJAX(rid);
+				//RegionLabellerFabric.drawBoundingBox(canvas, left, top, width, height, cell.getCID());
 			}
 		});
 	}
@@ -401,14 +401,27 @@ class RegionLabellerFabric {
 		$('#centroid'+cid).remove(); {% endcomment %}
 		
 	}
+	
+	static toggleDots(){
+		var temp = $('.hidden_dot')
+		$('.dot').addClass('hidden_dot').removeClass('dot');
+		temp.removeClass('hidden_dot').addClass('dot');
+	}
 
 	static toggleCanvasModes(){
 		//console.log('toggleCanvasMode');
 		//console.log('hiding', $('#fabric_canvas'), $('#region_canvas_container'));
 		if($('#fabric_canvas').hasClass('hidden')){
-			$('#fabric_canvas').removeClass('hidden');
-			$('.canvas-container').removeClass('hidden');
-			$('#region_canvas_container').addClass('hidden');
+			if (toggleStatus == true) {
+				RegionLabellerFabric.toggleDots();
+				toggleStatus = false;
+			} else {
+				RegionLabellerFabric.toggleDots();
+				toggleStatus = true;
+				$('#fabric_canvas').removeClass('hidden');
+				$('.canvas-container').removeClass('hidden');
+				$('#region_canvas_container').addClass('hidden');
+			}
 		}
 		else {
 			$('#fabric_canvas').addClass('hidden');
@@ -417,11 +430,7 @@ class RegionLabellerFabric {
 		};
 	}
 
-	static toggleDots(){
-		var temp = $('.hidden_dot')
-		$('.dot').addClass('hidden_dot').removeClass('dot');
-		temp.removeClass('hidden_dot').addClass('dot');
-	}
+	
 
 	static toggleSquares(){
 		//console.log('hiding', $('#fabric_canvas'));

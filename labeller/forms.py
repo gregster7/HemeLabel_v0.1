@@ -35,7 +35,8 @@ class UserForm(UserCreationForm):
     model = User
     fields = ('first_name', 'last_name', 'username', 'email', 'password1', 'password2')
 
-
+# https://medium.com/swlh/django-forms-for-many-to-many-fields-d977dec4b024
+# https://medium.com/analytics-vidhya/django-how-to-pass-the-user-object-into-form-classes-ee322f02948c
 class CellFeatureForm(forms.ModelForm): 
   
   class Meta:

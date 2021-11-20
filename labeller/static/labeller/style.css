@@ -178,9 +178,21 @@ img { margin: auto; }
 	align-content: center 
 }
 
+
 .current_cell {
 	text-align: center;
 	align-content: center;
+}
+
+.current_cell_popout {
+	position: fixed;
+	width:  100px;
+	border: 1px solid purple;
+	padding: 25px;
+	padding-right: 50px;
+	padding-left: 50px;
+	align-content: center;
+	background-color: #F2F2F2FF;
 }
 
 /********** Classification Table and Test keyboard **********/
@@ -289,6 +301,7 @@ Image height is 665px
 
 /* SLIDES.HTML STYLES */
 
+
 #slides_container {
 	margin-bottom: 12px;
 	align-items: center;
@@ -373,6 +386,27 @@ Image height is 665px
 }
 
 /* LABEL_SLIDE.HTML STYLE */
+.control-form-flex-box {
+	display: flex;
+	align-items: center;
+  justify-content: center;
+}
+
+.control-group{
+	padding: 0px 15px 0px 15px;
+}
+
+
+.btn-info-congrol-group  {
+	color: #663399FF;
+	text-decoration: none;
+} 
+
+.btn-info-congrol-group:hover {
+	color: #663399FF;
+	font-weight: bold;
+}
+
 
 .region_summary_div {
 	border-bottom: 1px solid #663399FF;

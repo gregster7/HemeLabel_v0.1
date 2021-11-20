@@ -8,19 +8,24 @@
 <script src="{% static 'labeller/CellCounter.js' %}"></script>
 
 {% include "labeller/partials/help_display.html" %}
-
 <div id="labeller">
 	{% include "labeller/partials/region_annotator_fabric.html" %}
+	
 	<div id="column2_wrapper" >
-		{% include "labeller/partials/current_cell.html" %}
+		{% include "labeller/partials/image_control_bars.html" %}
+		
+
 		{% include "labeller/partials/dot_legend.html" %}
+		{% include "labeller/partials/current_cell.html" %}
+
 	</div>
+
 
 	<div>
 	{% include "labeller/partials/mini_counter.html" %}
 	</div>
 </div>
-
+{% include "labeller/partials/slide_summary.html" %}
 {% include "labeller/partials/big_table.html" %}
 {% include "labeller/partials/main_lineages_horizontal.html" %}
 

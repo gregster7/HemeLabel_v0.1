@@ -97,7 +97,7 @@ def slides(request):
 	context = {'slides': slides, 'slides_json': slides_json}
 	return render(request, 'labeller/slides.html', context)	
 
-
+@login_required
 def slide_viewer(request):
 	return render(request, 'labeller/slide_viewer.html')
 
@@ -120,6 +120,8 @@ def slide_viewer(request):
 
 # New page started on May 7, 2021
 # Rapid labeller for normal cells without associated regions
+
+@login_required
 def normal_cell_labeller(request):
 	"""label all unlabelledd cells for a project"""
 
@@ -142,6 +144,7 @@ def normal_cell_labeller(request):
 	print(context)
 	return render(request, 'labeller/normal_cell_labeller.html', context)
 
+@login_required
 def label_slide_overlay(request, slide_id):
 	slide = Slide.objects.get(sid=slide_id)
 	regions = slide.region_set.all()
@@ -157,12 +160,20 @@ def label_slide_overlay(request, slide_id):
 	context = {'slide': slide, 'regions': regions, 'cells': cells, 'cells_json': cells_json}
 	return render(request, 'labeller/label_slide_overlay.html', context)
 
+@login_required
 def label_slide(request, slide_id):
 	#print('label_slide', request, slide_id)
 	slide = Slide.objects.get(sid=slide_id)
 	regions = slide.region_set.all()
 	context = {'slide': slide, 'regions': regions}
 	return render(request, 'labeller/label_slide.html', context)
+
+# def label_slide2(request, slide_id):
+# 	#print('label_slide', request, slide_id)
+# 	slide = Slide.objects.get(sid=slide_id)
+# 	regions = slide.region_set.all()
+# 	context = {'slide': slide, 'regions': regions}
+# 	return render(request, 'labeller/label_slide2.html', context)
 
 def get_all_cells_json(region):
 	cells_json = serializers.serialize("json", region.cell_set.all())
@@ -173,6 +184,7 @@ def get_all_cells_json_project(project):
 	cells_json = serializers.serialize("json", project.cells_set.all())
 	return cells_json
 
+@login_required
 def change_cell_location(request):
 	POST = request.POST
 	cid = POST['cid']
@@ -202,6 +214,7 @@ def change_cell_location_helper(cid, left, top, width, height):
 		results = {'success':True, 'cell_json':cell_json}
 		return results
 
+@login_required
 def get_cell_center_relative_to_slide(request): 
 	GET = request.GET
 	cid = GET['cid']
@@ -215,6 +228,25 @@ def get_cell_center_relative_to_slide(request):
 
 	return JsonResponse(results);
 
+@login_required
+def get_all_cells_generic(request):
+	GET = request.GET
+	id_type = GET['id_type']
+	id_val = GET['id_val']
+	print(id_type, id_val)
+	if (id_type == 'sid'):
+		cells = Cell.objects.filter(region__slide__sid=id_val)
+	elif (id_type == 'rid'):
+		cells = Cell.objects.filter(region__rid=id_val)
+	else:
+		results = {'success':False}
+		return JsonResponse(results);
+
+	all_cells_json = serializers.serialize("json", cells)
+	results = {'success':True, 'all_cells_json':all_cells_json}
+	return JsonResponse(results);
+	
+@login_required
 def get_all_cells_in_region(request):
 	GET = request.GET
 	rid = GET['rid']
@@ -223,6 +255,7 @@ def get_all_cells_in_region(request):
 	results = {'success':True, 'all_cells_json':all_cells_json}
 	return JsonResponse(results);
 
+@login_required
 def get_all_cells_in_slide(request):
 	GET = request.GET
 	sid = GET['sid']
@@ -231,6 +264,7 @@ def get_all_cells_in_slide(request):
 	results = {'success':True, 'all_cells_json':all_cells_json}
 	return JsonResponse(results);
 
+@login_required
 def get_cell_json(request):
 	GET = request.GET
 	cid = GET['cid']
@@ -239,6 +273,7 @@ def get_cell_json(request):
 	results = {'success':True, 'cell_json':cell_json}
 	return JsonResponse(results);
 
+@login_required
 def get_slide_json(request):
 	GET = request.GET
 	sid = GET['sid']
@@ -278,6 +313,7 @@ def generate_cell_image_with_vips(region, cid, left, top, width, height):
 	os.system(command)
 
 # need to make sure CIDs do not start with trailing 0s as this causes problems
+
 def create_new_cid():
 	now = datetime.now()
 	date_time = now.strftime("%m%d%Y%H%M%S")
@@ -311,8 +347,8 @@ def create_new_cell(rid, left, top, width, height):
 
 		results = {'success':True, 'new_cell_json':new_cell_json, 'all_cells_json':all_cells_json}
 		return results
-	
 
+@login_required	
 def add_new_cell_box(request):
 	POST = request.POST
 	rid = int(POST['rid'])
@@ -326,6 +362,7 @@ def add_new_cell_box(request):
 	results = create_new_cell(rid, left, top, width, height);
 	return JsonResponse(results)
 
+@login_required
 def toggle_region_complete_class(request):
 	POST = request.POST
 	rid = int(POST['rid'])
@@ -338,6 +375,7 @@ def toggle_region_complete_class(request):
 	results = {'success':(success == 1)}	
 	return JsonResponse(results)
 
+@login_required
 def toggle_region_complete_seg(request):
 	POST = request.POST
 	rid = int(POST['rid'])
@@ -350,6 +388,7 @@ def toggle_region_complete_seg(request):
 	results = {'success':(success == 1)}	
 	return JsonResponse(results)
 
+@login_required
 def add_new_cell(request):
 	POST = request.POST
 	rid = POST['rid']
@@ -391,6 +430,7 @@ def add_new_cell(request):
 	
 	# return JsonResponse(results)
 
+@login_required
 def delete_region(request):
 	rid = request.POST['rid']
 	print('deleting region %s' %rid)
@@ -398,6 +438,7 @@ def delete_region(request):
 	results = {'success':True}
 	return JsonResponse(results)
 
+@login_required
 def delete_cell(request):
 	POST = request.POST
 	cid = POST['cid']
@@ -408,6 +449,7 @@ def delete_cell(request):
 	results = {'success':True}
 	return JsonResponse(results)
 
+@login_required
 def add_new_region(request):
 	POST = request.POST
 	sid = POST['sid']
@@ -449,6 +491,7 @@ def add_new_region(request):
 	return JsonResponse(results)
 
 # Needs to be udpated to support changing slide and patient as well
+@login_required
 def next_region(request):
 	POST = request.POST
 	rid = POST['rid']
@@ -475,14 +518,17 @@ def next_region(request):
 
 	return JsonResponse(results)
 
+@login_required
 def update_cell_class(request):
 	POST = request.POST
 	cell = Cell.objects.get(cid=POST['cid'])
 	cell.cell_type = POST['cell_label']
 	cell.save()
+	print('Cell class CID:'+str(cell.cid)+' new_class: '+cell.cell_type + " - " + cell.getCellTypeName())
 	results = {'success':True}
 	return JsonResponse(results)
 
+@login_required
 def update_cell_class_in_project(request):
 	POST = request.POST
 	cell = Cell.objects.get(cid=POST['cid'])
@@ -491,6 +537,7 @@ def update_cell_class_in_project(request):
 	results = {'success':True, 'all_cells_json':get_all_cells_json_project(cell.project)}
 	return JsonResponse(results)
 
+@login_required
 def data_export(request):
 	regions = Region.objects.all()
 	regions_json = serializers.serialize("json", Region.objects.all())
@@ -510,6 +557,7 @@ def stats(request):
 	context = {'regions': regions, 'regions_json': regions_json, 'cells':cells, 'cells_json': cells_json}
 	return render(request, 'labeller/stats.html', context)
 
+@login_required
 def label_region_fabric(request, region_id):
 	"""label cells on a region"""
 	region = Region.objects.get(rid=region_id)
@@ -526,6 +574,7 @@ def label_region_fabric(request, region_id):
 #	print(context)
 	return render(request, 'labeller/label_region_fabric.html', context)
 
+@login_required
 def label_region(request, region_id):
 	"""label cells on a region"""
 	region = Region.objects.get(rid=region_id)
@@ -540,6 +589,7 @@ def label_region(request, region_id):
 	print(context)
 	return render(request, 'labeller/label_region.html', context)
 	
+@login_required	
 def new_region(request):
 	"""Add a new region"""
 	if request.method != 'POST':
@@ -555,11 +605,12 @@ def new_region(request):
 	context = {'form': form}
 	return render(request, 'labeller/new_region.html', context)
 
+@login_required
 def blank_request(request):
 	print(request)
 	return JsonResponse({'success': True})
 
-
+@login_required
 def get_all_cells_in_project(request):
 	GET = request.GET
 	project_id = GET['project_id']
@@ -612,7 +663,7 @@ def projects(request):
 		# user = self.request.user
 		# return Project.objects.filter(user)
 	
-
+@login_required
 def create_project(request):
 	if request.method == 'POST':
 		if request.POST.get('project') != None:
@@ -644,6 +695,7 @@ def create_project(request):
 # 		form = CellForm()
 # 	return render(request, 'labeller/label_cells_in_project.html', {'form': form})
 
+@login_required
 def export_project_data(request):
 	GET = request.GET
 	project_id = GET['project_id']
@@ -703,7 +755,6 @@ def export_project_data(request):
 #   return file 
 
 # def export_project_data(request, project_id):
-
 def create_slide_pyramid_with_vips(sid):
 	slide_svs = '/slides/' + sid + '.svs '
 	command = "vips dzsave "+ settings.MEDIA_ROOT + slide_svs + \
@@ -711,6 +762,7 @@ def create_slide_pyramid_with_vips(sid):
 	 
 	os.system(command)
 	return('slides/' + sid + '.dzi')
+
 
 def generate_cell_image_with_vips(region, cid, left, top, width, height):
 	cid = str(cid)
@@ -722,6 +774,7 @@ def generate_cell_image_with_vips(region, cid, left, top, width, height):
 	os.system(command)
 
 # Upload handler for dzi WSIs and also Excel files relating to them
+@login_required
 def dropzone_slide(request):
 	print('entering dropzone_slide')
 	if request.method == "POST":
@@ -767,7 +820,7 @@ def dropzone_slide(request):
 		# Do something else to be written
 	return
 
-
+@login_required
 def dropzone_image_w_projectID(request, project_id):
 	print("entering dropzone_image_w_projectID")
 	if request.method == "POST":
@@ -809,6 +862,7 @@ def dropzone_image_w_projectID(request, project_id):
 
 	return HttpResponse()
 
+@login_required
 def label_cells_in_project(request, project_id):
 	"""label cells in a given project"""
 	print(project_id)
