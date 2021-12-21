@@ -54,7 +54,18 @@ class Slide (models.Model):
 	notes = models.CharField(max_length=3000, blank=True, null=True)
 	scanner	= models.CharField(max_length=100, blank=True, null=True)
 	magnification = models.IntegerField(blank=True, null=True)
-	tissue = models.CharField(max_length=100, blank=True, null=True)
+
+	TISSUE_CHOICES = (
+		('a', 'Bone Marrow Aspirate'),
+        ('b', 'Peripheral Blood'),
+        ('c', 'Bone Marrow Biopsy'),
+        ('d', 'Bone Marrow IHC or Special Stain'),
+        ('e', 'Touch Prep'),
+        ('f', 'Bone Marrow Clot'),
+        ('g', 'Body Fluid'),
+    )
+
+	tissue = models.CharField(max_length=1, choices=TISSUE_CHOICES, blank=True, null=True)
 
 	userNotes = models.CharField(max_length=10000, blank=True, null=True)
 	
