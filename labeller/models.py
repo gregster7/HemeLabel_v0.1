@@ -28,6 +28,7 @@ class Patient (models.Model):
 		"""Return a string representation of the model."""
 		return self.name
 
+# This is not currently in use
 class CellFeature(models.Model):
 	featureName = models.CharField(max_length=64, blank=True, null=True)
 	featureAbbreviation = models.CharField(max_length=64, blank=True, null=True)
@@ -55,6 +56,7 @@ class Slide (models.Model):
 	scanner	= models.CharField(max_length=100, blank=True, null=True)
 	magnification = models.IntegerField(blank=True, null=True)
 
+	# https://stackoverflow.com/questions/27440861/django-model-multiplechoice
 	TISSUE_CHOICES = (
 		('a', 'Bone Marrow Aspirate'),
         ('b', 'Peripheral Blood'),
@@ -143,12 +145,7 @@ class Region(models.Model):
 # 		"""Return a string representation of the model."""
 # 		return str(self.cell_id)
 
-# Each Cell Classification has one classification, one reviewer and one associated NewCell object.
-# class CellClassification(models.Model):
-# 	cell_class = models.CharField(max_length=50, default = 'UL')
-# 	additional_review = models.CharField(max_length=50, default = 'No')
-# 	reviewer = models.ForeignKey(User, on_delete=models.RESTRICT)
-	#newCell = models.ForeignKey('NewCell', on_delete=models.RESTRICT)
+
 
 # class Reviewer(models.Model):
 # 	name = models.CharField(max_length=50)
@@ -170,6 +167,13 @@ class Project(models.Model):
 	def __str__(self):
 		"""Return a string representation of the model."""
 		return str(self.name)
+
+
+# Each Cell Classification has one classification, one reviewer and one associated NewCell object.
+class CellType(models.Model):
+	cell_type = models.CharField(max_length=50, default = 'UL')
+	cell = models.ForeignKey('Cell', on_delete=models.CASCADE)
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class Cell(models.Model):
@@ -257,8 +261,6 @@ class Cell(models.Model):
 		}
 		return classLabelDict[self.cell_type]	
 	
-
-
 	class Meta:
 		verbose_name_plural = 'Cells'
 
@@ -289,8 +291,6 @@ class Cell(models.Model):
 		# 		return 'myeloid'
 		# 	case ['']
 		
-
-
 	def asdict(self):
 		return {'pk': self.pk, 'cid': str(self.cid), 'lineage': self.CellLineage(), 'cell_type': self.cell_type, 'cell_type_name': self.getCellTypeName(), 'cell_name': self.name, 'region': self.region, 'project': self.project, 'center_x': self.center_x, 'center_y': self.center_y, 'width': self.width, 'height': self.height}
 

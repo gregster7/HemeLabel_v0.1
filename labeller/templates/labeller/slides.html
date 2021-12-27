@@ -122,7 +122,7 @@
 
           for (var i=0; i<slides.length; i++) {
             console.log(slides[i]);
-            conosle.log(slide.fields.name);
+            console.log(slide.fields.name);
             var slide = slides[i];
             $('#slides').append(getULForSlide(slide.pk, slide.fields.sid, slide.fields.name));
             $('#bigtable_'+slide.fields.sid).hide();
