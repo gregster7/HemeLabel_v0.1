@@ -79,7 +79,14 @@ class Slide (models.Model):
 
 	def __str__(self):
 		"""Return a string representation of the model."""
-		return str(self.sid)
+		# if (self.name == None):
+		# 	return str(str(self.id) + " " + str(self.sid))
+		# else:
+		# 	return str(str(self.id) + " " + self.name + " " + str(self.sid))
+		try:
+			return str(str(self.id) + " " + str(self.sid) + " " + self.name)
+		except:
+			return str(str(self.id) + " " + str(self.sid))
 
 class Region(models.Model):
 	"""A region comes from a slide and can have multiple cells"""
@@ -174,6 +181,10 @@ class CellType(models.Model):
 	cell_type = models.CharField(max_length=50, default = 'UL')
 	cell = models.ForeignKey('Cell', on_delete=models.CASCADE)
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+	def __str__(self):
+		"""Return a string representation of the model."""
+		return str(str(self.id) + " " + self.cell_type + " " + str(self.cell.cid) + " " + str(self.user))
 
 
 class Cell(models.Model):

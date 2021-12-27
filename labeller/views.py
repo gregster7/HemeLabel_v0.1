@@ -12,7 +12,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 
-from .models import Region, Cell, Patient, Slide, Project, User
+from django.contrib.auth.models import User
+
+from .models import Region, Cell, Patient, Slide, Project, CellType
 from .forms import RegionForm, UserForm, CellForm, CellFeatureForm
 
 from django.conf import settings
@@ -319,7 +321,7 @@ def create_new_cid():
 	date_time = now.strftime("%m%d%Y%H%M%S")
 	return "1"+date_time
 
-def create_new_cell(rid, left, top, width, height):
+def create_new_cell(rid, left, top, width, height, user):
 	left = int(left)
 	top = int(top)
 	width = int(width)
@@ -341,6 +343,7 @@ def create_new_cell(rid, left, top, width, height):
 		new_cell.center_x_slide = new_cell.center_x + region.x;
 		new_cell.center_y_slide = new_cell.center_y + region.y;
 		new_cell.save()
+		new_cell_type = CellType.objects.create(cell=new_cell, user = user)
 		# cells = region.cell_set.all()
 		new_cell_json = serializers.serialize("json", [new_cell])
 		all_cells_json = get_all_cells_json(region)
@@ -359,7 +362,7 @@ def add_new_cell_box(request):
 	left = float(POST['left'])
 	width = float(POST['width'])
 
-	results = create_new_cell(rid, left, top, width, height);
+	results = create_new_cell(rid, left, top, width, height, request.user);
 	return JsonResponse(results)
 
 @login_required
@@ -397,7 +400,7 @@ def add_new_cell(request):
 	box_dim = 90 # Box dimension (it is a square)
 	left = center_x - box_dim/2
 	top = center_y - box_dim/2
-	return JsonResponse(create_new_cell(rid, left, top, box_dim, box_dim))
+	return JsonResponse(create_new_cell(rid, left, top, box_dim, box_dim, request.user))
 
 	# region = Region.objects.get(rid=rid)
 
@@ -518,12 +521,27 @@ def next_region(request):
 
 	return JsonResponse(results)
 
+# Will attempt to assign a new cellType. If one does not exist, it will be created. 
+def update_cellType_helper(user, cell, cell_type):
+	try:
+		print("changing cellType")
+		cellType = CellType.objects.get(user=user, cell=cell)
+		cellType.cell_type = cell_type
+		cellType.save()
+		print(cellType)
+	except CellType.DoesNotExist:
+		print("did not exist")
+		CellType.objects.create(user=user, cell_type = cell_type, cell=cell)
+
 @login_required
 def update_cell_class(request):
+#	user = request.user
 	POST = request.POST
 	cell = Cell.objects.get(cid=POST['cid'])
 	cell.cell_type = POST['cell_label']
 	cell.save()
+	update_cellType_helper(request.user, cell, POST['cell_label'])
+
 	print('Cell class CID:'+str(cell.cid)+' new_class: '+cell.cell_type + " - " + cell.getCellTypeName())
 	results = {'success':True}
 	return JsonResponse(results)
@@ -534,6 +552,8 @@ def update_cell_class_in_project(request):
 	cell = Cell.objects.get(cid=POST['cid'])
 	cell.cell_type = POST['cell_label']
 	cell.save()
+	update_cellType_helper(request.user, cell, POST['cell_label'])
+
 	results = {'success':True, 'all_cells_json':get_all_cells_json_project(cell.project)}
 	return JsonResponse(results)
 
@@ -852,6 +872,7 @@ def dropzone_image_w_projectID(request, project_id):
 			print(cells_json)
 			cell = Cell.objects.create(image = image, cid = cid, name = name, project = project, project_id = project_id, cell_type = cell_type)
 			cell.save()
+			update_cellType_helper(request.user, cell, cell_type)
 			cell_list.append(cell)
 		cells_json = serializers.serialize("json", cell_list)	
 		print('cell list: ' + str(cell_list))
