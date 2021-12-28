@@ -509,7 +509,7 @@ def add_new_region(request):
 #	image =	image_model.image_field(region_path, File().read())
 
 	region_path = '/regions/' + date_time + '.jpg'
-	new_region = Region.objects.create(slide = slide, image=region_path, rid=date_time, x=x, y=y, width=width, height=height)
+	new_region = Region.objects.create(created_by = request.user, slide = slide, image=region_path, rid=date_time, x=x, y=y, width=width, height=height)
 	new_region.save()
 #	new_region.image.save(os.path.basename(.url))
 
@@ -814,7 +814,7 @@ def create_project(request):
 	if request.method == 'POST':
 		if request.POST.get('project') != None:
 			proj = request.POST.get('project')
-			project = Project.objects.create(name=proj)
+			project = Project.objects.create(name=proj, created_by = request.user)
 			print(proj)
 			print(project)
 		
@@ -941,7 +941,7 @@ def dropzone_slide(request):
 				print(i)
 				name=image.name
 				image.name = str(sid) + '.svs'
-				slide = Slide.objects.create(sid = sid, date_added = str(datetime.now()), name = name, svs_path = image)
+				slide = Slide.objects.create(created_by = request.user, sid = sid, date_added = str(datetime.now()), name = name, svs_path = image)
 				print(slide)
 				# print(slide.sid)
 				# print(slide.name)
