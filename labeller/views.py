@@ -360,7 +360,7 @@ def create_new_cell(rid, left, top, width, height, user):
 		generate_cell_image_with_vips(region, cid, left, top, width, height)
 		cell_path = '/cells/' + cid + '.jpg'
 
-		new_cell = Cell.objects.create(region = region, image=cell_path, cid=cid, \
+		new_cell = Cell.objects.create(created_by=user, region = region, image=cell_path, cid=cid, \
 			center_x=left + width/2, center_y=top + height/2, width=width, height=height)
 		new_cell.center_x_slide = new_cell.center_x + region.x;
 		new_cell.center_y_slide = new_cell.center_y + region.y;
@@ -691,10 +691,14 @@ def label_region_fabric(request, region_id):
 	print('Entering label_region_fabric', request.user)
 	if (request.user.username=='admin'):
 		print('\thello user admin')
-	cells = Cell.objects.all()
-	print("# cells = ", len(cells))
-	print("# celltypes admin", len(CellType.objects.filter(user=request.user)))
-	print("# celltypes all", len(CellType.objects.all()))
+		# cells = Cell.objects.all()
+		# print("# cells = ", len(cells))
+		# print("# celltypes admin", len(CellType.objects.filter(user=request.user)))
+		# print("# celltypes all", len(CellType.objects.all()))
+		# for objx in Project.objects.all():
+		# 	print(objx, 'created_by:', objx.created_by)
+		# 	objx.created_by = User.objects.get(username='admin')
+		# 	objx.save()
 
 	# for cell in cells:
 	# 	update_cellType_helper(request.user, cell, cell.cell_type)
@@ -995,7 +999,8 @@ def dropzone_image_w_projectID(request, project_id):
 			print(image)
 			print(cid)
 			print(cells_json)
-			cell = Cell.objects.create(image = image, cid = cid, name = name, project = project, project_id = project_id, cell_type = cell_type)
+			cell = Cell.objects.create(created_by=request.user, image = image, cid = cid, name = name, project = project, project_id = project_id, cell_type = cell_type)
+			new_cell_type = CellType.objects.create(cell=new_cell, user = user)
 			cell.save()
 			update_cellType_helper(request.user, cell, cell_type)
 			cell_list.append(cell)

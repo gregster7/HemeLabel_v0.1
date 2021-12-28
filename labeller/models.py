@@ -10,6 +10,7 @@ User._meta.get_field('email')._unique = True
 
 class Patient (models.Model):
 	"""An individual patient, who can have many slides"""
+	created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 	pid = models.IntegerField(unique=True, blank=True, null=True)
 	# Likely a UUID, but since not guaraneed, deglared as a CharField
 	fakeMRN = models.CharField(max_length=32, blank=True, null=True)
@@ -37,6 +38,7 @@ class CellFeature(models.Model):
 
 class Slide (models.Model):
 	"""A slide comes from a single patient, but can have many regions"""
+	created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 	sid = models.IntegerField(unique=True)
 	patient = models.ForeignKey('Patient', on_delete=models.RESTRICT, blank=True, null=True)
 	date_added = models.DateTimeField(auto_now_add=True)
@@ -90,6 +92,7 @@ class Slide (models.Model):
 
 class Region(models.Model):
 	"""A region comes from a slide and can have multiple cells"""
+	created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 	rid = models.IntegerField(unique=True)
 	date_added = models.DateTimeField(auto_now_add=True)	
 	slide = models.ForeignKey('Slide', on_delete=models.RESTRICT)
@@ -159,6 +162,7 @@ class Region(models.Model):
 # 	classifications = models.ForeignKey('CellClassification', on_delete=models.RESTRICT)
 
 class Project(models.Model):
+	created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 	name = models.CharField(max_length=200, default="No Name")
 	date_added = models.DateTimeField(auto_now_add=True)
 
@@ -190,7 +194,8 @@ class CellType(models.Model):
 class Cell(models.Model):
 
 	"""A cell comes from a region and has a label"""
-	readonly_fields=('id',)
+	readonly_fields=('id','cell_type') # I don't think this line of code does anything
+	created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 	cid = models.IntegerField(unique=True)
 	name = models.CharField(max_length=200, blank=True, null=True)
 	date_added = models.DateTimeField(auto_now_add=True)	
@@ -231,7 +236,8 @@ class Cell(models.Model):
 
 	### THIS IS OLD AN NO LONGER IN USE *** WARNING ***
 	cell_type = models.CharField(max_length=50, default = 'UL')
-	
+
+ 	
 	cellFeatures = models.ManyToManyField('CellFeature', blank=True)
 #	cellFeatures2 = 
 

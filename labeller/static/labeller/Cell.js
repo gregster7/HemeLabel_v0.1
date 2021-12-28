@@ -97,6 +97,7 @@ class Cell {
 
 	// Used for horizontal cell list and current cell view 
 	//   returns HTML representing a single cell. This can be added to page using JQUERY
+	// Currently problematic because we have multiple instances of div with same id
 	getDivForCellList(){
 //		console.log("Entering getDivForCellList", this);
 		var div = '<div class="cell_list_item '+this.getHTMLClasses()+'" id="celllistCID_' + this.cid+'">';
@@ -317,7 +318,7 @@ class Cell {
 
 
 	static getLineage (cell_type) {
-		console.log("getLineage ", cell_type)
+		//console.log("getLineage ", cell_type)
 		//cell_type = this.cell_type;
 		if (cell_type == 'M1' || cell_type == 'M2' || cell_type == 'M3' || cell_type == 'M4' || cell_type == 'M5' || cell_type == 'M6'){
 			//return 'neutrophilic';
@@ -375,7 +376,7 @@ class Cell {
 	}
 
 	static currentCellCID  () {
-		console.log($('.current_cell'), $('.current_cell').length)
+		//console.log($('.current_cell'), $('.current_cell').length)
 		if ($('.current_cell').length <1){
 			return -1;
 		}
