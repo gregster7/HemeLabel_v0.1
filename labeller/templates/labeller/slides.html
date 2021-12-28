@@ -151,9 +151,9 @@
 
 <script>
 
-  function UpdateCountsOnPage(cells_json, sid) {
+  function UpdateCountsOnPage(cells_json, celltypes_json, sid) {
     // var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig, '"'));
-    var cells = Cell.LoadCellsFromJson(cells_json);
+    var cells = Cell.LoadCellsFromJson(cells_json, celltypes_json_reformat);
     var counts = CellCounter.countCells(cells);
     console.log(counts)
 
@@ -185,18 +185,14 @@
           console.log('lets get them cells!');
           console.log(json);
           console.log(json['all_cells_json']);
-          var cells_json = json['all_cells_json'];
-          console.log(cells_json);
-          var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig, '"'));
-          console.log(cells_json_reformat);
 
           $this.addClass("clicked_once");
           $this.addClass('slide_info_down');
           $('#slide_list_' +sid).removeClass("slide_list_box");
           $('#bigtable_' +sid).slideDown().addClass("bigtable_box");
-          $('#cell_total_'+sid).html('Total: ' + cells_json_reformat.length).fadeIn();
+          $('#cell_total_'+sid).html('Total: ' + json['all_cells_json'].length).fadeIn();
 
-          UpdateCountsOnPage(cells_json, sid);
+          UpdateCountsOnPage(json['all_cells_json'], json['celltypes_json'], sid);
 
         });      
       };

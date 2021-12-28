@@ -17,12 +17,47 @@ class Cell {
 		this.region = cell.fields.region;
 		this.x_slide = cell.fields.center_x_slide;
 		this.y_slide = cell.fields.center_y_slide;
+//		this.cell_type = 'erz';
+//		this.sandwich = 'sandw'
 		// Uncomment this line if you ever have to manually popualte the center_x_slide 
 		// 	         or center_y_slide fields (this should not be needed in the future)
 		//this.getCellCentersRelativeToSlideAJAX (cell.fields.cid);
 		
 		//console.log(this);
+//		console.log("in cell constructor", this)
+
+		
+
+//		Cell.getCellTypeHelper(cell.pk);
+
 	}
+
+	// static getCellTypeHelper(id) {
+	// 	console.log("entering getCellTypeHelper", id);
+
+	// 	$.ajax({
+	// 		url : "/get_cellType/",
+	// 		type : "get",
+	// 		async: false,
+	// 		success : function(json) {
+	// 			console.log(json)
+	// 			console.log("Was successful?: " + json['success']);	
+	// 			if(json['success'] == true) {
+	// 				console.log("Success: cell_type is " + json['cell_type']);	
+	// 				return json['cell_type'];
+	// 			}
+	// 			else {
+	// 				console.log("Error in CellConstructor get_getCellType");
+	// 				return 'err'	
+	// 			}
+	// 		},
+
+	// 	  error: function() {
+	// 	     console.log("Error2 in CellConstructor get_getCellType");
+	// 	  }
+
+	// 	});
+	// }
 
 	getLeft(){
 		return (this.x - this.width/2);
@@ -76,56 +111,60 @@ class Cell {
 	//*** Under construction ***
 	// This function is used in label_slide_overlay.html and label_slide_overlay2.html 
 	// which are under production
-	getCellCentersRelativeToSlideAJAX (cid) {
-		console.log('getCellCentersRelativeToSlideAJAX');
-		$.get("/get_cell_center_relative_to_slide/", {'cid':cid}, function(json){
-			//console.log("Was successful?: " + json['success']);	
-	 		if (json['success'] == false) {
-	 			console.log("error getCellCentersRelativeToSlideAJAX");	
-	 		}
+// 	getCellCentersRelativeToSlideAJAX (cid) {
+// 		console.log('getCellCentersRelativeToSlideAJAX');
+// 		$.get("/get_cell_center_relative_to_slide/", {'cid':cid}, function(json){
+// 			//console.log("Was successful?: " + json['success']);	
+// 	 		if (json['success'] == false) {
+// 	 			console.log("error getCellCentersRelativeToSlideAJAX");	
+// 	 		}
 
-	 		else if(json['success'] == true) {
-				var x = json['x'];
-				var y = json['y'];
-				console.log("getCellCentersRelativeToSlideAJAX x,y", x, y);
-				this.x_slide = x;
-				this.y_slide = y;
-//				console.log('cells_json in updateCountsOnPageAJAX', cells_json, typeof(cells_json));
-//				if ('cells_json'!='none') {		
-//					CellCounter.updateCountsOnPageJson(cells_json);
-			}
- 		});
-	}
+// 	 		else if(json['success'] == true) {
+// 				var x = json['x'];
+// 				var y = json['y'];
+// 				console.log("getCellCentersRelativeToSlideAJAX x,y", x, y);
+// 				this.x_slide = x;
+// 				this.y_slide = y;
+// //				console.log('cells_json in updateCountsOnPageAJAX', cells_json, typeof(cells_json));
+// //				if ('cells_json'!='none') {		
+// //					CellCounter.updateCountsOnPageJson(cells_json);
+// 			}
+//  		});
+// 	}
 
-	static createCellInDatabase(rid, left, top, width, height){
-		var created_cell = null;
-		$.post("/add_new_cell_box/", {'rid':rid, 'top':top, 'left':left, 'height':height, 'width':width}, function(json){
-			console.log("Was successful?: " + json['success']);	
-	 		if (json['success'] == false) {
-	 			console.log("Error description: " + json['error']);	
-	 			alert("Error description: " + json['error']);
-	 			return null;
-	 		}
+	// static createCellInDatabase(rid, left, top, width, height){
+	// 	var created_cell = null;
+	// 	$.post("/add_new_cell_box/", {'rid':rid, 'top':top, 'left':left, 'height':height, 'width':width}, function(json){
+	// 		console.log("Was successful?: " + json['success']);	
+	//  		if (json['success'] == false) {
+	//  			console.log("Error description: " + json['error']);	
+	//  			alert("Error description: " + json['error']);
+	//  			return null;
+	//  		}
 
-	 		else if(json['success'] == true) {
-				var cell = JSON.parse(json['new_cell_json'])[0];
-				var all_cells = Cell.LoadCellsFromJson(json['all_cells_json']);
-				cell = new Cell(cell);
-				var new_cell_div = cell.getDivForCellList();
-				$('#unlabelled_cells_inline').prepend(new_cell_div);
+	//  		else if(json['success'] == true) {
+	// 			var cell = JSON.parse(json['new_cell_json'])[0];
+	// 			var cell_type = JSON.parse(json['new_cell_type_json'])[0];
+	// 			cell = new Cell(cell);
+	// 			cell.cell_type = cell_type.fields.cell_type;
+	// 			var new_cell_div = cell.getDivForCellList();
+	// 			$('#unlabelled_cells_inline').prepend(new_cell_div);
 
-				current_cell = $('.cell_list_item#celllistCID_'+ cell.cid);
-				current_cell.on('click', function() { 
-					Cell.updateCurrentCell($(this), all_cells)
-				});
+	// 			current_cell = $('.cell_list_item#celllistCID_'+ cell.cid);
 
-				addNewCircle(left+width/2, top+height/2, cell.cid);
-				Cell.updateCurrentCell(current_cell, all_cells);
-				//cell_counter.addCell(cell.cell_type);
-				return cell; 		
-	 		}
-		});
-	}
+		
+	// 			var all_cells = Cell.LoadCellsFromJson(json['all_cells_json'], json['celltypes']);
+	// 			current_cell.on('click', function() { 
+	// 				Cell.updateCurrentCell($(this), all_cells)
+	// 			});
+
+	// 			addNewCircle(left+width/2, top+height/2, cell.cid);
+	// 			Cell.updateCurrentCell(current_cell, all_cells);
+	// 			//cell_counter.addCell(cell.cell_type);
+	// 			return cell; 		
+	//  		}
+	// 	});
+	// }
 
 	static UpdateHorizontalCellCounts(){
 		for (var key in Cell.classLabelDict) { 
@@ -156,21 +195,65 @@ class Cell {
 		}
 	}
 
-	static LoadCellsFromJson (cells_json){
-		if (cells_json == "") {
+	static LoadCellsFromJson (cells_json, cell_types){
+		console.log("Entering LoadCellsFromJson", cell_types)
+		if (cells_json == "" ) {
 			return [];
 		}
 	//	var cells_json_reformat = $.parseJSON(cells_json);
 		var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig,'"'));
+		var cell_types_reformat = $.parseJSON(cell_types.replace(/&quot;/ig,'"'));
+		console.log("A");
+		console.log('cell_types_reformat', cell_types_reformat, typeof(cell_types_reformat), cell_types_reformat.length);
+		console.log('cells_json_reformat', cells_json_reformat, typeof(cells_json_reformat), cells_json_reformat.length);
+
+		var type_dict = {}
+		for (var i=0; i<cell_types_reformat.length; i++){
+			console.log (cell_types_reformat[i], cell_types_reformat[i].fields.cell)
+			type_dict [cell_types_reformat[i].fields.cell] = cell_types_reformat[i].fields.cell_type
+		}
+		console.log('type_dict', type_dict)
+
 
 		var all_cells = {};
+		var counter = 0;
 		for (var c of cells_json_reformat){
 			var cell = new Cell(c);
+			if (cell.pk in type_dict){
+				console.log('cell in typedict', cell)
+				cell.cell_type = type_dict[cell.pk]
+				console.log('\tchanged to', cell)
+				counter = counter + 1
+			}
+		
 			all_cells[cell.cid] = cell;
 		}
+		console.log('counter', counter, cells_json_reformat.length);
 
 		return all_cells;
 	}
+
+
+// 	static LoadCellsFromJson (cells_json){
+// 		console.log("Entering LoadCellsFromJson3")
+// 		if (cells_json == "") {
+// 			return [];
+// 		}
+// 	//	var cells_json_reformat = $.parseJSON(cells_json);
+// 		var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig,'"'));
+
+// 		var all_cells = {};
+// 		for (var c of cells_json_reformat){
+// 			var cell = new Cell(c);
+// //			cell.cell_type = Cell.getCellTypeHelper(cell.pk)
+// //			var type = Cell.getCellTypeHelper(cell.pk)
+// //			console.log('cell_type', type)
+// //			console.log(cell)
+// 			all_cells[cell.cid] = cell;
+// 		}
+
+// 		return all_cells;
+// 	}
 
 	static findLineageFromClass (jquery_cell){
 		console.log(jquery_cell);
@@ -234,6 +317,7 @@ class Cell {
 
 
 	static getLineage (cell_type) {
+		console.log("getLineage ", cell_type)
 		//cell_type = this.cell_type;
 		if (cell_type == 'M1' || cell_type == 'M2' || cell_type == 'M3' || cell_type == 'M4' || cell_type == 'M5' || cell_type == 'M6'){
 			//return 'neutrophilic';
@@ -258,6 +342,13 @@ class Cell {
 		if (cell_type == 'UL'){
 			return 'unlabelled';
 		};
+		if (cell_type == 'err'){
+			return 'error'
+		}
+		if (cell_type == 'erz'){
+			return 'errorz'
+		}
+
 		console.log("error in getLineage for cell_type", cell_type);
 	}
 	

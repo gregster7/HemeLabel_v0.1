@@ -35,7 +35,7 @@ class CellCounter {
     if(json['success'] == true) {
       var cells_json = json['all_cells_json'];
       if (cells_json!='none') {		
-        CellCounter.updateCountsOnPageJson(cells_json);
+        CellCounter.updateCountsOnPageJson(cells_json, json['celltypes_json']);
       }
     }
 
@@ -99,8 +99,9 @@ class CellCounter {
 	}
 
 
-	static updateCountsOnPageJson(cells_json) {
-		var cells = Cell.LoadCellsFromJson(cells_json);
+	static updateCountsOnPageJson(cells_json, celltypes_json) {
+		console.log("updateCountsOnPageJson",cells_json, celltypes_json )
+		var cells = Cell.LoadCellsFromJson(cells_json, celltypes_json);
 		CellCounter.updateCountsOnPageNotJson(cells);
 	}
 

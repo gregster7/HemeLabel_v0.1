@@ -40,27 +40,27 @@ def regions(request):
 	context = {'regions': regions, 'regions_json': regions_json}
 	return render(request, 'labeller/regions.html', context)
 
-@login_required
-def cells2(request):
-	slide_array = []
-	slides = Slide.objects.order_by('date_added')
-	for slide in slides: 
-		slide_regions = Region.objects.filter(slide=slide)
-		region_list = []
-		for region in slide_regions:
-			cell_tuple_array = []
-			cells = Cell.objects.filter(region=region)
-			for cell in cells:
-				# Append tuple-array of cells and cellfeautureforms and add to array
-				cell_tuple_array.append([cell, CellFeatureForm(instance=cell)])
-			#Append tuple-array of region with lists of {cell, cell form} tuples
-			region_list.append([region, cell_tuple_array])
-		#Append tuple-array of slide with region list tuples
-		slide_array.append([slide, region_list])
-	print(slide_array)
-	context = {'slide_list': slide_array}
+# @login_required
+# def cells2(request):
+# 	slide_array = []
+# 	slides = Slide.objects.order_by('date_added')
+# 	for slide in slides: 
+# 		slide_regions = Region.objects.filter(slide=slide)
+# 		region_list = []
+# 		for region in slide_regions:
+# 			cell_tuple_array = []
+# 			cells = Cell.objects.filter(region=region)
+# 			for cell in cells:
+# 				# Append tuple-array of cells and cellfeautureforms and add to array
+# 				cell_tuple_array.append([cell, CellFeatureForm(instance=cell)])
+# 			#Append tuple-array of region with lists of {cell, cell form} tuples
+# 			region_list.append([region, cell_tuple_array])
+# 		#Append tuple-array of slide with region list tuples
+# 		slide_array.append([slide, region_list])
+# 	print(slide_array)
+# 	context = {'slide_list': slide_array}
 	
-	return render(request, 'labeller/cells2.html', context)	
+# 	return render(request, 'labeller/cells2.html', context)	
 
 @login_required
 def get_cell_feature_form(request):
@@ -72,6 +72,7 @@ def get_cell_feature_form(request):
 	#context = {'cellForm': cellForm}
 	return HttpResponse(form.as_p())
 
+# Needs updating with celltypes
 @login_required
 def cells(request):
 	"""Show all regions."""
@@ -83,7 +84,7 @@ def cells(request):
 		cell_forms_dict[cell.cid] = CellFeatureForm(instance=cell)
 		cell_forms_array.append(CellFeatureForm(instance=cell))
 
-	context = {'cells': cells, 'cells_json': cells_json, 'cell_forms_dict': cell_forms_dict, 'cell_forms_array': cell_forms_array}
+	context = {'cells': cells, 'cells_json': cells_json, 'cell_forms_dict': cell_forms_dict, 'cell_forms_array': cell_forms_array, 'celltypes_json': getAllCellTypesUserHelperJSON(request.user) }
 	return render(request, 'labeller/cells.html', context)	
 
 @login_required
@@ -123,44 +124,45 @@ def slide_viewer(request):
 # New page started on May 7, 2021
 # Rapid labeller for normal cells without associated regions
 
-@login_required
-def normal_cell_labeller(request):
-	"""label all unlabelledd cells for a project"""
+# @login_required
+# def normal_cell_labeller(request):
+# 	"""label all unlabelledd cells for a project"""
 
 
-	# Need to only get cells for the current user and for the current project
-	# For now only one user and project
-	#NewCells = project.cell_set.all() 
-	#newCells = NewCell.objects.get()
-	cells = NewCell.objects.all()
+# 	# Need to only get cells for the current user and for the current project
+# 	# For now only one user and project
+# 	#NewCells = project.cell_set.all() 
+# 	#newCells = NewCell.objects.get()
+# 	cells = NewCell.objects.all()
 
-	#region = Region.objects.get(rid=region_id)
-	#cells = region.cell_set.all()
-	if (cells.count() == 0):
-		cells = "none"
-		cells_json = "none"
-	else:
-		cells_json = serializers.serialize("json", cells)
+# 	#region = Region.objects.get(rid=region_id)
+# 	#cells = region.cell_set.all()
+# 	if (cells.count() == 0):
+# 		cells = "none"
+# 		cells_json = "none"
+# 	else:
+# 		cells_json = serializers.serialize("json", cells)
 	
-	context = {'cells':cells, 'cells_json': cells_json}
-	print(context)
-	return render(request, 'labeller/normal_cell_labeller.html', context)
+# 	context = {'cells':cells, 'cells_json': cells_json}
+# 	print(context)
+# 	return render(request, 'labeller/normal_cell_labeller.html', context)
 
-@login_required
-def label_slide_overlay(request, slide_id):
-	slide = Slide.objects.get(sid=slide_id)
-	regions = slide.region_set.all()
-	print(regions)
-	cells = Cell.objects.filter(region__slide__sid=slide_id)
-	#cells = Cell.objects.all()
-	if (cells.count() == 0):
-		cells_json = "none"
-	else:	
-		cells_json = serializers.serialize("json", cells)
-		print("cell count", cells.count())
+## Experimental version that was trying to allow direct annotation on slide - big problems trying to get openseadragon to play well with Fabric.js
+# @login_required
+# def label_slide_overlay(request, slide_id):
+# 	slide = Slide.objects.get(sid=slide_id)
+# 	regions = slide.region_set.all()
+# 	print(regions)
+# 	cells = Cell.objects.filter(region__slide__sid=slide_id)
+# 	#cells = Cell.objects.all()
+# 	if (cells.count() == 0):
+# 		cells_json = "none"
+# 	else:	
+# 		cells_json = serializers.serialize("json", cells)
+# 		print("cell count", cells.count())
 
-	context = {'slide': slide, 'regions': regions, 'cells': cells, 'cells_json': cells_json}
-	return render(request, 'labeller/label_slide_overlay.html', context)
+# 	context = {'slide': slide, 'regions': regions, 'cells': cells, 'cells_json': cells_json}
+# 	return render(request, 'labeller/label_slide_overlay.html', context)
 
 @login_required
 def label_slide(request, slide_id):
@@ -185,6 +187,11 @@ def get_all_cells_json(region):
 def get_all_cells_json_project(project):
 	cells_json = serializers.serialize("json", project.cells_set.all())
 	return cells_json
+
+def get_all_celltypes_json_project(project):
+	cells_json = serializers.serialize("json", project.cells_set.all())
+	return cells_json
+
 
 @login_required
 def change_cell_location(request):
@@ -216,20 +223,22 @@ def change_cell_location_helper(cid, left, top, width, height):
 		results = {'success':True, 'cell_json':cell_json}
 		return results
 
-@login_required
-def get_cell_center_relative_to_slide(request): 
-	GET = request.GET
-	cid = GET['cid']
-	cell = Cell.objects.get(cid=cid)
-	results = {'success':True, 'x':cell.GetCenter_x_slide(), 'y':cell.GetCenter_y_slide()}
-	print('get_cell_center_relative_to_slide', cell.GetCenter_x_slide(), cell.center_x,cell.GetCenter_y_slide(), cell.center_y)
-	cell.center_x_slide = cell.GetCenter_x_slide();
-	cell.center_y_slide = cell.GetCenter_y_slide();
-	cell.save()
-	print('get_cell_center_relative_to_slide', cell.GetCenter_x_slide(), cell.center_x, cell.center_x_slide, cell.GetCenter_y_slide(), cell.center_y, cell.center_y_slide)
+# For label slide overlay.html which is under production
+# @login_required
+# def get_cell_center_relative_to_slide(request): 
+# 	GET = request.GET
+# 	cid = GET['cid']
+# 	cell = Cell.objects.get(cid=cid)
+# 	results = {'success':True, 'x':cell.GetCenter_x_slide(), 'y':cell.GetCenter_y_slide()}
+# 	print('get_cell_center_relative_to_slide', cell.GetCenter_x_slide(), cell.center_x,cell.GetCenter_y_slide(), cell.center_y)
+# 	cell.center_x_slide = cell.GetCenter_x_slide();
+# 	cell.center_y_slide = cell.GetCenter_y_slide();
+# 	cell.save()
+# 	print('get_cell_center_relative_to_slide', cell.GetCenter_x_slide(), cell.center_x, cell.center_x_slide, cell.GetCenter_y_slide(), cell.center_y, cell.center_y_slide)
 
-	return JsonResponse(results);
+# 	return JsonResponse(results);
 
+# Used by slide_summary.html
 @login_required
 def get_all_cells_generic(request):
 	GET = request.GET
@@ -247,25 +256,28 @@ def get_all_cells_generic(request):
 	all_cells_json = serializers.serialize("json", cells)
 	results = {'success':True, 'all_cells_json':all_cells_json}
 	return JsonResponse(results);
-	
+
+# Used by CellCounter.js
 @login_required
 def get_all_cells_in_region(request):
 	GET = request.GET
 	rid = GET['rid']
 	region = Region.objects.get(rid=rid)
 	all_cells_json = serializers.serialize("json", region.cell_set.all())
-	results = {'success':True, 'all_cells_json':all_cells_json}
+	results = {'success':True, 'all_cells_json':all_cells_json, 'celltypes_json': getAllCellTypesUserRegionHelperJSON(request.user, region)}
 	return JsonResponse(results);
 
+# Used by slides.html
 @login_required
 def get_all_cells_in_slide(request):
 	GET = request.GET
 	sid = GET['sid']
 	cells = Cell.objects.filter(region__slide__sid=sid)
 	all_cells_json = serializers.serialize("json", cells)
-	results = {'success':True, 'all_cells_json':all_cells_json}
+	results = {'success':True, 'all_cells_json':all_cells_json, 'celltypes_json': getAllCellTypesUserHelperJSON(request.user)}
 	return JsonResponse(results);
 
+# Currently only used by returnObjectToOlDCoordinates(canvas, obj) in Cell.js, which is why celltype is not sent
 @login_required
 def get_cell_json(request):
 	GET = request.GET
@@ -275,14 +287,24 @@ def get_cell_json(request):
 	results = {'success':True, 'cell_json':cell_json}
 	return JsonResponse(results);
 
-@login_required
-def get_slide_json(request):
-	GET = request.GET
-	sid = GET['sid']
-	slide = Slide.objects.get(sid=sid)
-	slide_json = serializers.serialize("json", [slide])
-	results = {'success': True, 'slide_json': slide_json}
-	return JsonResponse(results)
+# @login_required
+# def get_cellType(request):
+# 	GET = request.GET
+# 	id = GET['id']
+# 	cell = Cell.objects.get(id=id)
+# 	cellType = get_cellType_helper(request.user, cell)
+# 	print('get_cellType ' + cellType.cell_type)
+# 	results = {'success':True, 'cell_type':cellType.cell_type}
+# 	return JsonResponse(results);
+
+# @login_required
+# def get_slide_json(request):
+# 	GET = request.GET
+# 	sid = GET['sid']
+# 	slide = Slide.objects.get(sid=sid)
+# 	slide_json = serializers.serialize("json", [slide])
+# 	results = {'success': True, 'slide_json': slide_json}
+# 	return JsonResponse(results)
 
 
 # vips crop
@@ -346,9 +368,13 @@ def create_new_cell(rid, left, top, width, height, user):
 		new_cell_type = CellType.objects.create(cell=new_cell, user = user)
 		# cells = region.cell_set.all()
 		new_cell_json = serializers.serialize("json", [new_cell])
-		all_cells_json = get_all_cells_json(region)
+		new_cell_type_json = serializers.serialize("json", [new_cell_type])
+#		all_cells_json = get_all_cells_json(region)
+#		celltypes_in_region = getAllCellTypesUserRegionHelperJSON(user, region)
+#		celltypes_in_region = serializers.serialize("json", celltypes_in_region)
 
-		results = {'success':True, 'new_cell_json':new_cell_json, 'all_cells_json':all_cells_json}
+#		results = {'success':True, 'new_cell_json':new_cell_json, 'all_cells_json':all_cells_json, 'new_cell_type_json': new_cell_type_json, 'celltypes_json': getAllCellTypesUserRegionHelperJSON(request.user, region)}
+		results = {'success':True, 'new_cell_json':new_cell_json}
 		return results
 
 @login_required	
@@ -362,7 +388,10 @@ def add_new_cell_box(request):
 	left = float(POST['left'])
 	width = float(POST['width'])
 
+	# Note: the return for create_new_cell is:
+		#results = {'success':True, 'new_cell_json':new_cell_json, 'all_cells_json':all_cells_json, 'new_cell_type_json': new_cell_type_json, 'celltypes_json': all_cell_types_json, 'celltypes': celltypes_in_region}
 	results = create_new_cell(rid, left, top, width, height, request.user);
+
 	return JsonResponse(results)
 
 @login_required
@@ -441,6 +470,7 @@ def delete_region(request):
 	results = {'success':True}
 	return JsonResponse(results)
 
+# Needs updating with celltypes
 @login_required
 def delete_cell(request):
 	POST = request.POST
@@ -494,32 +524,32 @@ def add_new_region(request):
 	return JsonResponse(results)
 
 # Needs to be udpated to support changing slide and patient as well
-@login_required
-def next_region(request):
-	POST = request.POST
-	rid = POST['rid']
-	direction = int(POST['direction'])
-	region = Region.objects.get(rid=rid)
-	results = {'rid': rid, 'success':False}
+# @login_required
+# def next_region(request):
+# 	POST = request.POST
+# 	rid = POST['rid']
+# 	direction = int(POST['direction'])
+# 	region = Region.objects.get(rid=rid)
+# 	results = {'rid': rid, 'success':False}
 
-	print(direction)
-	print(rid)
-	print(region)
-	print(region.slide)
-	# #regions = Region.objects.filter(slide=region.slide)
+# 	print(direction)
+# 	print(rid)
+# 	print(region)
+# 	print(region.slide)
+# 	# #regions = Region.objects.filter(slide=region.slide)
 
-	if (direction == 1):
-		next_region = Region.objects.filter(slide=region.slide, rid__gt=rid).order_by('rid').first()
-	elif (direction == -1):
-		next_region = Region.objects.filter(slide=region.slide, rid__lt=rid).order_by('rid').last()
+# 	if (direction == 1):
+# 		next_region = Region.objects.filter(slide=region.slide, rid__gt=rid).order_by('rid').first()
+# 	elif (direction == -1):
+# 		next_region = Region.objects.filter(slide=region.slide, rid__lt=rid).order_by('rid').last()
 
-	if (next_region != None):
-		results = {'rid': next_region.rid, 'success':True}
+# 	if (next_region != None):
+# 		results = {'rid': next_region.rid, 'success':True}
 
-	# else :
-	# 	print(next_region)
+# 	# else :
+# 	# 	print(next_region)
 
-	return JsonResponse(results)
+# 	return JsonResponse(results)
 
 # Will attempt to assign a new cellType. If one does not exist, it will be created. 
 def update_cellType_helper(user, cell, cell_type):
@@ -531,28 +561,81 @@ def update_cellType_helper(user, cell, cell_type):
 		print(cellType)
 	except CellType.DoesNotExist:
 		print("did not exist")
-		CellType.objects.create(user=user, cell_type = cell_type, cell=cell)
+		cellType = CellType.objects.create(user=user, cell_type = cell_type, cell=cell)
+	return cellType
+
+# Will attempt to assign a new cellType. If one does not exist, it will be created. 
+def get_cellType_helper(user, cell):
+	try:
+		print("getting cellType")
+		cellType = CellType.objects.get(user=user, cell=cell)
+		print(cellType)
+	except CellType.DoesNotExist:
+		print("did not exist. creating one")
+		CellType.objects.create(user=user, cell=cell)
+	return cellType
+
+
+def getCellTypeName(cellType):
+
+	classLabelDict = {
+		"M1": "Blast",
+		"M2": "Promyelocyte",
+		"M3": "Myelocyte",
+		"M4": "Metamyelocyte",
+		"M5": "Band neutrophil",
+		"M6": "Segmented netrophil",
+
+		"E1": "Immature Eosinophil",
+		"E2": "Mature Eosinophil",
+		"B1": "Immature Basophil",
+		"B2": "Mature Basophil",
+		"MO1": "Monoblast",
+		"MO2": "Monocyte",
+
+		"L0": "Lymphoblast",
+		"L1": "Hematagone",
+		"L2": "Small Mature Lymphocyte",
+		"L3": "Large Grancular lymphocyte",
+		"L4": "Plasma Cell",
+
+		"ER1": "Pronormoblast",
+		"ER2": "Basophilic normoblast",
+		"ER3": "Polychromatophilic",
+		"ER4": "Orthochromic (nuc red)",
+		"ER5": "Reticulocyte",
+		"ER6": "Mature RBC",
+
+		"U1": "Artifact",
+		"U2": "Unknown",
+		"U3": "Other",
+		"U4": "Histiocyte",
+		"UL": "Unlabelled", 
+		
+	}
+	return classLabelDict[cellType.cell_type]	
+
 
 @login_required
 def update_cell_class(request):
 #	user = request.user
 	POST = request.POST
-	cell = Cell.objects.get(cid=POST['cid'])
-	cell.cell_type = POST['cell_label']
-	cell.save()
-	update_cellType_helper(request.user, cell, POST['cell_label'])
+	#cell = Cell.objects.get(cid=POST['cid'])
+	#cell.cell_type = POST['cell_label']
+	#cell.save()
+	cellType = update_cellType_helper(request.user, Cell.objects.get(cid=POST['cid']), POST['cell_label'])
 
-	print('Cell class CID:'+str(cell.cid)+' new_class: '+cell.cell_type + " - " + cell.getCellTypeName())
+	print('update_cell_class(request) Cell class CID:'+str(POST['cid'])+' new_class: '+cellType.cell_type + " - " + getCellTypeName(cellType))
 	results = {'success':True}
 	return JsonResponse(results)
 
 @login_required
 def update_cell_class_in_project(request):
 	POST = request.POST
-	cell = Cell.objects.get(cid=POST['cid'])
-	cell.cell_type = POST['cell_label']
-	cell.save()
-	update_cellType_helper(request.user, cell, POST['cell_label'])
+	# cell = Cell.objects.get(cid=POST['cid'])
+	# cell.cell_type = POST['cell_label']
+	# cell.save()
+	update_cellType_helper(request.user, Cell.objects.get(cid=POST['cid']), POST['cell_label'])
 
 	results = {'success':True, 'all_cells_json':get_all_cells_json_project(cell.project)}
 	return JsonResponse(results)
@@ -574,11 +657,50 @@ def stats(request):
 	cells = Cell.objects.all()
 	cells_json = serializers.serialize("json", Cell.objects.all())
 
-	context = {'regions': regions, 'regions_json': regions_json, 'cells':cells, 'cells_json': cells_json}
+	context = {'regions': regions, 'regions_json': regions_json, 'cells':cells, 'cells_json': cells_json, 'celltypes_json': getAllCellTypesUserHelperJSON(request.user)}
 	return render(request, 'labeller/stats.html', context)
+
+def getAllCellTypesUserHelper(user):
+	print("getAllCellTypesUserHelper", user)
+	return CellType.objects.filter(user=user)
+
+def getAllCellTypesUserRegionHelper(user, region):
+	print("getAllCellTypesUserRegionHelper", user, region)
+	celltypes = getAllCellTypesUserHelper(user)
+	celltypes_in_region = []
+	for celltype in celltypes:
+		#print(user, celltype.cell.region)
+		if (celltype.cell.region.id == region.id):
+			celltypes_in_region.append(celltype)
+			#print(celltype.cell.region, region)	
+	#print('celltypes_in_region', celltypes_in_region)
+	return celltypes_in_region
+
+
+def getAllCellTypesUserRegionHelperJSON(user, region):
+	print('getAllCellTypesUserRegionHelperJSON(user, region)', user, region)
+	return serializers.serialize("json", getAllCellTypesUserRegionHelper(user, region))
+
+def getAllCellTypesUserJSON(user):
+	print('getAllCellTypesUserJSON(user)', user)
+	return serializers.serialize("json", getAllCellTypesUserHelper(user))
+
 
 @login_required
 def label_region_fabric(request, region_id):
+	print('Entering label_region_fabric', request.user)
+	if (request.user.username=='admin'):
+		print('\thello user admin')
+	cells = Cell.objects.all()
+	print("# cells = ", len(cells))
+	print("# celltypes admin", len(CellType.objects.filter(user=request.user)))
+	print("# celltypes all", len(CellType.objects.all()))
+
+	# for cell in cells:
+	# 	update_cellType_helper(request.user, cell, cell.cell_type)
+
+
+
 	"""label cells on a region"""
 	region = Region.objects.get(rid=region_id)
 	slide = region.slide
@@ -588,26 +710,26 @@ def label_region_fabric(request, region_id):
 		cells_json = "none"
 	else:
 		cells_json = serializers.serialize("json", region.cell_set.all())
-	
-	context = {'region': region, 'cells':cells, 'cells_json': cells_json, 'slide': slide}
-	print("slide is", slide)
-#	print(context)
+
+	celltypes_in_region = getAllCellTypesUserRegionHelperJSON(request.user, region)
+	context = {'region': region, 'cells':cells, 'cells_json': cells_json, 'slide': slide, 'celltypes_json': celltypes_in_region}
+	#print('label_region_fabric context', context)
 	return render(request, 'labeller/label_region_fabric.html', context)
 
-@login_required
-def label_region(request, region_id):
-	"""label cells on a region"""
-	region = Region.objects.get(rid=region_id)
-	cells = region.cell_set.all()
-	if (cells.count() == 0):
-		cells = "none"
-		cells_json = "none"
-	else:
-		cells_json = serializers.serialize("json", region.cell_set.all())
+# @login_required
+# def label_region(request, region_id):
+# 	"""label cells on a region"""
+# 	region = Region.objects.get(rid=region_id)
+# 	cells = region.cell_set.all()
+# 	if (cells.count() == 0):
+# 		cells = "none"
+# 		cells_json = "none"
+# 	else:
+# 		cells_json = serializers.serialize("json", region.cell_set.all())
 	
-	context = {'region': region, 'cells':cells, 'cells_json': cells_json}
-	print(context)
-	return render(request, 'labeller/label_region.html', context)
+# 	context = {'region': region, 'cells':cells, 'cells_json': cells_json}
+# 	print(context)
+# 	return render(request, 'labeller/label_region.html', context)
 	
 @login_required	
 def new_region(request):
@@ -625,10 +747,10 @@ def new_region(request):
 	context = {'form': form}
 	return render(request, 'labeller/new_region.html', context)
 
-@login_required
-def blank_request(request):
-	print(request)
-	return JsonResponse({'success': True})
+# @login_required
+# def blank_request(request):
+# 	print(request)
+# 	return JsonResponse({'success': True})
 
 @login_required
 def get_all_cells_in_project(request):
@@ -637,7 +759,7 @@ def get_all_cells_in_project(request):
 	print(project_id)
 	project = Project.objects.get(id=project_id)
 	all_cells_json = serializers.serialize("json", project.cell_set.all())
-	results = {'success':True, 'all_cells_json':all_cells_json}
+	results = {'success':True, 'all_cells_json':all_cells_json, 'celltypes_json': getAllCellTypesUserJSON(request.user)}
 	return JsonResponse(results)
 	
 
@@ -715,6 +837,8 @@ def create_project(request):
 # 		form = CellForm()
 # 	return render(request, 'labeller/label_cells_in_project.html', {'form': form})
 
+
+# Needs updating with celltypes
 @login_required
 def export_project_data(request):
 	GET = request.GET
@@ -814,12 +938,13 @@ def dropzone_slide(request):
 				name=image.name
 				image.name = str(sid) + '.svs'
 				slide = Slide.objects.create(sid = sid, date_added = str(datetime.now()), name = name, svs_path = image)
-				print(slide.sid)
-				print(slide.name)
-				print(slide.date_added)
-				print(id)
+				print(slide)
+				# print(slide.sid)
+				# print(slide.name)
+				# print(slide.date_added)
+				# print(id)
 				slide.dzi_path = create_slide_pyramid_with_vips(sid)
-				print(slide.dzi_path)
+				# print(slide.dzi_path)
 				slide.save()
 				slide_list.append(slide)
 		slides_json = serializers.serialize("json", slide_list)
@@ -877,7 +1002,7 @@ def dropzone_image_w_projectID(request, project_id):
 		cells_json = serializers.serialize("json", cell_list)	
 		print('cell list: ' + str(cell_list))
 		print('cells json: ' + str(cells_json))
-		results = {'success': True,  'cells_json': cells_json}
+		results = {'success': True,  'cells_json': cells_json, }
 		return JsonResponse(results)
 		#return HttpResponse()
 
@@ -898,7 +1023,7 @@ def label_cells_in_project(request, project_id):
 	else:
 		cells_json = serializers.serialize("json", project.cell_set.all())
 
-	context = {'project': project, 'name': name, 'cells': cells, 'cells_json': cells_json}
+	context = {'project': project, 'name': name, 'cells': cells, 'cells_json': cells_json, 'celltypes_json': getAllCellTypesUserJSON(request.user)}
 	print(context)
 
 	return render(request, 'labeller/label_cells_in_project.html', context)

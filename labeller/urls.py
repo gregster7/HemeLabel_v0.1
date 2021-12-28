@@ -33,7 +33,7 @@ urlpatterns = [
 	re_path(r'^cells/$', views.cells, name='cells'),
 
 	# Show all cells
-	re_path(r'^cells2/$', views.cells2, name='cells2'),
+#	re_path(r'^cells2/$', views.cells2, name='cells2'),
 
 	# Show all slides
 	re_path(r'^slides/$', views.slides, name='slides'),
@@ -46,7 +46,7 @@ urlpatterns = [
 	#re_path(r'^label_slide2/(?P<slide_id>\d+)/$', views.label_slide2, name='label_slide2'),
 
 	# Page for labelling a slide
-	re_path(r'^label_slide_overlay/(?P<slide_id>\d+)/$', views.label_slide_overlay, name='label_slide_overlay'),
+#	re_path(r'^label_slide_overlay/(?P<slide_id>\d+)/$', views.label_slide_overlay, name='label_slide_overlay'),
 
 
 	# Page for labelling a region of interest
@@ -67,7 +67,7 @@ urlpatterns = [
 
 
 	# Label next region
-	re_path(r'^next_region/', views.next_region, name='next_region'),
+#	re_path(r'^next_region/', views.next_region, name='next_region'),
 
 	# Add new region (AJAX)
 	re_path(r'^add_new_region/', views.add_new_region, name='add_new_region'),
@@ -77,11 +77,14 @@ urlpatterns = [
 
 	re_path(r'^get_cell_feature_form/', views.get_cell_feature_form, name='get_cell_feature_form'),
 
-	# Change cell location (AJAX)
-	re_path(r'^get_cell_center_relative_to_slide/', views.get_cell_center_relative_to_slide, name='get_cell_center_relative_to_slide'),
+	# # Change cell location (AJAX)
+	# re_path(r'^get_cell_center_relative_to_slide/', views.get_cell_center_relative_to_slide, name='get_cell_center_relative_to_slide'),
 
 	# Get cell information (AJAX)
 	re_path(r'^get_cell_json/', views.get_cell_json, name='get_cell_json'),
+
+	# Get cell information (AJAX)
+#	re_path(r'^get_cellType/', views.get_cellType, name='get_cellType'),	
 
 	# Get cell information (AJAX)
 	re_path(r'^get_all_cells_generic/', views.get_all_cells_generic, name='get_all_cells_generic'),
@@ -90,7 +93,7 @@ urlpatterns = [
 
   	re_path(r'^get_all_cells_in_project/', views.get_all_cells_in_project, name='get_all_cells_in_project'),
 
-  	re_path(r'^blank_request/', views.blank_request, name='blank_request'),
+  	# re_path(r'^blank_request/', views.blank_request, name='blank_request'),
   
 	# Get cell information (AJAX)
 	re_path(r'^get_all_cells_in_slide/', views.get_all_cells_in_slide, name='get_all_cells_in_slide'),
@@ -124,7 +127,7 @@ urlpatterns = [
 	re_path(r'^slide_viewer/$', views.slide_viewer, name= 'slide_viewer'),
 
 	# Page for viewing Whole Slide IMages
-	re_path(r'^normal_cell_labeller/$', views.normal_cell_labeller, name= 'normal_cell_labeller'),
+#	re_path(r'^normal_cell_labeller/$', views.normal_cell_labeller, name= 'normal_cell_labeller'),
 
   # Add Django site authentication URLS (login, logout, password management...)
 	path('accounts/', include('django.contrib.auth.urls'), name='accounts'),
@@ -151,9 +154,5 @@ urlpatterns = [
 
   # Page for labelling a cell in given project
 	re_path(r'^label_cells_in_project/(?P<project_id>\d+)/$', views.label_cells_in_project, name='label_cells_in_project'),
-
-
-	# # Page for AJAX updates to cell
-	# re_path(r'^ajax/update_cell_class/$', views.update_cell_class.as_view(), name='update_cell_class'),
 
 ]
