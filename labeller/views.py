@@ -105,41 +105,24 @@ def slide_viewer(request):
 	return render(request, 'labeller/slide_viewer.html')
 
 
-def getAllCellTypesUserHelper(user):
-	print("getAllCellTypesUserHelper", user)
-	return CellType.objects.filter(user=user)
 
 
 def getAllCellTypesUserRegionHelper(user, region):
-	print("getAllCellTypesUserRegionHelper", user, region)
-	
-	# celltypes = getAllCellTypesUserHelper(user)
-	# celltypes_in_region = []
-	# Cell.objects.filter(region__slide__sid=sid)
-	# for celltype in celltypes:
-	# 	#print(user, celltype.cell.region)
-	# 	try:
-	# 		if (celltype.cell.region.id == region.id):
-	# 			celltypes_in_region.append(celltype)
-	# 	except:
-	# 		print('Exception in getAllCellTypesUserRegionHelper', celltype, type(celltype))
-	# 		#print(celltype.cell.region, region)	
-	# #print('celltypes_in_region', celltypes_in_region)
-	celltypes_in_region = CellType.objects.filter(cell__region=region, user=user)
-	return celltypes_in_region
+	return CellType.objects.filter(cell__region=region, user=user)
 
-
-def getAllCellTypesUserRegionHelperJSON(user, region):
-	print('getAllCellTypesUserRegionHelperJSON(user, region)', user, region)
+def getAllCellTypesUserRegionJSON(user, region):
+	print('getAllCellTypesUserRegionJSON(user, region)', user, region)
 	return serializers.serialize("json", getAllCellTypesUserRegionHelper(user, region))
+
+def getAllCellTypesUserHelper(user):
+	return CellType.objects.filter(user=user)
 
 def getAllCellTypesUserJSON(user):
 	print('getAllCellTypesUserJSON(user)', user)
 	return serializers.serialize("json", getAllCellTypesUserHelper(user))
 
 def getAllCellTypesUserSlideHelper(user, slide):
-	celltypes_in_slide = CellType.objects.filter(cell__region__slide=slide, user=user)
-	return celltypes_in_slide
+	return CellType.objects.filter(cell__region__slide=slide, user=user)
 
 def getAllCellTypesSlideUserJSON(user, slide):
 	print('getAllCellTypesSlideUserJSON(user, slide)', user, slide)
@@ -288,14 +271,15 @@ def get_all_cells_generic(request):
 	print(id_type, id_val)
 	if (id_type == 'sid'):
 		cells = Cell.objects.filter(region__slide__sid=id_val)
+		celltypes_json = getAllCellTypesSlideUserJSON(request.user, Slide.objects.get(sid=id_val))
 	elif (id_type == 'rid'):
 		cells = Cell.objects.filter(region__rid=id_val)
+		celltypes_json = getAllCellTypesUserRegionJSON(request.user, Region.objects.get(rid=id_val))
 	else:
 		results = {'success':False}
 		return JsonResponse(results);
 
-	all_cells_json = serializers.serialize("json", cells)
-	results = {'success':True, 'all_cells_json':all_cells_json}
+	results = {'success':True, 'all_cells_json':serializers.serialize("json", cells), 'celltypes_json': celltypes_json}
 	return JsonResponse(results);
 
 # Used by CellCounter.js
@@ -308,9 +292,9 @@ def get_all_cells_in_region(request):
 	print(region)
 
 	all_cells_json = serializers.serialize("json", region.cell_set.all())
-	results = {'success':True, 'all_cells_json':all_cells_json, 'celltypes_json': getAllCellTypesUserRegionHelperJSON(request.user, region)}
+	results = {'success':True, 'all_cells_json':all_cells_json, 'celltypes_json': getAllCellTypesUserRegionJSON(request.user, region)}
 	print(all_cells_json)
-	print(getAllCellTypesUserRegionHelperJSON(request.user, region))
+	print(getAllCellTypesUserRegionJSON(request.user, region))
 	return JsonResponse(results)
 
 # Used by slides.html
@@ -420,10 +404,10 @@ def create_new_cell(rid, left, top, width, height, user):
 		new_cell_json = serializers.serialize("json", [new_cell])
 		new_cell_type_json = serializers.serialize("json", [new_cell_type])
 #		all_cells_json = get_all_cells_json(region)
-#		celltypes_in_region = getAllCellTypesUserRegionHelperJSON(user, region)
+#		celltypes_in_region = getAllCellTypesUserRegionJSON(user, region)
 #		celltypes_in_region = serializers.serialize("json", celltypes_in_region)
 
-#		results = {'success':True, 'new_cell_json':new_cell_json, 'all_cells_json':all_cells_json, 'new_cell_type_json': new_cell_type_json, 'celltypes_json': getAllCellTypesUserRegionHelperJSON(request.user, region)}
+#		results = {'success':True, 'new_cell_json':new_cell_json, 'all_cells_json':all_cells_json, 'new_cell_type_json': new_cell_type_json, 'celltypes_json': getAllCellTypesUserRegionJSON(request.user, region)}
 		results = {'success':True, 'new_cell_json':new_cell_json}
 		return results
 
@@ -742,7 +726,7 @@ def label_region_fabric(request, region_id):
 	else:
 		cells_json = serializers.serialize("json", region.cell_set.all())
 
-	celltypes_in_region = getAllCellTypesUserRegionHelperJSON(request.user, region)
+	celltypes_in_region = getAllCellTypesUserRegionJSON(request.user, region)
 	context = {'region': region, 'cells':cells, 'cells_json': cells_json, 'slide': slide, 'celltypes_json': celltypes_in_region}
 	#print('label_region_fabric context', context)
 	return render(request, 'labeller/label_region_fabric.html', context)

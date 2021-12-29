@@ -196,37 +196,43 @@ class Cell {
 		}
 	}
 
-	static LoadCellsFromJson (cells_json, cell_types){
-		console.log("Entering LoadCellsFromJson", cell_types)
+	static LoadCellsFromJson (cells_json, celltypes_json){
+		console.log("Entering LoadCellsFromJson", celltypes_json);
 		if (cells_json == "" ) {
+			console.log("LoadCellsFromJson - no cells");
 			return [];
 		}
-	//	var cells_json_reformat = $.parseJSON(cells_json);
+
 		var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig,'"'));
-		var cell_types_reformat = $.parseJSON(cell_types.replace(/&quot;/ig,'"'));
-		// console.log("A");
-		// console.log('cell_types_reformat', cell_types_reformat, typeof(cell_types_reformat), cell_types_reformat.length);
-		// console.log('cells_json_reformat', cells_json_reformat, typeof(cells_json_reformat), cells_json_reformat.length);
+		console.log('cells_json_reformat', cells_json_reformat, typeof(cells_json_reformat), cells_json_reformat.length);
 
-		var type_dict = {}
-		for (var i=0; i<cell_types_reformat.length; i++){
-			// console.log (cell_types_reformat[i], cell_types_reformat[i].fields.cell)
-			type_dict [cell_types_reformat[i].fields.cell] = cell_types_reformat[i].fields.cell_type
+
+		if (typeof celltypes_json !== 'undefined') {
+			var cell_types_reformat = $.parseJSON(celltypes_json.replace(/&quot;/ig,'"'));
+			console.log('cell_types_reformat', cell_types_reformat, typeof(cell_types_reformat), cell_types_reformat.length);
+			var type_dict = {}
+			for (var i=0; i<cell_types_reformat.length; i++){
+				// console.log (cell_types_reformat[i], cell_types_reformat[i].fields.cell)
+				type_dict [cell_types_reformat[i].fields.cell] = cell_types_reformat[i].fields.cell_type
+			}
+			console.log('type_dict', type_dict)
 		}
-		console.log('type_dict', type_dict)
-
+		else {
+			console.log('Warning: celltypes_json us undefined')
+		}
 
 		var all_cells = {};
 		var counter = 0;
 		for (var c of cells_json_reformat){
 			var cell = new Cell(c);
-			if (cell.pk in type_dict){
-//				console.log('cell in typedict', cell)
+			if (typeof celltypes_json !== 'undefined' && cell.pk in type_dict){
+				console.log('cell in typedict', cell)
 				cell.cell_type = type_dict[cell.pk]
-//				console.log('\tchanged to', cell)
+				console.log('\tchanged to', cell)
 				counter = counter + 1
 			}
-			else{
+			else {
+				cell.cell_type = 'UL'
 				console.log("in LoadCellsFromJson this cell is not in type_dict", cell);
 			}
 		
@@ -446,7 +452,7 @@ class Cell {
 
 
 	static labelCurrentCell (label) {
-		console.log('current cell id: ', Cell.currentCellCID())
+		console.log('labelCurrentCell -- current cell id: ', Cell.currentCellCID())
 		//Update record in database
 		$.post("/update_cell_class/", {'cid':Cell.currentCellCID(), 'cell_label':label}, function(json){
 				console.log("update_cell_class was successful?: " + json['success'], label);

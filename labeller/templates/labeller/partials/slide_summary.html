@@ -76,9 +76,9 @@
       return ul;
     }
 
-    static UpdateCountsOnPage(cells_json, id_val) {
+    static UpdateCountsOnPage(cells_json, celltypes_json, id_val) {
       // var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig, '"'));
-      var cells = Cell.LoadCellsFromJson(cells_json);
+      var cells = Cell.LoadCellsFromJson(cells_json, celltypes_json);
       var counts = CellCounter.countCells(cells);
       console.log(counts)
 
@@ -112,6 +112,9 @@
               console.log('/get_all_cells_generic/');
 
               var cells_json = json['all_cells_json'];
+              var celltypes_json = json['celltypes_json']
+              console.log(cells_json)
+              console.log(celltypes_json)
               //console.log(cells_json);
               var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig, '"'));
               //console.log(cells_json_reformat);
@@ -122,7 +125,7 @@
               $('#bigtable_' +sid).slideDown().addClass("bigtable_box");
               $('#cell_total_'+sid).html('Total: ' + cells_json_reformat.length).fadeIn();
 
-              CellSummary.UpdateCountsOnPage(cells_json, sid);
+              CellSummary.UpdateCountsOnPage(cells_json, celltypes_json, sid);
 
           });
 

@@ -121,11 +121,11 @@ class HorizontalCellList {
 		}
 	}
 
-	static populateCellLists (cells_json, cell_types){
-    console.log('entering populatCellList', cells_json)
-		var cells = Cell.LoadCellsFromJson(cells_json, cell_types);
-
-    //console.log(cells)
+	static populateCellLists (cells_json, cell_types_json){
+		console.log('entering populatCellList', cells_json, cell_types_json);
+		var cells = Cell.LoadCellsFromJson(cells_json, cell_types_json);
+		
+    console.log('cells', cells)
 		var counter = 1;
 		for (var key in cells) {
 			var cell = cells[key];

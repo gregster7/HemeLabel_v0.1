@@ -705,7 +705,8 @@ class RegionLabellerFabric {
 $ (document).ready(function() {
 	canvas = RegionLabellerFabric.setupCanvas();
 	normalCanvas = RegionLabellerFabric.setupNormalCanvas();
-	if ('{{cells_json}}'!='none') {		
+	if ('{{cells_json}}'!='none') {
+		console.log('region_annotator_fabric.html ready', '{{cells_json}}', '{{celltypes_json}}')		
 		var cells_json = '{{cells_json}}';
 		var cell_types = '{{celltypes_json}}';
 
