@@ -84,7 +84,7 @@ def cells(request):
 		cell_forms_dict[cell.cid] = CellFeatureForm(instance=cell)
 		cell_forms_array.append(CellFeatureForm(instance=cell))
 
-	context = {'cells': cells, 'cells_json': cells_json, 'cell_forms_dict': cell_forms_dict, 'cell_forms_array': cell_forms_array, 'celltypes_json': getAllCellTypesUserHelperJSON(request.user) }
+	context = {'cells': cells, 'cells_json': cells_json, 'cell_forms_dict': cell_forms_dict, 'cell_forms_array': cell_forms_array, 'celltypes_json': getAllCellTypesUserJSON(request.user) }
 	return render(request, 'labeller/cells.html', context)	
 
 @login_required
@@ -103,6 +103,47 @@ def slides(request):
 @login_required
 def slide_viewer(request):
 	return render(request, 'labeller/slide_viewer.html')
+
+
+def getAllCellTypesUserHelper(user):
+	print("getAllCellTypesUserHelper", user)
+	return CellType.objects.filter(user=user)
+
+
+def getAllCellTypesUserRegionHelper(user, region):
+	print("getAllCellTypesUserRegionHelper", user, region)
+	
+	# celltypes = getAllCellTypesUserHelper(user)
+	# celltypes_in_region = []
+	# Cell.objects.filter(region__slide__sid=sid)
+	# for celltype in celltypes:
+	# 	#print(user, celltype.cell.region)
+	# 	try:
+	# 		if (celltype.cell.region.id == region.id):
+	# 			celltypes_in_region.append(celltype)
+	# 	except:
+	# 		print('Exception in getAllCellTypesUserRegionHelper', celltype, type(celltype))
+	# 		#print(celltype.cell.region, region)	
+	# #print('celltypes_in_region', celltypes_in_region)
+	celltypes_in_region = CellType.objects.filter(cell__region=region, user=user)
+	return celltypes_in_region
+
+
+def getAllCellTypesUserRegionHelperJSON(user, region):
+	print('getAllCellTypesUserRegionHelperJSON(user, region)', user, region)
+	return serializers.serialize("json", getAllCellTypesUserRegionHelper(user, region))
+
+def getAllCellTypesUserJSON(user):
+	print('getAllCellTypesUserJSON(user)', user)
+	return serializers.serialize("json", getAllCellTypesUserHelper(user))
+
+def getAllCellTypesUserSlideHelper(user, slide):
+	celltypes_in_slide = CellType.objects.filter(cell__region__slide=slide, user=user)
+	return celltypes_in_slide
+
+def getAllCellTypesSlideUserJSON(user, slide):
+	print('getAllCellTypesSlideUserJSON(user, slide)', user, slide)
+	return serializers.serialize("json", getAllCellTypesUserSlideHelper(user, slide))
 
 
 # def label_cell(request, cell_id):
@@ -260,21 +301,30 @@ def get_all_cells_generic(request):
 # Used by CellCounter.js
 @login_required
 def get_all_cells_in_region(request):
+	print("get_all_cells_in_region", request)
 	GET = request.GET
 	rid = GET['rid']
 	region = Region.objects.get(rid=rid)
+	print(region)
+
 	all_cells_json = serializers.serialize("json", region.cell_set.all())
 	results = {'success':True, 'all_cells_json':all_cells_json, 'celltypes_json': getAllCellTypesUserRegionHelperJSON(request.user, region)}
-	return JsonResponse(results);
+	print(all_cells_json)
+	print(getAllCellTypesUserRegionHelperJSON(request.user, region))
+	return JsonResponse(results)
 
 # Used by slides.html
 @login_required
 def get_all_cells_in_slide(request):
+	print('get_all_cells_in_slide(request)', request)
 	GET = request.GET
 	sid = GET['sid']
 	cells = Cell.objects.filter(region__slide__sid=sid)
+	print('length of cells', len(cells))
+	slide = Slide.objects.get(sid=sid)
 	all_cells_json = serializers.serialize("json", cells)
-	results = {'success':True, 'all_cells_json':all_cells_json, 'celltypes_json': getAllCellTypesUserHelperJSON(request.user)}
+	results = {'success':True, 'all_cells_json':all_cells_json, 'celltypes_json': getAllCellTypesSlideUserJSON(request.user, slide)}
+	print('exiting get_all_cells_in_slide')
 	return JsonResponse(results);
 
 # Currently only used by returnObjectToOlDCoordinates(canvas, obj) in Cell.js, which is why celltype is not sent
@@ -657,33 +707,10 @@ def stats(request):
 	cells = Cell.objects.all()
 	cells_json = serializers.serialize("json", Cell.objects.all())
 
-	context = {'regions': regions, 'regions_json': regions_json, 'cells':cells, 'cells_json': cells_json, 'celltypes_json': getAllCellTypesUserHelperJSON(request.user)}
+	context = {'regions': regions, 'regions_json': regions_json, 'cells':cells, 'cells_json': cells_json, 'celltypes_json': getAllCellTypesUserJSON(request.user)}
 	return render(request, 'labeller/stats.html', context)
 
-def getAllCellTypesUserHelper(user):
-	print("getAllCellTypesUserHelper", user)
-	return CellType.objects.filter(user=user)
 
-def getAllCellTypesUserRegionHelper(user, region):
-	print("getAllCellTypesUserRegionHelper", user, region)
-	celltypes = getAllCellTypesUserHelper(user)
-	celltypes_in_region = []
-	for celltype in celltypes:
-		#print(user, celltype.cell.region)
-		if (celltype.cell.region.id == region.id):
-			celltypes_in_region.append(celltype)
-			#print(celltype.cell.region, region)	
-	#print('celltypes_in_region', celltypes_in_region)
-	return celltypes_in_region
-
-
-def getAllCellTypesUserRegionHelperJSON(user, region):
-	print('getAllCellTypesUserRegionHelperJSON(user, region)', user, region)
-	return serializers.serialize("json", getAllCellTypesUserRegionHelper(user, region))
-
-def getAllCellTypesUserJSON(user):
-	print('getAllCellTypesUserJSON(user)', user)
-	return serializers.serialize("json", getAllCellTypesUserHelper(user))
 
 
 @login_required

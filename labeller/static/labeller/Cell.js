@@ -204,13 +204,13 @@ class Cell {
 	//	var cells_json_reformat = $.parseJSON(cells_json);
 		var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig,'"'));
 		var cell_types_reformat = $.parseJSON(cell_types.replace(/&quot;/ig,'"'));
-		console.log("A");
-		console.log('cell_types_reformat', cell_types_reformat, typeof(cell_types_reformat), cell_types_reformat.length);
-		console.log('cells_json_reformat', cells_json_reformat, typeof(cells_json_reformat), cells_json_reformat.length);
+		// console.log("A");
+		// console.log('cell_types_reformat', cell_types_reformat, typeof(cell_types_reformat), cell_types_reformat.length);
+		// console.log('cells_json_reformat', cells_json_reformat, typeof(cells_json_reformat), cells_json_reformat.length);
 
 		var type_dict = {}
 		for (var i=0; i<cell_types_reformat.length; i++){
-			console.log (cell_types_reformat[i], cell_types_reformat[i].fields.cell)
+			// console.log (cell_types_reformat[i], cell_types_reformat[i].fields.cell)
 			type_dict [cell_types_reformat[i].fields.cell] = cell_types_reformat[i].fields.cell_type
 		}
 		console.log('type_dict', type_dict)
@@ -221,15 +221,18 @@ class Cell {
 		for (var c of cells_json_reformat){
 			var cell = new Cell(c);
 			if (cell.pk in type_dict){
-				console.log('cell in typedict', cell)
+//				console.log('cell in typedict', cell)
 				cell.cell_type = type_dict[cell.pk]
-				console.log('\tchanged to', cell)
+//				console.log('\tchanged to', cell)
 				counter = counter + 1
+			}
+			else{
+				console.log("in LoadCellsFromJson this cell is not in type_dict", cell);
 			}
 		
 			all_cells[cell.cid] = cell;
 		}
-		console.log('counter', counter, cells_json_reformat.length);
+		console.log('counter', counter, cells_json_reformat.length, Object.keys(all_cells).length, all_cells);
 
 		return all_cells;
 	}

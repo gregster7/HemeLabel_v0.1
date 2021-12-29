@@ -153,7 +153,7 @@
 
   function UpdateCountsOnPage(cells_json, celltypes_json, sid) {
     // var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig, '"'));
-    var cells = Cell.LoadCellsFromJson(cells_json, celltypes_json_reformat);
+    var cells = Cell.LoadCellsFromJson(cells_json, celltypes_json);
     var counts = CellCounter.countCells(cells);
     console.log(counts)
 
@@ -166,10 +166,7 @@
 
     $('#slide_info_'+sid).on('click', function() {
       var $this = $(this);
-      // console.log("hellerrr");
-      // console.log(this);
       var sid = $(this).attr('id').slice('slide_info_'.length);
-      // console.log(sid);
 
       if ($this.hasClass("clicked_once")) {
         $this.removeClass("clicked_once");
@@ -183,14 +180,15 @@
         $.get('/get_all_cells_in_slide/', {'sid':sid}, function(json) { 
 
           console.log('lets get them cells!');
-          console.log(json);
-          console.log(json['all_cells_json']);
-
+          //console.log(json);
+          //console.log(json['all_cells_json']);
+          
+          var cells_json_reformat = $.parseJSON(json['all_cells_json'].replace(/&quot;/ig,'"'));
           $this.addClass("clicked_once");
           $this.addClass('slide_info_down');
           $('#slide_list_' +sid).removeClass("slide_list_box");
           $('#bigtable_' +sid).slideDown().addClass("bigtable_box");
-          $('#cell_total_'+sid).html('Total: ' + json['all_cells_json'].length).fadeIn();
+          $('#cell_total_'+sid).html('Total: ' + cells_json_reformat.length).fadeIn();
 
           UpdateCountsOnPage(json['all_cells_json'], json['celltypes_json'], sid);
 
