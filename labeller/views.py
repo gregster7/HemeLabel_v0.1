@@ -40,28 +40,6 @@ def regions(request):
 	context = {'regions': regions, 'regions_json': regions_json}
 	return render(request, 'labeller/regions.html', context)
 
-# @login_required
-# def cells2(request):
-# 	slide_array = []
-# 	slides = Slide.objects.order_by('date_added')
-# 	for slide in slides: 
-# 		slide_regions = Region.objects.filter(slide=slide)
-# 		region_list = []
-# 		for region in slide_regions:
-# 			cell_tuple_array = []
-# 			cells = Cell.objects.filter(region=region)
-# 			for cell in cells:
-# 				# Append tuple-array of cells and cellfeautureforms and add to array
-# 				cell_tuple_array.append([cell, CellFeatureForm(instance=cell)])
-# 			#Append tuple-array of region with lists of {cell, cell form} tuples
-# 			region_list.append([region, cell_tuple_array])
-# 		#Append tuple-array of slide with region list tuples
-# 		slide_array.append([slide, region_list])
-# 	print(slide_array)
-# 	context = {'slide_list': slide_array}
-	
-# 	return render(request, 'labeller/cells2.html', context)	
-
 @login_required
 def get_cell_feature_form(request):
 	print('entering get_cell_feature_form', request)
@@ -71,21 +49,6 @@ def get_cell_feature_form(request):
 	form = CellFeatureForm(instance=cell)
 	#context = {'cellForm': cellForm}
 	return HttpResponse(form.as_p())
-
-# Needs updating with celltypes
-@login_required
-def cells(request):
-	"""Show all regions."""
-	cells = Cell.objects.order_by('cid')
-	cells_json = serializers.serialize("json", cells)
-	cell_forms_dict = {}
-	cell_forms_array = []
-	for cell in cells:
-		cell_forms_dict[cell.cid] = CellFeatureForm(instance=cell)
-		cell_forms_array.append(CellFeatureForm(instance=cell))
-
-	context = {'cells': cells, 'cells_json': cells_json, 'cell_forms_dict': cell_forms_dict, 'cell_forms_array': cell_forms_array, 'celltypes_json': getAllCellTypesUserJSON(request.user) }
-	return render(request, 'labeller/cells.html', context)	
 
 @login_required
 def slides(request):
@@ -100,9 +63,6 @@ def slides(request):
 	context = {'slides': slides, 'slides_json': slides_json}
 	return render(request, 'labeller/slides.html', context)	
 
-@login_required
-def slide_viewer(request):
-	return render(request, 'labeller/slide_viewer.html')
 
 
 
@@ -128,65 +88,6 @@ def getAllCellTypesSlideUserJSON(user, slide):
 	print('getAllCellTypesSlideUserJSON(user, slide)', user, slide)
 	return serializers.serialize("json", getAllCellTypesUserSlideHelper(user, slide))
 
-
-# def label_cell(request, cell_id):
-# 	"""label inidivudal cell"""
-# 	cell = Cell.objects.get(cid=cell_id)
-# 	# if request.method != 'POST':
-# 	# 	form = CellLabelForm(instance=cell)
-		
-# 	# else:
-# 	# 	# Post data submitted; process data
-# 	# 	form = CellLabelForm(request.POST, instance=cell)
-# 	# 	if form.is_valid():
-# 	# 		form.save(update_fields['label', ''])
-# 	region = cell.region
-# 	other_cells = region.cell_set.all()
-# 	context = {'region': region, 'cell':cell, 'other_cells': other_cells}
-# 	return render(request, 'labeller/label_cell.html', context)
-
-# New page started on May 7, 2021
-# Rapid labeller for normal cells without associated regions
-
-# @login_required
-# def normal_cell_labeller(request):
-# 	"""label all unlabelledd cells for a project"""
-
-
-# 	# Need to only get cells for the current user and for the current project
-# 	# For now only one user and project
-# 	#NewCells = project.cell_set.all() 
-# 	#newCells = NewCell.objects.get()
-# 	cells = NewCell.objects.all()
-
-# 	#region = Region.objects.get(rid=region_id)
-# 	#cells = region.cell_set.all()
-# 	if (cells.count() == 0):
-# 		cells = "none"
-# 		cells_json = "none"
-# 	else:
-# 		cells_json = serializers.serialize("json", cells)
-	
-# 	context = {'cells':cells, 'cells_json': cells_json}
-# 	print(context)
-# 	return render(request, 'labeller/normal_cell_labeller.html', context)
-
-## Experimental version that was trying to allow direct annotation on slide - big problems trying to get openseadragon to play well with Fabric.js
-# @login_required
-# def label_slide_overlay(request, slide_id):
-# 	slide = Slide.objects.get(sid=slide_id)
-# 	regions = slide.region_set.all()
-# 	print(regions)
-# 	cells = Cell.objects.filter(region__slide__sid=slide_id)
-# 	#cells = Cell.objects.all()
-# 	if (cells.count() == 0):
-# 		cells_json = "none"
-# 	else:	
-# 		cells_json = serializers.serialize("json", cells)
-# 		print("cell count", cells.count())
-
-# 	context = {'slide': slide, 'regions': regions, 'cells': cells, 'cells_json': cells_json}
-# 	return render(request, 'labeller/label_slide_overlay.html', context)
 
 @login_required
 def label_slide(request, slide_id):
@@ -247,20 +148,6 @@ def change_cell_location_helper(cid, left, top, width, height):
 		results = {'success':True, 'cell_json':cell_json}
 		return results
 
-# For label slide overlay.html which is under production
-# @login_required
-# def get_cell_center_relative_to_slide(request): 
-# 	GET = request.GET
-# 	cid = GET['cid']
-# 	cell = Cell.objects.get(cid=cid)
-# 	results = {'success':True, 'x':cell.GetCenter_x_slide(), 'y':cell.GetCenter_y_slide()}
-# 	print('get_cell_center_relative_to_slide', cell.GetCenter_x_slide(), cell.center_x,cell.GetCenter_y_slide(), cell.center_y)
-# 	cell.center_x_slide = cell.GetCenter_x_slide();
-# 	cell.center_y_slide = cell.GetCenter_y_slide();
-# 	cell.save()
-# 	print('get_cell_center_relative_to_slide', cell.GetCenter_x_slide(), cell.center_x, cell.center_x_slide, cell.GetCenter_y_slide(), cell.center_y, cell.center_y_slide)
-
-# 	return JsonResponse(results);
 
 # Used by slide_summary.html
 @login_required
@@ -320,25 +207,6 @@ def get_cell_json(request):
 	cell_json = serializers.serialize("json", [cell])
 	results = {'success':True, 'cell_json':cell_json}
 	return JsonResponse(results);
-
-# @login_required
-# def get_cellType(request):
-# 	GET = request.GET
-# 	id = GET['id']
-# 	cell = Cell.objects.get(id=id)
-# 	cellType = get_cellType_helper(request.user, cell)
-# 	print('get_cellType ' + cellType.cell_type)
-# 	results = {'success':True, 'cell_type':cellType.cell_type}
-# 	return JsonResponse(results);
-
-# @login_required
-# def get_slide_json(request):
-# 	GET = request.GET
-# 	sid = GET['sid']
-# 	slide = Slide.objects.get(sid=sid)
-# 	slide_json = serializers.serialize("json", [slide])
-# 	results = {'success': True, 'slide_json': slide_json}
-# 	return JsonResponse(results)
 
 
 # vips crop
@@ -465,37 +333,6 @@ def add_new_cell(request):
 	top = center_y - box_dim/2
 	return JsonResponse(create_new_cell(rid, left, top, box_dim, box_dim, request.user))
 
-	# region = Region.objects.get(rid=rid)
-
-
-	# region_path = settings.MEDIA_ROOT + region.image.url
-	# print(region_path)
-
-
-
-	# # Make sure not too close to edge
-	# if (center_x-box_dim/2 > 0 and center_y-box_dim/2 > 0 and \
-	# 	center_x+box_dim/2 < region.width and center_y+box_dim/2 < region.height):
-	# 	now = datetime.now()
-	# 	date_time = now.strftime("%m%d%Y%H%M%S")
-	# 	cell_path = settings.MEDIA_ROOT + '/cells/' + date_time + '.jpg'
-	# 	command = "vips crop "+ region_path + " " + cell_path + " " + \
-	# 		str(center_x-box_dim/2) + " " + str(center_y-box_dim/2) + " " + \
-	# 		str(box_dim) + " " + str(box_dim) 
-	# 	os.system(command)
-
-	# 	cell_path = '/cells/' + date_time + '.jpg'
-	# 	new_cell = Cell.objects.create(region = region, image=cell_path, cid=date_time, \
-	# 		center_x=center_x, center_y=center_y, width=box_dim, height=box_dim)
-	# 	new_cell.save()
-	# 	# cells = region.cell_set.all()
-	# 	new_cell_json = serializers.serialize("json", [new_cell])
-	# 	results = {'success':True, 'new_cell_json':new_cell_json}
-	# else:
-	# 	results = {'success':False, 'error':'too close to boundary'}
-	
-	# return JsonResponse(results)
-
 @login_required
 def delete_region(request):
 	rid = request.POST['rid']
@@ -557,33 +394,6 @@ def add_new_region(request):
 	results = {'success':True, 'rid': date_time, 'region_path':region_path}
 	return JsonResponse(results)
 
-# Needs to be udpated to support changing slide and patient as well
-# @login_required
-# def next_region(request):
-# 	POST = request.POST
-# 	rid = POST['rid']
-# 	direction = int(POST['direction'])
-# 	region = Region.objects.get(rid=rid)
-# 	results = {'rid': rid, 'success':False}
-
-# 	print(direction)
-# 	print(rid)
-# 	print(region)
-# 	print(region.slide)
-# 	# #regions = Region.objects.filter(slide=region.slide)
-
-# 	if (direction == 1):
-# 		next_region = Region.objects.filter(slide=region.slide, rid__gt=rid).order_by('rid').first()
-# 	elif (direction == -1):
-# 		next_region = Region.objects.filter(slide=region.slide, rid__lt=rid).order_by('rid').last()
-
-# 	if (next_region != None):
-# 		results = {'rid': next_region.rid, 'success':True}
-
-# 	# else :
-# 	# 	print(next_region)
-
-# 	return JsonResponse(results)
 
 # Will attempt to assign a new cellType. If one does not exist, it will be created. 
 def update_cellType_helper(user, cell, cell_type):
@@ -694,9 +504,6 @@ def stats(request):
 	context = {'regions': regions, 'regions_json': regions_json, 'cells':cells, 'cells_json': cells_json, 'celltypes_json': getAllCellTypesUserJSON(request.user)}
 	return render(request, 'labeller/stats.html', context)
 
-
-
-
 @login_required
 def label_region_fabric(request, region_id):
 	print('Entering label_region_fabric', request.user)
@@ -714,8 +521,6 @@ def label_region_fabric(request, region_id):
 	# for cell in cells:
 	# 	update_cellType_helper(request.user, cell, cell.cell_type)
 
-
-
 	"""label cells on a region"""
 	region = Region.objects.get(rid=region_id)
 	slide = region.slide
@@ -731,41 +536,6 @@ def label_region_fabric(request, region_id):
 	#print('label_region_fabric context', context)
 	return render(request, 'labeller/label_region_fabric.html', context)
 
-# @login_required
-# def label_region(request, region_id):
-# 	"""label cells on a region"""
-# 	region = Region.objects.get(rid=region_id)
-# 	cells = region.cell_set.all()
-# 	if (cells.count() == 0):
-# 		cells = "none"
-# 		cells_json = "none"
-# 	else:
-# 		cells_json = serializers.serialize("json", region.cell_set.all())
-	
-# 	context = {'region': region, 'cells':cells, 'cells_json': cells_json}
-# 	print(context)
-# 	return render(request, 'labeller/label_region.html', context)
-	
-@login_required	
-def new_region(request):
-	"""Add a new region"""
-	if request.method != 'POST':
-		# No data submitted; create a blank form
-		form = RegionForm()
-	else:
-		# POST data submitted; process data
-		form = RegionForm(request.POST)
-		if form.is_valid():
-			form.save()
-			return HttpResponseRedirect(reverse('labeller:regions'))
-
-	context = {'form': form}
-	return render(request, 'labeller/new_region.html', context)
-
-# @login_required
-# def blank_request(request):
-# 	print(request)
-# 	return JsonResponse({'success': True})
 
 @login_required
 def get_all_cells_in_project(request):
@@ -837,21 +607,6 @@ def create_project(request):
 	# return HttpResponseRedirect(reverse('labeller:label_cells_in_project'))
 	return render(request, 'labeller/label_cells_in_project.html')
 
-# # Upload cells
-# def upload_cells(request):
-# 	if request.method == 'POST':
-# 		form = CellForm(request.POST, request.FILES)
-# 		if form.is_valid():
-# 			form.save()
-# 			# Get current instance objecct to dispaly
-# 			img_obj = form.instance
-# 			cell = request.FILES.get('file')
-# 			cid = request.FILES.get('filename')
-# 			return render(request, 'labeller/upload_cells.html', {'form': form, 'cell': cell, 'cid': cid, 'img_obj': img_obj})
-# 	else:
-# 		form = CellForm()
-# 	return render(request, 'labeller/label_cells_in_project.html', {'form': form})
-
 
 # Needs updating with celltypes
 @login_required
@@ -878,42 +633,6 @@ def export_project_data(request):
 	return JsonResponse(results)
 
 
-# class AddCellFeatures(CreateView):
-# 	model = Cell
-# 	form_class = CreateMyeloidForm
-# 	template_name = '/cells/addCellFeatures.html'
-# 	success_url = reverse_lazy('index')
-
-# def export_project_data(request):
-# 	projects = Project.objects.filter('id')
-# 	with open(r'.\\labeller\\{{ project_id }}.json', "w") as out:
-# 		mast_point = serializers.serialize("json", projects)
-# 		out.write(mast_point)
-# 	template = __loader__.get_template('')
-# 	project = Project.objects.get('id')
-# 	cells_json = serializers.serialize("json", Cell.objects.filter(project.id))
-# 	context = {'project': project, 'cells_json': cells_json}
-
-# 	return render(request, 'labeller/data_export.html', context)
-
-# def export_project_data(target_path, target_file, data):
-#   data = serializers.serialize("json", Project.objects.GET('id'))
-#   print(data)
-
-#   if not os.path.exists(target_path):
-#     try:
-#       os.makedirs(target_path)
-#     except Exception as e:
-#       print(e)
-#       raise
-#   with open(os.path.join(target_path, target_file), 'w') as f:
-#     json.dump(data, f)
-
-#   file = export_project_data('/hemelabel/', 'project_data.json', data)
-#   print(file)
-#   return file 
-
-# def export_project_data(request, project_id):
 def create_slide_pyramid_with_vips(sid):
 	slide_svs = '/slides/' + sid + '.svs '
 	command = "vips dzsave "+ settings.MEDIA_ROOT + slide_svs + \
@@ -1076,3 +795,262 @@ def label_cells_in_project(request, project_id):
 # 	region_images = Region.image.order_by('rid')
 # 	context = {'region_images': region_images}
 # 	return render(request, 'labeller/regions.html, context')
+
+# Needs updating with celltypes
+# @login_required
+# def cells(request):
+# 	"""Show all regions."""
+# 	cells = Cell.objects.order_by('cid')
+# 	cells_json = serializers.serialize("json", cells)
+# 	cell_forms_dict = {}
+# 	cell_forms_array = []
+# 	for cell in cells:
+# 		cell_forms_dict[cell.cid] = CellFeatureForm(instance=cell)
+# 		cell_forms_array.append(CellFeatureForm(instance=cell))
+
+# 	context = {'cells': cells, 'cells_json': cells_json, 'cell_forms_dict': cell_forms_dict, 'cell_forms_array': cell_forms_array, 'celltypes_json': getAllCellTypesUserJSON(request.user) }
+# 	return render(request, 'labeller/cells.html', context)	
+
+
+# class AddCellFeatures(CreateView):
+# 	model = Cell
+# 	form_class = CreateMyeloidForm
+# 	template_name = '/cells/addCellFeatures.html'
+# 	success_url = reverse_lazy('index')
+
+# def export_project_data(request):
+# 	projects = Project.objects.filter('id')
+# 	with open(r'.\\labeller\\{{ project_id }}.json', "w") as out:
+# 		mast_point = serializers.serialize("json", projects)
+# 		out.write(mast_point)
+# 	template = __loader__.get_template('')
+# 	project = Project.objects.get('id')
+# 	cells_json = serializers.serialize("json", Cell.objects.filter(project.id))
+# 	context = {'project': project, 'cells_json': cells_json}
+
+# 	return render(request, 'labeller/data_export.html', context)
+
+# def export_project_data(target_path, target_file, data):
+#   data = serializers.serialize("json", Project.objects.GET('id'))
+#   print(data)
+
+#   if not os.path.exists(target_path):
+#     try:
+#       os.makedirs(target_path)
+#     except Exception as e:
+#       print(e)
+#       raise
+#   with open(os.path.join(target_path, target_file), 'w') as f:
+#     json.dump(data, f)
+
+#   file = export_project_data('/hemelabel/', 'project_data.json', data)
+#   print(file)
+#   return file 
+
+# def export_project_data(request, project_id):
+
+
+# Needs to be udpated to support changing slide and patient as well
+# @login_required
+# def next_region(request):
+# 	POST = request.POST
+# 	rid = POST['rid']
+# 	direction = int(POST['direction'])
+# 	region = Region.objects.get(rid=rid)
+# 	results = {'rid': rid, 'success':False}
+
+# 	print(direction)
+# 	print(rid)
+# 	print(region)
+# 	print(region.slide)
+# 	# #regions = Region.objects.filter(slide=region.slide)
+
+# 	if (direction == 1):
+# 		next_region = Region.objects.filter(slide=region.slide, rid__gt=rid).order_by('rid').first()
+# 	elif (direction == -1):
+# 		next_region = Region.objects.filter(slide=region.slide, rid__lt=rid).order_by('rid').last()
+
+# 	if (next_region != None):
+# 		results = {'rid': next_region.rid, 'success':True}
+
+# 	# else :
+# 	# 	print(next_region)
+
+# 	return JsonResponse(results)
+
+# @login_required
+# def cells2(request):
+# 	slide_array = []
+# 	slides = Slide.objects.order_by('date_added')
+# 	for slide in slides: 
+# 		slide_regions = Region.objects.filter(slide=slide)
+# 		region_list = []
+# 		for region in slide_regions:
+# 			cell_tuple_array = []
+# 			cells = Cell.objects.filter(region=region)
+# 			for cell in cells:
+# 				# Append tuple-array of cells and cellfeautureforms and add to array
+# 				cell_tuple_array.append([cell, CellFeatureForm(instance=cell)])
+# 			#Append tuple-array of region with lists of {cell, cell form} tuples
+# 			region_list.append([region, cell_tuple_array])
+# 		#Append tuple-array of slide with region list tuples
+# 		slide_array.append([slide, region_list])
+# 	print(slide_array)
+# 	context = {'slide_list': slide_array}
+	
+# 	return render(request, 'labeller/cells2.html', context)	
+
+
+# @login_required
+# def get_cellType(request):
+# 	GET = request.GET
+# 	id = GET['id']
+# 	cell = Cell.objects.get(id=id)
+# 	cellType = get_cellType_helper(request.user, cell)
+# 	print('get_cellType ' + cellType.cell_type)
+# 	results = {'success':True, 'cell_type':cellType.cell_type}
+# 	return JsonResponse(results);
+
+# @login_required
+# def get_slide_json(request):
+# 	GET = request.GET
+# 	sid = GET['sid']
+# 	slide = Slide.objects.get(sid=sid)
+# 	slide_json = serializers.serialize("json", [slide])
+# 	results = {'success': True, 'slide_json': slide_json}
+# 	return JsonResponse(results)
+
+
+
+	# region = Region.objects.get(rid=rid)
+
+
+	# region_path = settings.MEDIA_ROOT + region.image.url
+	# print(region_path)
+
+
+
+	# # Make sure not too close to edge
+	# if (center_x-box_dim/2 > 0 and center_y-box_dim/2 > 0 and \
+	# 	center_x+box_dim/2 < region.width and center_y+box_dim/2 < region.height):
+	# 	now = datetime.now()
+	# 	date_time = now.strftime("%m%d%Y%H%M%S")
+	# 	cell_path = settings.MEDIA_ROOT + '/cells/' + date_time + '.jpg'
+	# 	command = "vips crop "+ region_path + " " + cell_path + " " + \
+	# 		str(center_x-box_dim/2) + " " + str(center_y-box_dim/2) + " " + \
+	# 		str(box_dim) + " " + str(box_dim) 
+	# 	os.system(command)
+
+	# 	cell_path = '/cells/' + date_time + '.jpg'
+	# 	new_cell = Cell.objects.create(region = region, image=cell_path, cid=date_time, \
+	# 		center_x=center_x, center_y=center_y, width=box_dim, height=box_dim)
+	# 	new_cell.save()
+	# 	# cells = region.cell_set.all()
+	# 	new_cell_json = serializers.serialize("json", [new_cell])
+	# 	results = {'success':True, 'new_cell_json':new_cell_json}
+	# else:
+	# 	results = {'success':False, 'error':'too close to boundary'}
+	
+	# return JsonResponse(results)
+
+# For label slide overlay.html which is under production
+# @login_required
+# def get_cell_center_relative_to_slide(request): 
+# 	GET = request.GET
+# 	cid = GET['cid']
+# 	cell = Cell.objects.get(cid=cid)
+# 	results = {'success':True, 'x':cell.GetCenter_x_slide(), 'y':cell.GetCenter_y_slide()}
+# 	print('get_cell_center_relative_to_slide', cell.GetCenter_x_slide(), cell.center_x,cell.GetCenter_y_slide(), cell.center_y)
+# 	cell.center_x_slide = cell.GetCenter_x_slide();
+# 	cell.center_y_slide = cell.GetCenter_y_slide();
+# 	cell.save()
+# 	print('get_cell_center_relative_to_slide', cell.GetCenter_x_slide(), cell.center_x, cell.center_x_slide, cell.GetCenter_y_slide(), cell.center_y, cell.center_y_slide)
+
+# 	return JsonResponse(results);
+
+
+
+# def label_cell(request, cell_id):
+# 	"""label inidivudal cell"""
+# 	cell = Cell.objects.get(cid=cell_id)
+# 	# if request.method != 'POST':
+# 	# 	form = CellLabelForm(instance=cell)
+		
+# 	# else:
+# 	# 	# Post data submitted; process data
+# 	# 	form = CellLabelForm(request.POST, instance=cell)
+# 	# 	if form.is_valid():
+# 	# 		form.save(update_fields['label', ''])
+# 	region = cell.region
+# 	other_cells = region.cell_set.all()
+# 	context = {'region': region, 'cell':cell, 'other_cells': other_cells}
+# 	return render(request, 'labeller/label_cell.html', context)
+
+# New page started on May 7, 2021
+# Rapid labeller for normal cells without associated regions
+
+# @login_required
+# def normal_cell_labeller(request):
+# 	"""label all unlabelledd cells for a project"""
+
+
+# 	# Need to only get cells for the current user and for the current project
+# 	# For now only one user and project
+# 	#NewCells = project.cell_set.all() 
+# 	#newCells = NewCell.objects.get()
+# 	cells = NewCell.objects.all()
+
+# 	#region = Region.objects.get(rid=region_id)
+# 	#cells = region.cell_set.all()
+# 	if (cells.count() == 0):
+# 		cells = "none"
+# 		cells_json = "none"
+# 	else:
+# 		cells_json = serializers.serialize("json", cells)
+	
+# 	context = {'cells':cells, 'cells_json': cells_json}
+# 	print(context)
+# 	return render(request, 'labeller/normal_cell_labeller.html', context)
+
+## Experimental version that was trying to allow direct annotation on slide - big problems trying to get openseadragon to play well with Fabric.js
+# @login_required
+# def label_slide_overlay(request, slide_id):
+# 	slide = Slide.objects.get(sid=slide_id)
+# 	regions = slide.region_set.all()
+# 	print(regions)
+# 	cells = Cell.objects.filter(region__slide__sid=slide_id)
+# 	#cells = Cell.objects.all()
+# 	if (cells.count() == 0):
+# 		cells_json = "none"
+# 	else:	
+# 		cells_json = serializers.serialize("json", cells)
+# 		print("cell count", cells.count())
+
+# 	context = {'slide': slide, 'regions': regions, 'cells': cells, 'cells_json': cells_json}
+# 	return render(request, 'labeller/label_slide_overlay.html', context)
+	
+# @login_required	
+# def new_region(request):
+# 	"""Add a new region"""
+# 	if request.method != 'POST':
+# 		# No data submitted; create a blank form
+# 		form = RegionForm()
+# 	else:
+# 		# POST data submitted; process data
+# 		form = RegionForm(request.POST)
+# 		if form.is_valid():
+# 			form.save()
+# 			return HttpResponseRedirect(reverse('labeller:regions'))
+
+# 	context = {'form': form}
+# 	return render(request, 'labeller/new_region.html', context)
+
+# @login_required
+# def blank_request(request):
+# 	print(request)
+# 	return JsonResponse({'success': True})
+
+# @login_required
+# def slide_viewer(request):
+# 	return render(request, 'labeller/slide_viewer.html')
+
