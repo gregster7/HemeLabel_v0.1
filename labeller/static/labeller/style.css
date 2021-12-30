@@ -33,6 +33,15 @@ h2 {
 	text-transform:capitalize;
 }
 
+
+h2.horizontal_list_category {
+	background-color: #BFBFBFFF;
+	padding:10px;
+	
+	text-align: center;
+	text-transform:capitalize;
+}
+
 /* Main Menu Nav */
 .row_menu {
 	background-color: white;
