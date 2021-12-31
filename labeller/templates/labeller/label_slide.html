@@ -7,6 +7,12 @@
 <script src="{% static 'labeller/Cell.js' %}"></script>
 <script src="{% static 'labeller/CellCounter.js' %}"></script>
 
+
+<script>
+  console.log(window.location);
+
+</script>
+
 <script type="text/javascript">
 function createRegionDiv(rid, img_path, region_path) {
   new_div = '<div class="region_summary_div"><ul class="region_summary_ul"><li class="region_summary_li" id="regionSummary_' +rid+ '">RID: '+'<a href="' +region_path+ '">' +rid+ '</a>';
@@ -35,18 +41,22 @@ function fadeRegionInAndOut(rid){
 }
 
 function addNewRegion(sid, x1, y1, x2, y2){
-     $.post("/add_new_region/", {'sid':sid, 'x1':x1, 'y1':y1, 'x2':x2, 'y2':y2}, function(json){
-     console.log("Was successful?: " + json['success'] +' '+ json['rid']+' '+ json['region_path']);
-      
-      //Add new region to top of regions div
-      $('#regions').prepend(createRegionDiv(json['rid'],json['region_path']));
-      $('#delete_region_button_'+json['rid']).click(function(){ 
-        region_delete_click_handler(this.classList)
-      });
-      fadeRegionInAndOut(json['rid'])
 
+  $.post("/add_new_region/", {'sid':sid, 'x1':x1, 'y1':y1, 'x2':x2, 'y2':y2}, function(json){
+    console.log("Was successful?: " + json['success'] +' '+ json['rid']+' '+ json['region_path']);
+
+    //Add new region to top of regions div
+    region_path = '/label_region_fabric/'+json['rid']+'/'
+    $('#regions').prepend(createRegionDiv(json['rid'],json['region_path'],region_path));
+
+    $('#delete_region_button_'+json['rid']).click(function(){ 
+      region_delete_click_handler(this.classList)
     });
- }
+
+    fadeRegionInAndOut(json['rid'])
+  });
+
+}
 </script>
 
 <!-- ID: {{slide.id}} &nbsp &nbsp &nbsp &nbsp -->
