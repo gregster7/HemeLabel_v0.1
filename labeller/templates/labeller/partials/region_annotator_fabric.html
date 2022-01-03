@@ -10,9 +10,10 @@
 <!-- 	<div id="region_container_original" style="height:{{region.floor_height}}px; width:{{region.floor_width}}px">
 		<canvas id="region_canvas_original" style="position:relative"></canvas>
 	</div>
- -->	<button id="fabric_add_square_button">Add cell (m)</button>
+ -->	
+<!--  	<button id="fabric_add_square_button">Add cell (m)</button> -->
 	<button id="delete_cell_button">Delete cell (\)</button>
-	<button id="toggle_annotation_mode">Toggle annotation mode (,)</button>
+	<button id="toggle_annotation_mode">Toggle annotation mode (Escape Key)</button>
 <!-- 	<button id="toggle_circles_button">Toggle annotation mode (,)</button>
  --><!-- 	<button id="toggle_squares_button">Toggle squares (.)</button> -->
 	<table>
@@ -528,24 +529,24 @@ class RegionLabellerFabric {
 		window.addEventListener('keydown', (e) => {
 			var code = e.code;
 			console.log('keydown',typeof code, code);
-			if (code == 'KeyM') {
-				RegionLabellerFabric.drawNewBoundingBox(canvas);
-			}
+			// if (code == 'KeyM') {
+			// 	RegionLabellerFabric.drawNewBoundingBox(canvas);
+			// }
 			if (code == 'Backslash') {
 				RegionLabellerFabric.removeSelectedBox(canvas);
 			}
-			if (code == 'Comma') {
+			if (code == 'Escape') {
 				//RegionLabellerFabric.toggleDots();
 				RegionLabellerFabric.toggleCanvasModes();
 			}
-			if (code == 'Period') {
-				//RegionLabellerFabric.toggleSquares();
-			}
-			if (code == 'KeyG') {
-				// var rect = canvas.getItemByName('r0');
-				// console.log('deleting', rect);
-				// rect.delete();
-			}
+			// if (code == 'Period') {
+			// 	//RegionLabellerFabric.toggleSquares();
+			// }
+			// if (code == 'KeyG') {
+			// 	// var rect = canvas.getItemByName('r0');
+			// 	// console.log('deleting', rect);
+			// 	// rect.delete();
+			// }
 		});
 	}
 
@@ -711,7 +712,7 @@ $ (document).ready(function() {
 		var cell_types = '{{celltypes_json}}';
 
 		var all_cells = Cell.LoadCellsFromJson(cells_json, cell_types);
-//		console.log(all_cells)
+		console.log('all_cells', all_cells)
 		for (var key in all_cells) {
 			var cell = all_cells[key];
 			RegionLabellerFabric.addBoundingBoxFromCell(canvas, cell);

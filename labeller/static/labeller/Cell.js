@@ -180,7 +180,7 @@ class Cell {
 //		  console.log(key, $('#'+key+'_cells_inline').children().length);
 		}
 
-	 	var lineages = ['unlabelled','myeloid', 'lymphoid', 'erythroid', 'misc'];
+	 	var lineages = ['unlabelled','myeloid', 'lymphoid', 'erythroid', 'megakaryocytic', 'misc'];
 
 		for (var key in lineages) {
 			// console.log('meow', key, lineages[key])
@@ -275,7 +275,7 @@ class Cell {
 		console.log("Error in findLineageFromClass: no lineage found", jquery_cell);
 	}
 
-	static lineage_labels = [ 'unlabelled', 'myeloid','erythroid', 'lymphoid', 'misc'];
+	static lineage_labels = [ 'unlabelled', 'myeloid','erythroid', 'lymphoid', 'megakaryocytic', 'misc'];
 
 
 	static help_image_paths = ['erythro_reference.jpg','neutrophilic_reference.png', 'Reference_maturation.png'];
@@ -299,11 +299,11 @@ class Cell {
 			"L0": "Lymphoblast",
 			"L1": "Hematagone",
 			"L2": "Small Mature Lymphocyte",
-			"L3": "Large Grancular lymphocyte",
+			"L3": "Large Granular lymphocyte",
 			"L4": "Plasma Cell",
 
 			"ER1": "Pronormoblast",
-			"ER2": "Basophilic normoblast",
+			"ER2": "Basophilic Normoblast",
 			"ER3": "Polychromatophilic",
 			"ER4": "Orthochromic (nuc red)",
 			"ER5": "Reticulocyte",
@@ -312,8 +312,13 @@ class Cell {
 			"U1": "Artifact",
 			"U2": "Unknown",
 			"U3": "Other",
-			"U4": "Histiocyte",
+			"U4": "Mitotic Body",
 			"UL": "Unlabelled", 
+
+			"PL1": "Immature Megakaryocyte",
+			"PL2": "Mature Megakaryocyte",
+			"PL3": "Platelet Clump",
+			"PL4": "Giant Platelet",
 			};
 
 	static findLabelFromClass (jquery_cell){
@@ -348,6 +353,9 @@ class Cell {
 		}
 		if (cell_type == 'U1' || cell_type == 'U2' || cell_type == 'U3' || cell_type == 'U4'){
 			return 'misc';
+		}
+		if (cell_type.substring(0,1) == 'PL'){
+			return 'megakaryocytic';
 		}
 		if (cell_type == 'UL'){
 			return 'unlabelled';
@@ -450,22 +458,75 @@ class Cell {
 
 	}
 
+	// 
 
-	static labelCurrentCell (label) {
-		console.log('labelCurrentCell -- current cell id: ', Cell.currentCellCID())
-		//Update record in database
-		$.post("/update_cell_class/", {'cid':Cell.currentCellCID(), 'cell_label':label}, function(json){
-				console.log("update_cell_class was successful?: " + json['success'], label);
-		 		if(json['success'] == true) {
-					Cell.updateCellListsAfterLabelChange(label);
-          CellCounter.updateCountsOnPageWrapper();
-		 		} 		
-		 		else {
-		 			console.log('update_cell_class failed');	
-		 		}
-		});
-		
-	}
+	  static addCellLabelKeyboardEventListeners(){
+	  	console.log("Entering addCellLabelKeyboardEventListeners")
+			// Prevent Ctrl+R from refreshing the page. R will still work to label cell and F5 will work for refresh.
+			window.addEventListener('keydown', function(e) {
+				if(e.key === 'r' && e.ctrlKey) {
+					e.preventDefault();
+				}
+			});
+			window.addEventListener('keyup', (e) => {
+				var code = e.code;
+				document.getElementById('test_keyboard').innerHTML = 'code = ' + code;
+
+				console.log(typeof code, code)
+				switch(code) {
+					case "Digit1": Cell.labelCurrentCell('M1'); break;
+					case "Digit2": Cell.labelCurrentCell('M2'); break;
+					case "Digit3": Cell.labelCurrentCell('M3'); break;
+					case "Digit4": Cell.labelCurrentCell('M4'); break;
+					case "Digit5": Cell.labelCurrentCell('M5'); break;
+					case "Digit6": Cell.labelCurrentCell('M6'); break;
+
+					case "KeyQ": Cell.labelCurrentCell('E1'); break;
+					case "KeyW": Cell.labelCurrentCell('E2'); break;
+					case "KeyE": Cell.labelCurrentCell('B1'); break;
+					case "KeyR": Cell.labelCurrentCell('B2'); break;
+					case "KeyT": Cell.labelCurrentCell('MO1'); break;
+					case "KeyY": Cell.labelCurrentCell('MO2'); break;
+
+					case "KeyA": Cell.labelCurrentCell('L0'); break;
+					case "KeyS": Cell.labelCurrentCell('L1'); break;
+					case "KeyD": Cell.labelCurrentCell('L2'); break;
+					case "KeyF": Cell.labelCurrentCell('L3'); break;
+					case "KeyG": Cell.labelCurrentCell('L4'); break;
+
+					case "KeyZ": Cell.labelCurrentCell('ER1'); break;
+					case "KeyX": Cell.labelCurrentCell('ER2'); break;
+					case "KeyC": Cell.labelCurrentCell('ER3'); break;
+					case "KeyV": Cell.labelCurrentCell('ER4'); break;
+					case "KeyB": Cell.labelCurrentCell('ER5'); break;
+					case "KeyN": Cell.labelCurrentCell('ER6'); break;
+
+					case "Digit7": Cell.labelCurrentCell('U1'); break;
+					case "Digit8": Cell.labelCurrentCell('U2'); break;
+					case "Digit9": Cell.labelCurrentCell('U3'); break;
+					case "Digit0": Cell.labelCurrentCell('U4'); break;
+
+					case "KeyU": Cell.labelCurrentCell('UL'); break;
+
+				}
+			});
+		}
+
+		static labelCurrentCell (label) {
+			console.log('labelCurrentCell -- current cell id: ', Cell.currentCellCID())
+			//Update record in database
+			$.post("/update_cell_class/", {'cid':Cell.currentCellCID(), 'cell_label':label}, function(json){
+					console.log("update_cell_class was successful?: " + json['success'], label);
+			 		if(json['success'] == true) {
+						Cell.updateCellListsAfterLabelChange(label);
+	          CellCounter.updateCountsOnPageWrapper();
+			 		} 		
+			 		else {
+			 			console.log('update_cell_class failed');	
+			 		}
+			});
+			
+		}
 
 
 	static deleteCellFromDatabase(cell_cid) {
@@ -556,4 +617,57 @@ class Cell {
 
 
 }
+
+
+//static createBigTable(unique_id) {
+
+	//     var table = '<table style="border:none" class="slide_page_table" id="classification_table classification_table_' +unique_id+'">';
+	//       table += '<tr class="class_table_row">';
+	//       table += '<th class="class_table_td">Neutrophilic';
+	//       table += '<th class="class_table_td">Other granulocytic';
+	//       table += '<th class="class_table_td">Lymphoid';
+	//       table += '<th class="class_table_td">Erythroid';
+	//       table += '<th class="class_table_td">Misc';
+	//       table += '<tr class="class_table_row">';
+	//       table += '<td class="class_table_td slide count_M1 '+unique_id+'">Blast (1):';
+	//       table += '<td class="class_table_td slide count_E1 '+unique_id+'">Immature Eo (q):';
+	//       table += '<td class="class_table_td slide count_L0 '+unique_id+'">Lymphobast (a):';
+	//       table += '<td class="class_table_td slide count_ER1 '+unique_id+'">Pronormoblast (z):';					
+	//       table += '<td class="class_table_td slide count_U1 '+unique_id+'">Artifact (7):';
+	//       table += '<tr class="class_table_row">';
+	//       table += '<td class="class_table_td slide count_M2 '+unique_id+'">Promyelocyte (2):';
+	//       table += '<td class="class_table_td slide count_E2 '+unique_id+'">Eosinophil (w):';
+	//       table += '<td class="class_table_td slide count_L1 '+unique_id+'">Hematogone (s):';
+	//       table += '<td class="class_table_td slide count_ER2 '+unique_id+'">Basophilic normoblast (x):';						
+	//       table += '<td class="class_table_td slide count_U2 '+unique_id+'">Unknown (8):';
+	//       table += '<tr class="class_table_row">';
+	//       table += '<td class="class_table_td slide count_M3 '+unique_id+'">Myelocyte (3):';
+	//       table += '<td class="class_table_td slide count_B1 '+unique_id+'">Immature Baso (e):';
+	//       table += '<td class="class_table_td slide count_L2 '+unique_id+'">Mature Lymphocyte (d):';
+	//       table += '<td class="class_table_td slide count_ER3 '+unique_id+'">Polychromatophilic (c):';						
+	//       table += '<td class="class_table_td slide count_U3 '+unique_id+'">Other (9):';
+	//       table += '<tr class="class_table_row">';
+	//       table += '<td class="class_table_td slide count_M4 '+unique_id+'">Metamyelocyte (4):';
+	//       table += '<td class="class_table_td slide count_B2 '+unique_id+'">Basophil (r):';
+	//       table += '<td class="class_table_td slide count_L3 '+unique_id+'">LGL (f):';
+	//       table += '<td class="class_table_td slide count_ER4 '+unique_id+'">Orthochromic/nuc red (v):';						
+	//       table += '<td class="class_table_td slide count_U4 '+unique_id+'">Histiocyte (0):';
+	//       table += '<tr class="class_table_row">';
+	//       table += '<td class="class_table_td slide count_M5 '+unique_id+'">Band (5):';
+	//       table += '<td class="class_table_td slide count_MO1 '+unique_id+'">Monoblast (t):';
+	//       table += '<td class="class_table_td slide count_L4 '+unique_id+'">Plasma cell (g):';
+	//       table += '<td class="class_table_td slide count_ER5 '+unique_id+'">Reticulocyte (b):';					
+	//       table += '<td class="class_table_td slide count_UL '+unique_id+'">Unlabelled (u):';					
+	//       table += '<tr class="class_table_row">';
+	//       table += '<td class="class_table_td slide count_M6 '+unique_id+'">Seg (6):';
+	//       table += '<td class="class_table_td slide count_MO2 '+unique_id+'">Monocyte (y):';
+	//       table += '<td class="class_table_td">';
+	//       table += '<td class="class_table_td slide count_ER6 '+unique_id+'">Mature RBC (n):';
+	//       table += '<td class="class_table_td">';
+	//       table += '</table>';
+
+	//     return table;
+
+
+	//   };
 

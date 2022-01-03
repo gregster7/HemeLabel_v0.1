@@ -8,65 +8,18 @@
 
 <script src="{% static 'labeller/Cell.js' %}"></script>
 <script src="{% static 'labeller/CellCounter.js' %}"></script>
+<script src="{% static 'labeller/CellSummary.js' %}"></script>
+
 <script src="{% static 'labeller/dropzone-5.7.0/dist/dropzone.js' %}"></script>
 
 
 <link rel="stylesheet" type="text/css" href="{% static 'labeller/style.css' %}">
 <link rel="stylesheet" href="{% static 'labeller/dropzone-5.7.0/dist/dropzone.css' %}">
+
 <script>
-  function createBigTable(sid) {
-
-    var table = '<table style="border:none" class="slide_page_table" id="classification_table classification_table_' +sid+'">';
-      table += '<tr class="class_table_row">';
-      table += '<th class="class_table_td">Neutrophilic';
-      table += '<th class="class_table_td">Other granulocytic';
-      table += '<th class="class_table_td">Lymphoid';
-      table += '<th class="class_table_td">Erythroid';
-      table += '<th class="class_table_td">Misc';
-      table += '<tr class="class_table_row">';
-      table += '<td class="class_table_td slide count_M1 '+sid+'">Blast (1):';
-      table += '<td class="class_table_td slide count_E1 '+sid+'">Immature Eo (q):';
-      table += '<td class="class_table_td slide count_L0 '+sid+'">Lymphobast (a):';
-      table += '<td class="class_table_td slide count_ER1 '+sid+'">Pronormoblast (z):';					
-      table += '<td class="class_table_td slide count_U1 '+sid+'">Artifact (7):';
-      table += '<tr class="class_table_row">';
-      table += '<td class="class_table_td slide count_M2 '+sid+'">Promyelocyte (2):';
-      table += '<td class="class_table_td slide count_E2 '+sid+'">Eosinophil (w):';
-      table += '<td class="class_table_td slide count_L1 '+sid+'">Hematogone (s):';
-      table += '<td class="class_table_td slide count_ER2 '+sid+'">Basophilic normoblast (x):';						
-      table += '<td class="class_table_td slide count_U2 '+sid+'">Unknown (8):';
-      table += '<tr class="class_table_row">';
-      table += '<td class="class_table_td slide count_M3 '+sid+'">Myelocyte (3):';
-      table += '<td class="class_table_td slide count_B1 '+sid+'">Immature Baso (e):';
-      table += '<td class="class_table_td slide count_L2 '+sid+'">Mature Lymphocyte (d):';
-      table += '<td class="class_table_td slide count_ER3 '+sid+'">Polychromatophilic (c):';						
-      table += '<td class="class_table_td slide count_U3 '+sid+'">Other (9):';
-      table += '<tr class="class_table_row">';
-      table += '<td class="class_table_td slide count_M4 '+sid+'">Metamyelocyte (4):';
-      table += '<td class="class_table_td slide count_B2 '+sid+'">Basophil (r):';
-      table += '<td class="class_table_td slide count_L3 '+sid+'">LGL (f):';
-      table += '<td class="class_table_td slide count_ER4 '+sid+'">Orthochromic/nuc red (v):';						
-      table += '<td class="class_table_td slide count_U4 '+sid+'">Histiocyte (0):';
-      table += '<tr class="class_table_row">';
-      table += '<td class="class_table_td slide count_M5 '+sid+'">Band (5):';
-      table += '<td class="class_table_td slide count_MO1 '+sid+'">Monoblast (t):';
-      table += '<td class="class_table_td slide count_L4 '+sid+'">Plasma cell (g):';
-      table += '<td class="class_table_td slide count_ER5 '+sid+'">Reticulocyte (b):';					
-      table += '<td class="class_table_td slide count_UL '+sid+'">Unlabelled (u):';					
-      table += '<tr class="class_table_row">';
-      table += '<td class="class_table_td slide count_M6 '+sid+'">Seg (6):';
-      table += '<td class="class_table_td slide count_MO2 '+sid+'">Monocyte (y):';
-      table += '<td class="class_table_td">';
-      table += '<td class="class_table_td slide count_ER6 '+sid+'">Mature RBC (n):';
-      table += '<td class="class_table_td">';
-      table += '</table>';
-
-    return table;
-
-
-  };
-
   function getULForSlide(id, sid, slide_name) {
+    var cellSummary = new CellSummary('sid', sid);
+    //$('#slide_info_row').append(cellSummary.getULForSlide());
 
     slide_path = '/label_slide/'+sid+ '/';
     var ul = '<ul id="slide_list_' + sid + '" class="slide_list slide_list_box">';
@@ -76,12 +29,58 @@
     ul = ul + '<li class="slide_name" id="slide_name_' +sid+ '">Name: ' +slide_name+ '</li>';
     ul = ul + '<li><button type="button" id="slide_info_'+sid+'" class="slide_info">Info</li>';
     ul = ul + '<li id="cell_total_'+sid+'"></li></ul>';
-    ul = ul + '<div id="bigtable_' +sid+ '" class="bigtable">' +createBigTable(sid)+ '</div>';
- 
-    // ul = ul + '<li class="slide_label_btn" id="slide"'+sid+'">Show Slide Info</li></ul>';
+    //ul = ul + '<div id="bigtable_' +sid+ '" class="bigtable">' +createBigTable(sid)+ '</div>';
+    ul = ul + '<div id="bigtable_' +sid+ '" class="bigtable">' +cellSummary.createBigTable(sid)+ '</div>';
+    //ul = ul + '<li class="slide_label_btn" id="slide"'+sid+'">Show Slide Info</li></ul>';
     return ul;
   };
 
+  function UpdateCountsOnPage(cells_json, celltypes_json, sid) {
+    // var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig, '"'));
+    var cells = Cell.LoadCellsFromJson(cells_json, celltypes_json);
+    var counts = CellCounter.countCells(cells);
+    console.log(counts)
+
+    for (var key in Cell.classLabelDict) {
+      CellCounter.replaceOldCountWithNewCount(".class_table_td.slide.count_"+key+'.'+sid, counts[key]);
+    };
+  };
+
+  function infoButtonOnClick(sid) {
+
+    $('#slide_info_'+sid).on('click', function() {
+      var $this = $(this);
+      var sid = $(this).attr('id').slice('slide_info_'.length);
+
+      if ($this.hasClass("clicked_once")) {
+        $this.removeClass("clicked_once");
+        $this.removeClass('slide_info_down');
+        $('#bigtable_' +sid).slideUp().removeClass("bigtable_box");
+        $('#slide_list_' +sid).addClass('slide_list_box');
+        $('#cell_total_'+sid).fadeOut();
+
+      } else {
+
+        $.get('/get_all_cells_in_slide/', {'sid':sid}, function(json) { 
+
+          console.log('lets get them cells!');
+          //console.log(json);
+          //console.log(json['all_cells_json']);
+          
+          var cells_json_reformat = $.parseJSON(json['all_cells_json'].replace(/&quot;/ig,'"'));
+          $this.addClass("clicked_once");
+          $this.addClass('slide_info_down');
+          $('#slide_list_' +sid).removeClass("slide_list_box");
+          $('#bigtable_' +sid).slideDown().addClass("bigtable_box");
+          $('#cell_total_'+sid).html('Total: ' + cells_json_reformat.length).fadeIn();
+
+          UpdateCountsOnPage(json['all_cells_json'], json['celltypes_json'], sid);
+
+        });      
+      };
+    });
+  };
+  
   // My own Dropzone //
   Dropzone.options.mySlideDropzone = {
     
@@ -132,71 +131,23 @@
       });
     }
   };
-
 </script>
 
-    <h2>Slides</h2>
+<h2>Slides</h2>
 
-    <div id="slide_dz_div">
-      <form action="dropzone_slide" id="my-slide-dropzone" method="POST" enctype="multipart/form-data" class="dropzone js-reference-dropzone">
-        {% csrf_token %}
-      </form>
+<div id="slide_dz_div">
+  <form action="dropzone_slide" id="my-slide-dropzone" method="POST" enctype="multipart/form-data" class="dropzone js-reference-dropzone">
+    {% csrf_token %}
+  </form>
 
-      <br>
+  <br>
 
-      <button id="upload-btn" type="button">Add Slides</button>
-    </div>
+  <button id="upload-btn" type="button">Add Slides</button>
+</div>
 
-    <div id="slides"></div>
+<div id="slides"></div>
 
 <script>
-
-  function UpdateCountsOnPage(cells_json, celltypes_json, sid) {
-    // var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig, '"'));
-    var cells = Cell.LoadCellsFromJson(cells_json, celltypes_json);
-    var counts = CellCounter.countCells(cells);
-    console.log(counts)
-
-    for (var key in Cell.classLabelDict) {
-			CellCounter.replaceOldCountWithNewCount(".class_table_td.slide.count_"+key+'.'+sid, counts[key]);
-		};
-  };
-
-  function infoButtonOnClick(sid) {
-
-    $('#slide_info_'+sid).on('click', function() {
-      var $this = $(this);
-      var sid = $(this).attr('id').slice('slide_info_'.length);
-
-      if ($this.hasClass("clicked_once")) {
-        $this.removeClass("clicked_once");
-        $this.removeClass('slide_info_down');
-        $('#bigtable_' +sid).slideUp().removeClass("bigtable_box");
-        $('#slide_list_' +sid).addClass('slide_list_box');
-        $('#cell_total_'+sid).fadeOut();
-
-      } else {
-
-        $.get('/get_all_cells_in_slide/', {'sid':sid}, function(json) { 
-
-          console.log('lets get them cells!');
-          //console.log(json);
-          //console.log(json['all_cells_json']);
-          
-          var cells_json_reformat = $.parseJSON(json['all_cells_json'].replace(/&quot;/ig,'"'));
-          $this.addClass("clicked_once");
-          $this.addClass('slide_info_down');
-          $('#slide_list_' +sid).removeClass("slide_list_box");
-          $('#bigtable_' +sid).slideDown().addClass("bigtable_box");
-          $('#cell_total_'+sid).html('Total: ' + cells_json_reformat.length).fadeIn();
-
-          UpdateCountsOnPage(json['all_cells_json'], json['celltypes_json'], sid);
-
-        });      
-      };
-    });
-  };
-  
 
   $(document).ready(function() {
 
@@ -219,3 +170,59 @@
       
 
 {% endblock content %}
+
+
+
+<!-- 
+function createBigTable(sid) {
+
+    var table = '<table style="border:none" class="slide_page_table" id="classification_table classification_table_' +sid+'">';
+      table += '<tr class="class_table_row">';
+      table += '<th class="class_table_td">Neutrophilic';
+      table += '<th class="class_table_td">Other granulocytic';
+      table += '<th class="class_table_td">Lymphoid';
+      table += '<th class="class_table_td">Erythroid';
+      table += '<th class="class_table_td">Misc';
+      table += '<tr class="class_table_row">';
+      table += '<td class="class_table_td slide count_M1 '+sid+'">Blast (1):';
+      table += '<td class="class_table_td slide count_E1 '+sid+'">Immature Eo (q):';
+      table += '<td class="class_table_td slide count_L0 '+sid+'">Lymphobast (a):';
+      table += '<td class="class_table_td slide count_ER1 '+sid+'">Pronormoblast (z):';         
+      table += '<td class="class_table_td slide count_U1 '+sid+'">Artifact (7):';
+      table += '<tr class="class_table_row">';
+      table += '<td class="class_table_td slide count_M2 '+sid+'">Promyelocyte (2):';
+      table += '<td class="class_table_td slide count_E2 '+sid+'">Eosinophil (w):';
+      table += '<td class="class_table_td slide count_L1 '+sid+'">Hematogone (s):';
+      table += '<td class="class_table_td slide count_ER2 '+sid+'">Basophilic normoblast (x):';           
+      table += '<td class="class_table_td slide count_U2 '+sid+'">Unknown (8):';
+      table += '<tr class="class_table_row">';
+      table += '<td class="class_table_td slide count_M3 '+sid+'">Myelocyte (3):';
+      table += '<td class="class_table_td slide count_B1 '+sid+'">Immature Baso (e):';
+      table += '<td class="class_table_td slide count_L2 '+sid+'">Mature Lymphocyte (d):';
+      table += '<td class="class_table_td slide count_ER3 '+sid+'">Polychromatophilic (c):';            
+      table += '<td class="class_table_td slide count_U3 '+sid+'">Other (9):';
+      table += '<tr class="class_table_row">';
+      table += '<td class="class_table_td slide count_M4 '+sid+'">Metamyelocyte (4):';
+      table += '<td class="class_table_td slide count_B2 '+sid+'">Basophil (r):';
+      table += '<td class="class_table_td slide count_L3 '+sid+'">LGL (f):';
+      table += '<td class="class_table_td slide count_ER4 '+sid+'">Orthochromic/nuc red (v):';            
+      table += '<td class="class_table_td slide count_U4 '+sid+'">Histiocyte (0):';
+      table += '<tr class="class_table_row">';
+      table += '<td class="class_table_td slide count_M5 '+sid+'">Band (5):';
+      table += '<td class="class_table_td slide count_MO1 '+sid+'">Monoblast (t):';
+      table += '<td class="class_table_td slide count_L4 '+sid+'">Plasma cell (g):';
+      table += '<td class="class_table_td slide count_ER5 '+sid+'">Reticulocyte (b):';          
+      table += '<td class="class_table_td slide count_UL '+sid+'">Unlabelled (u):';         
+      table += '<tr class="class_table_row">';
+      table += '<td class="class_table_td slide count_M6 '+sid+'">Seg (6):';
+      table += '<td class="class_table_td slide count_MO2 '+sid+'">Monocyte (y):';
+      table += '<td class="class_table_td">';
+      table += '<td class="class_table_td slide count_ER6 '+sid+'">Mature RBC (n):';
+      table += '<td class="class_table_td">';
+      table += '</table>';
+
+    return table;
+
+
+  };
+ -->

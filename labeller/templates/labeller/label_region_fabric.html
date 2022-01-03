@@ -28,11 +28,11 @@
 </div>
 
 
-
-
-
-{% include "labeller/partials/slide_summary.html" %}
-{% include "labeller/partials/big_table.html" %}
+{% include "labeller/partials/cell_summary.html" %}
+<div id="test_keyboard">Last Key Pressed: </div>
+{% comment %}
+	{% include "labeller/partials/big_table.html" %}
+{% endcomment %}
 <div id="region_info_headline"></div>
 <div id="slide_back_link"></div>
 
@@ -76,6 +76,12 @@
 
 	$('#region_info_headline').append(getULForRegion('{{region.pk}}', '{{region.rid}}', '{{region.x}}', '{{region.y}}', '{{region.width}}', '{{region.height}}'));
 	$('#slide_back_link').append(getULForSlide('{{slide.pk}}', '{{slide.sid}}', '{{slide.name}}'));
+</script>
+
+<script>
+ $(document).ready(function() {
+ 	Cell.addCellLabelKeyboardEventListeners()    
+ });
 </script>
 
 {% endblock %}

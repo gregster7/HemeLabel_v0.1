@@ -71,28 +71,38 @@ def getAllCellTypesUserRegionHelper(user, region):
 	return CellType.objects.filter(cell__region=region, user=user)
 
 def getAllCellTypesUserRegionJSON(user, region):
-	print('getAllCellTypesUserRegionJSON(user, region)', user, region)
+#	print('getAllCellTypesUserRegionJSON(user, region)', user, region)
 	return serializers.serialize("json", getAllCellTypesUserRegionHelper(user, region))
 
 def getAllCellTypesUserHelper(user):
 	return CellType.objects.filter(user=user)
 
 def getAllCellTypesUserJSON(user):
-	print('getAllCellTypesUserJSON(user)', user)
+#	print('getAllCellTypesUserJSON(user)', user)
 	return serializers.serialize("json", getAllCellTypesUserHelper(user))
 
 def getAllCellTypesUserSlideHelper(user, slide):
 	return CellType.objects.filter(cell__region__slide=slide, user=user)
 
 def getAllCellTypesSlideUserJSON(user, slide):
-	print('getAllCellTypesSlideUserJSON(user, slide)', user, slide)
+#	print('getAllCellTypesSlideUserJSON(user, slide)', user, slide)
 	return serializers.serialize("json", getAllCellTypesUserSlideHelper(user, slide))
 
 
 @login_required
 def label_slide(request, slide_id):
-	#print('label_slide', request, slide_id)
+	print('label_slide', request, slide_id)
 	slide = Slide.objects.get(sid=slide_id)
+	if (slide_id == '1010220220012190'):
+		print('1010220220012190 is being changed')
+		slide.dzi_path.name = 'slides/1010220220012190.dzi'
+		slide.save()
+	if (slide_id == '1010220220012180'):
+		print('1010220220012190 is being changed')
+		slide.dzi_path.name = 'slides/1010220220012190.dzi'
+		slide.save()
+
+
 	regions = slide.region_set.all()
 	context = {'slide': slide, 'regions': regions}
 	return render(request, 'labeller/label_slide.html', context)
@@ -172,7 +182,7 @@ def get_all_cells_generic(request):
 # Used by CellCounter.js
 @login_required
 def get_all_cells_in_region(request):
-	print("get_all_cells_in_region", request)
+#	print("get_all_cells_in_region", request)
 	GET = request.GET
 	rid = GET['rid']
 	region = Region.objects.get(rid=rid)
@@ -180,8 +190,8 @@ def get_all_cells_in_region(request):
 
 	all_cells_json = serializers.serialize("json", region.cell_set.all())
 	results = {'success':True, 'all_cells_json':all_cells_json, 'celltypes_json': getAllCellTypesUserRegionJSON(request.user, region)}
-	print(all_cells_json)
-	print(getAllCellTypesUserRegionJSON(request.user, region))
+#	print(all_cells_json)
+#	print(getAllCellTypesUserRegionJSON(request.user, region))
 	return JsonResponse(results)
 
 # Used by slides.html
@@ -453,9 +463,13 @@ def getCellTypeName(cellType):
 		"U1": "Artifact",
 		"U2": "Unknown",
 		"U3": "Other",
-		"U4": "Histiocyte",
+		"U4": "Mitotic Body",
 		"UL": "Unlabelled", 
 		
+		"PL1": "Immature Megakaryocyte",
+		"PL2": "Mature Megakaryocyte",
+		"PL3": "Platelet Clump",
+		"PL4": "Giant Platelet",
 	}
 	return classLabelDict[cellType.cell_type]	
 
@@ -634,11 +648,13 @@ def export_project_data(request):
 
 
 def create_slide_pyramid_with_vips(sid):
+	print("entering create_slide_pyramid_with_vips", sid)
 	slide_svs = '/slides/' + sid + '.svs '
 	command = "vips dzsave "+ settings.MEDIA_ROOT + slide_svs + \
 		settings.MEDIA_ROOT + '/slides/' + sid 
-	 
+	print(command) 
 	os.system(command)
+	print('done')
 	return('slides/' + sid + '.dzi')
 
 
@@ -743,6 +759,7 @@ def dropzone_image_w_projectID(request, project_id):
 
 	return HttpResponse()
 
+# Not currently in use - may require fixing
 @login_required
 def label_cells_in_project(request, project_id):
 	"""label cells in a given project"""

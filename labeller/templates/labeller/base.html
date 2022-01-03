@@ -9,10 +9,34 @@
 	<link rel="shortcut icon" type="image/png" href="{% static 'labeller/images/favicon.ico' %}"/>
 	<title>{% block title %}Hemepath{% endblock %}</title>
 
+
+    <script>
+        // var labeller = labeller || {}
+        // var labeller.cell = labller.cell || {}
+
+        // //https://blog.michaelckennedy.net/2012/10/11/preventing-javascript-files-from-loading-multiple-times/
+        // var isFirstLoad = function (namesp, jsFile) {
+        //     var isFirst = namesp.firstLoad === underfined;
+        //     namesp.firstLoad = false
+
+        //     if (!isFirst) {
+        //         console.log("Warning: Javascript file is included twice: " + jsFile);
+        //     }
+
+        //     return isFirst;
+        // }
+
+        // if (!isFirstLoad(labeller.cell), "{% static 'labeller/dropzone-5.7.0/dist/dropzone.js' %}") {
+        //     return
+        // }
+
+
+    </script>
 <!--     <script src="{% static 'labeller/jquery-3.5.1.min.js' %}" onload="loaded=true;"></script>
  -->
     <!-- scripts loading static files for Dropzone-->
     {% comment %} <script src="{% static 'labeller/dropzone-5.7.0/dist/dropzone.js' %}"></script>
+
     <script src="{% static 'labeller/dropzone-5.7.0/dist/dropzone.css' %}"></script>
      {% endcomment %}
     <script src="{% static 'labeller/jquery-3.5.1.min.js' %}"></script>

@@ -1,0 +1,30 @@
+{% load static %}
+<div id='slide_info_row'></div>
+<script src="{% static 'labeller/CellSummary.js' %}"></script>
+
+<script>
+  current_url = window.location.href;
+  if (current_url.search('label_slide') != -1) {
+    var id_type = 'sid'
+    var id_val = '{{slide.sid}}'
+  }
+  else if (current_url.search('label_region') != -1){
+    var id_type = 'rid'
+    var id_val = '{{region.rid}}'
+  }
+  else {
+    console.log("Error in slide_summary.html")
+  }
+
+  var cellSummary = new CellSummary(id_type, id_val);
+  $('#slide_info_row').append(cellSummary.getULForSlide());
+  cellSummary.addInfoButtonOnClick();
+  $('.bigtable').hide();
+</script>
+
+<script>
+  $ (document).ready(function() {
+    $('.bigtable').show();
+    
+  });
+</script>

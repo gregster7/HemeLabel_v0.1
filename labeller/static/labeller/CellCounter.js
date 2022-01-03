@@ -30,35 +30,31 @@ class CellCounter {
     }
   }
 
-  
-  static updateCountsFunctionCallback (json) {
-    if(json['success'] == true) {
-      var cells_json = json['all_cells_json'];
-      if (cells_json!='none') {		
-        CellCounter.updateCountsOnPageJson(cells_json, json['celltypes_json']);
-      }
-    }
-
-    else {
-      console.log("updateCountsFunctionCallback not successful");	
-    }
-  };
-
   static updateCountsOnPageAJAXProject (project_id) {
     console.log("entering updateCountsOnPageAJAXProject");
     $.get("/get_all_cells_in_project/", {'project_id':project_id}, function(json){
-      CellCounter.updateCountsFunctionCallback(json);
-    }
-    );
+      if(json['success'] == true) {
+	      var cells_json = json['all_cells_json'];
+	      if (cells_json!='none') {		
+	        var cells = Cell.LoadCellsFromJson(cells_json, celltypes_json);
+					CellCounter.updateCountsOnPageNotJson(cells, project_id);
+	      }
+    	} 
+		});
   }
 
 	static updateCountsOnPageAJAXRegion (rid) {
     console.log("entering updateCountsOnPageAJAXRegion");
 		$.get("/get_all_cells_in_region/", {'rid':rid}, function(json){
-      CellCounter.updateCountsFunctionCallback(json);
+	      if(json['success'] == true) {
+	      var cells_json = json['all_cells_json'];
+	      if (cells_json!='none') {		
+	        var cells = Cell.LoadCellsFromJson(cells_json, json['celltypes_json']);
+					CellCounter.updateCountsOnPageHelper(cells, rid);
+	      }
+    	}
 		});
 	}
-
 
 	static countCells(cells) {
 		// var cells = Cell.LoadCellsFromJson(cells_json);
@@ -98,14 +94,9 @@ class CellCounter {
 		$('#ME_ratio').html("M/E Ratio: "+ME_ratio)
 	}
 
+	// static updateCountsOnPageNotJson(cells, unique_id){
+	static updateCountsOnPageHelper(cells, unique_id){
 
-	static updateCountsOnPageJson(cells_json, celltypes_json) {
-		console.log("updateCountsOnPageJson",cells_json, celltypes_json )
-		var cells = Cell.LoadCellsFromJson(cells_json, celltypes_json);
-		CellCounter.updateCountsOnPageNotJson(cells);
-	}
-
-	static updateCountsOnPageNotJson(cells){
 		var counts = CellCounter.countCells(cells);
 		var sum = 0;
 
@@ -118,15 +109,14 @@ class CellCounter {
 		CellCounter.replaceOldCountWithNewCount("#total.counter", sum);
 		CellCounter.updateMERatio(counts);
 
-		// Update Counts on Big Table
+		// Update Counts on Big Table and Slide Summary
 		for (var key in Cell.classLabelDict) {
-			// if (key != 'UL') {
-			// 	CellCounter.replaceOldCountWithNewCount("#count_"+key, counts[key]);
-			// }
+			//Big Table
 			CellCounter.replaceOldCountWithNewCount("#count_"+key, counts[key]);
+			//Slide Summary
+			CellCounter.replaceOldCountWithNewCount(".count_"+key, counts[key]);
 		}
-
-	} 
+	}
 
 	static replaceOldCountWithNewCount(jquery_selector, count) {
 		if ($(jquery_selector).length){
@@ -138,5 +128,25 @@ class CellCounter {
 			console.log("replaceOldCountWithNewCount query selector returned nothing", jquery_selector);
 		}
 	}
-
 }
+
+
+  	// static updateCountsOnPageJson(cells_json, celltypes_json) {
+	// 	console.log("updateCountsOnPageJson",cells_json, celltypes_json )
+	// 	var cells = Cell.LoadCellsFromJson(cells_json, celltypes_json);
+	// 	CellCounter.updateCountsOnPageNotJson(cells);
+	// }
+
+
+  // static updateCountsFunctionCallback (json) {
+  //   if(json['success'] == true) {
+  //     var cells_json = json['all_cells_json'];
+  //     if (cells_json!='none') {		
+  //       CellCounter.updateCountsOnPageJson(cells_json, json['celltypes_json']);
+  //     }
+  //   }
+
+  //   else {
+  //     console.log("updateCountsFunctionCallback not successful");	
+  //   }
+  // };

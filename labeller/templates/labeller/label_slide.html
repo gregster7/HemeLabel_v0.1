@@ -8,11 +8,6 @@
 <script src="{% static 'labeller/CellCounter.js' %}"></script>
 
 
-<script>
-  console.log(window.location);
-
-</script>
-
 <script type="text/javascript">
 function createRegionDiv(rid, img_path, region_path) {
   new_div = '<div class="region_summary_div"><ul class="region_summary_ul"><li class="region_summary_li" id="regionSummary_' +rid+ '">RID: '+'<a href="' +region_path+ '">' +rid+ '</a>';
@@ -116,6 +111,7 @@ function addNewRegion(sid, x1, y1, x2, y2){
 
 <script type="text/javascript">
   dzi_path = '/{{ slide.dzi_path }}';
+  // console.log('dzi_path is', dzi_path)
   var prefix_url = "{% static 'labeller/openseadragon/images/' %}";
 </script>
 
