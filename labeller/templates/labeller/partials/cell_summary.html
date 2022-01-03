@@ -19,12 +19,12 @@
   var cellSummary = new CellSummary(id_type, id_val);
   $('#slide_info_row').append(cellSummary.getULForSlide());
   cellSummary.addInfoButtonOnClick();
+
   $('.bigtable').hide();
 </script>
 
 <script>
   $ (document).ready(function() {
-    $('.bigtable').show();
-    
+    $('.slide_info').trigger( "click" );
   });
 </script>
