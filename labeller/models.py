@@ -8,6 +8,18 @@ from django.contrib.auth.models import User
 
 User._meta.get_field('email')._unique = True 
 
+class Diagnosis(models.Model):
+	name = models.CharField(max_length=64, blank=True, null=True)
+	abbreviation = models.CharField(max_length=8, blank=True, null=True)
+
+# This is not currently in use
+class CellFeature(models.Model):
+	featureName = models.CharField(max_length=64, blank=True, null=True)
+	featureAbbreviation = models.CharField(max_length=64, blank=True, null=True)
+	def __str__(self):
+		return self.featureName
+	
+
 class Patient (models.Model):
 	"""An individual patient, who can have many slides"""
 	created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -29,12 +41,7 @@ class Patient (models.Model):
 		"""Return a string representation of the model."""
 		return self.name
 
-# This is not currently in use
-class CellFeature(models.Model):
-	featureName = models.CharField(max_length=64, blank=True, null=True)
-	featureAbbreviation = models.CharField(max_length=64, blank=True, null=True)
-	def __str__(self):
-		return self.featureName
+
 
 class Slide (models.Model):
 	"""A slide comes from a single patient, but can have many regions"""
@@ -44,6 +51,7 @@ class Slide (models.Model):
 	date_added = models.DateTimeField(auto_now_add=True)
 	dzi_path = models.FileField(upload_to="slides", max_length=300, blank=True, null=True)
 	svs_path = models.FileField(upload_to="slides", max_length=300, blank=True, null=True)
+	diagnosis = models.ManyToManyField('Diagnosis', related_name='slides')
 
 	# Store filename as name
 	name = models.CharField(max_length=200, blank=True, null=True)
