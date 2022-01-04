@@ -47,3 +47,20 @@ class CellFeatureForm(forms.ModelForm):
       queryset=CellFeature.objects.all(),
       widget=forms.CheckboxSelectMultiple
   )    
+
+
+class DiagnosisForm(forms.Form):
+    name = forms.CharField(
+        max_length=64,
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "placeholder": "Diagnosis"
+        })
+    )
+    abbreviation = forms.CharField(
+        max_length=8,
+        widget=forms.TextInput(attrs={
+            "class": "form-control",
+            "placeholder": "Dx"
+        })
+    )

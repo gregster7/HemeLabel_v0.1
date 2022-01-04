@@ -226,19 +226,19 @@ class Cell {
 		for (var c of cells_json_reformat){
 			var cell = new Cell(c);
 			if (typeof celltypes_json !== 'undefined' && cell.pk in type_dict){
-				console.log('cell in typedict', cell)
+//				console.log('cell in typedict', cell)
 				cell.cell_type = type_dict[cell.pk]
-				console.log('\tchanged to', cell)
+//				console.log('\tchanged to', cell)
 				counter = counter + 1
 			}
 			else {
 				cell.cell_type = 'UL'
-				console.log("in LoadCellsFromJson this cell is not in type_dict", cell);
+//				console.log("in LoadCellsFromJson this cell is not in type_dict", cell);
 			}
 		
 			all_cells[cell.cid] = cell;
 		}
-		console.log('counter', counter, cells_json_reformat.length, Object.keys(all_cells).length, all_cells);
+//		console.log('counter', counter, cells_json_reformat.length, Object.keys(all_cells).length, all_cells);
 
 		return all_cells;
 	}

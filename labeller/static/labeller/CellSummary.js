@@ -8,6 +8,7 @@ class CellSummary {
     printMe(){
       return this.id_type + ' ' + this.id_val;
     }
+
     createBigTable() {
       var table = '<table style="border:none" class="slide_page_table" id="classification_table_' +this.id_val+'">';
       table += '<tr class="class_table_row">';
@@ -98,7 +99,7 @@ class CellSummary {
       console.log(counts)
 
       for (var key in Cell.classLabelDict) {
-        CellCounter.replaceOldCountWithNewCount(".class_table_td.slide.count_"+key+'.'+id_val, counts[key]);
+        CellCounter.replaceOldCountWithNewCount(".class_table_td.count_"+key+'.'+id_val, counts[key]);
       };
     };
     

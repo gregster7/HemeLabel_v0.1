@@ -15,7 +15,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 
 from .models import Region, Cell, Patient, Slide, Project, CellType
-from .forms import RegionForm, UserForm, CellForm, CellFeatureForm
+from .forms import RegionForm, UserForm, CellForm, CellFeatureForm, DiagnosisForm
 
 from django.conf import settings
 from django.conf.urls.static import static
@@ -93,15 +93,28 @@ def getAllCellTypesSlideUserJSON(user, slide):
 def label_slide(request, slide_id):
 	print('label_slide', request, slide_id)
 	slide = Slide.objects.get(sid=slide_id)
-	if (slide_id == '1010220220012190'):
-		print('1010220220012190 is being changed')
-		slide.dzi_path.name = 'slides/1010220220012190.dzi'
-		slide.save()
-	if (slide_id == '1010220220012180'):
-		print('1010220220012190 is being changed')
-		slide.dzi_path.name = 'slides/1010220220012190.dzi'
-		slide.save()
+	# if (slide_id == '1010220220012190'):
+	# 	print('1010220220012190 is being changed')
+	# 	slide.dzi_path.name = 'slides/1010220220012190.dzi'
+	# 	slide.save()
+	# if (slide_id == '1010220220012180'):
+	# 	print('1010220220012190 is being changed')
+	# 	slide.dzi_path.name = 'slides/1010220220012190.dzi'
+	# 	slide.save()
 
+    # if request.method == 'POST':
+    #     form = DiagnosisForm(request.POST)
+    #     if form.is_valid():
+    #         comment = Comment(
+    #             author=form.cleaned_data["author"],
+    #             body=form.cleaned_data["body"],
+    #             post=post
+
+    #         )
+
+    #         comment.save()
+
+     
 
 	regions = slide.region_set.all()
 	context = {'slide': slide, 'regions': regions}
