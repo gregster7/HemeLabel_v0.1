@@ -1,0 +1,16 @@
+<h2 id="regions_banner">Regions</h2>
+
+<div id="regions">
+  
+    {% for region in regions %}
+    <script>
+      region = new Region('{{region.rid}}', '{{region.image.url}}');
+      region.prependRegionDivToJQuerySelector('#regions');
+    </script>
+
+    {% empty %}
+      <li>No regions have been added yet</li>
+    {% endfor %}
+
+</div>
+

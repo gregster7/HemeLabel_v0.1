@@ -14,7 +14,7 @@ from django.contrib.auth import login, authenticate
 
 from django.contrib.auth.models import User
 
-from .models import Region, Cell, Patient, Slide, Project, CellType
+from .models import Region, Cell, Patient, Slide, Project, CellType, Diagnosis
 from .forms import RegionForm, UserForm, CellForm, CellFeatureForm, DiagnosisForm
 
 from django.conf import settings
@@ -114,10 +114,10 @@ def label_slide(request, slide_id):
 
     #         comment.save()
 
-     
-
+	diagnoses = slide.diagnosis
+	print('diagnosis', diagnoses)
 	regions = slide.region_set.all()
-	context = {'slide': slide, 'regions': regions}
+	context = {'slide': slide, 'regions': regions, 'diagnosese': diagnoses, 'dx_options': Diagnosis.objects.all()}
 	return render(request, 'labeller/label_slide.html', context)
 
 # def label_slide2(request, slide_id):

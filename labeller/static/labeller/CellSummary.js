@@ -49,7 +49,7 @@ class CellSummary {
       table += '<td class="class_table_td count_B2 '+this.id_val+'">Basophil (r):';
       table += '<td class="class_table_td count_L3 '+this.id_val+'">LGL (f):';
       table += '<td class="class_table_td count_ER4 '+this.id_val+'">Orthochromic/nuc red (v):';            
-      table += '<td class="class_table_td count_PL3 '+this.id_val+'">Giant clump (/):';
+      table += '<td class="class_table_td count_PL4 '+this.id_val+'">Giant clump (/):';
       table += '<td class="class_table_td count_UL '+this.id_val+'">Unlabelled (u):';         
       // table += '<td class="class_table_td count_U4 '+this.id_val+'">Histiocyte (0):';
 

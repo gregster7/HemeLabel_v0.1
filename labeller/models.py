@@ -11,6 +11,10 @@ User._meta.get_field('email')._unique = True
 class Diagnosis(models.Model):
 	name = models.CharField(max_length=64, blank=True, null=True)
 	abbreviation = models.CharField(max_length=8, blank=True, null=True)
+	def __str__(self):
+		return self.name + ' ('+self.abbreviation+')'
+	class Meta:
+		verbose_name_plural = 'Diagnoses'
 
 # This is not currently in use
 class CellFeature(models.Model):

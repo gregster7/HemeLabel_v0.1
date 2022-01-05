@@ -1,0 +1,41 @@
+{% for dx in diagnoses %}
+  {{dx.name}} ({{dx.abbreviation}}) &nbsp &nbsp &nbsp  
+{% empty %}
+  Diagnosis: None
+  <form id="dx_form"> 
+     <select name="dx_options" placeholder="No diagnosis">
+        <option value="none" selected></option>
+        {% for dx_option in dx_options %}
+        <option value="{{dx_option}}">{{dx_option}}</option>
+        {% endfor %}
+      </select>
+      <input type="submit" value="Add Diagnosis">
+  </form>
+{% endfor %}
+
+
+<script>
+  // this is the id of the form
+  $("#dx_form").submit(function(e) {
+
+    e.preventDefault(); // avoid to execute the actual submit of the form.
+    console.log($("select"), $("select").val())
+    var form = $(this);
+    console.log(form)
+  });
+//    var url = form.attr('action');
+    
+    // $.ajax({
+    //        type: "POST",
+    //        url: url,
+    //        data: form.serialize(), // serializes the form's elements.
+    //        success: function(data)
+    //        {
+    //            alert(data); // show response from the php script.
+    //        }
+    //      });
+
+    
+
+
+</script>

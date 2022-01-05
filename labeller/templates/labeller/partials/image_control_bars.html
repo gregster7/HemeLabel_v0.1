@@ -1,7 +1,3 @@
-<!-- Image Control Region -->
-<!-- http://css3.bradshawenterprises.com/filters/ -->
-
-
 <div id="controls">
   
   <form class="form-horizontal control-form-flex-box">
@@ -33,49 +29,57 @@
       </div>
     </div>
 
-
-    </form>
-  </div>
+  </form>
+</div>
 
 <script>
-  $(document).ready(function() {
-    var controls_input = $("#controls input"),
+
+$(document).ready(function() {
+  var controls_input = $("#controls input"),
+  image = $("canvas, img");
+  
+  function updateDisplay() {
     image = $("canvas, img");
-    
-    function updateDisplay() {
-      image = $("canvas, img");
-      var newCSS = '';
-      controls_input.each(function(){
-        var units = '';
+    var newCSS = '';
+    controls_input.each(function(){
+      var units = '';
 
-        if ($(this).attr('id') == 'blur') {
-          units = 'px';
-        } else if ($(this).attr('id') == 'hue-rotate') {
-          units = 'deg';
-        }
-        newCSS += $(this).attr('id')+"("+$(this).val()+units+") ";
-        $("#"+$(this).attr('id')+"_output").text($(this).attr('id')+"("+$(this).val()+units+")");
-      })
-      image.css("-webkit-filter", newCSS);
-      image.css("-moz-filter", newCSS);
-      image.css("-ms-filter", newCSS);
-      image.css("-o-filter", newCSS);
-      image.css("filter", newCSS);
-    }
+      if ($(this).attr('id') == 'blur') {
+        units = 'px';
+      } else if ($(this).attr('id') == 'hue-rotate') {
+        units = 'deg';
+      }
+      newCSS += $(this).attr('id')+"("+$(this).val()+units+") ";
+      $("#"+$(this).attr('id')+"_output").text($(this).attr('id')+"("+$(this).val()+units+")");
+    })
+    image.css("-webkit-filter", newCSS);
+    image.css("-moz-filter", newCSS);
+    image.css("-ms-filter", newCSS);
+    image.css("-o-filter", newCSS);
+    image.css("filter", newCSS);
+  }
 
-    updateDisplay();
+  updateDisplay();
 
-    controls_input.change(updateDisplay);
+  controls_input.change(updateDisplay);
 
-    $("#reset").click(function(){
-      controls_input.each(function(){
-        $(this).val($(this).attr('data-default'));
-      });
-      updateDisplay();
-      return false;
+  $("#reset").click(function(){
+    controls_input.each(function(){
+      $(this).val($(this).attr('data-default'));
     });
+    updateDisplay();
+    return false;
   });
+});
+
 </script>
+
+
+
+
+<!-- Image Control Bars -->
+<!-- http://css3.bradshawenterprises.com/filters/ -->
+
 
 
         <!--     <div class="control-group">
