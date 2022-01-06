@@ -77,17 +77,14 @@ urlpatterns = [
 	########################################################################################################
 	############################################ AJAX FUNCTIONS ############################################
 	
+	#************************* SLIDE POSTS *************************#
+	re_path(r'^add_diagnosis_to_slide/', views.add_diagnosis_to_slide, name='add_diagnosis_to_slide'),
+	re_path(r'^remove_diagnosis_to_slide/', views.add_diagnosis_to_slide, name='add_diagnosis_to_slide'),
+	
 	#************************* REGION POSTS *************************#
-	# Add new region (AJAX)
 	re_path(r'^add_new_region/', views.add_new_region, name='add_new_region'),
-
-	# Delete region (AJAX)
 	re_path(r'^delete_region/', views.delete_region, name='delete_region'),
-
-	# toggle_region_complete_seg (AJAX)
 	re_path(r'^toggle_region_complete_seg/', views.toggle_region_complete_seg, name='toggle_region_complete_seg'),
-
-	# toggle_region_complete_seg (AJAX)
 	re_path(r'^toggle_region_complete_class/', views.toggle_region_complete_class, name='toggle_region_complete_class'),
 
 	#************************* PROJECT POSTS *************************#
@@ -96,33 +93,23 @@ urlpatterns = [
 	#************************* CELL GETS *************************#
 	re_path(r'^get_cell_feature_form/', views.get_cell_feature_form, name='get_cell_feature_form'),
 
-	# Get cell information (AJAX)
 	re_path(r'^get_cell_json/', views.get_cell_json, name='get_cell_json'),
 
-	# Get cell information (AJAX)
 	re_path(r'^get_all_cells_generic/', views.get_all_cells_generic, name='get_all_cells_generic'),
 
   	re_path(r'^get_all_cells_in_project/', views.get_all_cells_in_project, name='get_all_cells_in_project'),
   
-	# Get cell information (AJAX)
 	re_path(r'^get_all_cells_in_slide/', views.get_all_cells_in_slide, name='get_all_cells_in_slide'),
 	
 	re_path(r'^get_all_cells_in_region/', views.get_all_cells_in_region, name='get_all_cells_in_region'),
 
 	#************************* CELL AND CELLTYPE POSTS *************************#
-	# Add new cell (AJAX)
-	re_path(r'^add_new_cell/', views.add_new_cell, name='add_new_cell'),
+	#re_path(r'^add_new_cell/', views.add_new_cell, name='add_new_cell'),
 
 	# Add new cell with box (AJAX)
 	re_path(r'^add_new_cell_box/', views.add_new_cell_box, name='add_new_cell_box'),
-
-	# Delete cell (AJAX)
 	re_path(r'^delete_cell/', views.delete_cell, name='delete_cell'),
-
-	# Change cell location (AJAX)
 	re_path(r'^change_cell_location/', views.change_cell_location, name='change_cell_location'),
-
-	# Change cell's cell_type (used with AJAX)
 	re_path(r'^update_cell_class/', views.update_cell_class, name='update_cell_class'),
 
 	#******************************************************************************************#

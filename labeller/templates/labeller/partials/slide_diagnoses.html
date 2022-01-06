@@ -1,9 +1,22 @@
-{% for dx in diagnoses %}
-  {{dx.name}} ({{dx.abbreviation}}) &nbsp &nbsp &nbsp  
+<!-- UNDER CONSTRUCTION -->
+{% load static %}
+
+<script src="{% static 'labeller/Diagnosis.js' %}"></script>
+<script>
+var diagnoses = []
+</script>
+
+{% for dx in slide.diagnosis.all %}
+  Diagnosis: {{dx.name}} ({{dx.abbreviation}}) &nbsp &nbsp &nbsp
+  <script>
+    diagnoses.push(new Diagnosis('{{dx.name}}', '{{dx.abbreviation}}'))
+  </script>  
 {% empty %}
   Diagnosis: None
-  <form id="dx_form"> 
-     <select name="dx_options" placeholder="No diagnosis">
+  
+{% endfor %}
+<form id="form_slide_pk_{{slide.sid}}" class="dx_form"> 
+     <select name="dx_options" id="dx_options"placeholder="No diagnosis">
         <option value="none" selected></option>
         {% for dx_option in dx_options %}
         <option value="{{dx_option}}">{{dx_option}}</option>
@@ -11,31 +24,23 @@
       </select>
       <input type="submit" value="Add Diagnosis">
   </form>
-{% endfor %}
-
 
 <script>
+  
   // this is the id of the form
-  $("#dx_form").submit(function(e) {
+  $(".dx_form").submit(function(e) {
+    e.preventDefault();
+    chosen_diagnosis = $('#dx_options').val()
+    console.log(diagnoses)
+    for (var i=0; i<diagnoses.length; i++) {
+      if (diagnoses[i].isDiagnosisChoiseEquivalent(chosen_diagnosis)) {
+        console.log("this slide already has this diagnosis")
+        return;
+      }
+    }
 
-    e.preventDefault(); // avoid to execute the actual submit of the form.
-    console.log($("select"), $("select").val())
-    var form = $(this);
-    console.log(form)
+    var sid = $(".dx_form").attr('id').substr(("form_slide_pk_".length));
+    Diagnosis.submitDiagnosisForSlideAJAX(chosen_diagnosis, sid )
   });
-//    var url = form.attr('action');
-    
-    // $.ajax({
-    //        type: "POST",
-    //        url: url,
-    //        data: form.serialize(), // serializes the form's elements.
-    //        success: function(data)
-    //        {
-    //            alert(data); // show response from the php script.
-    //        }
-    //      });
-
-    
-
 
 </script>

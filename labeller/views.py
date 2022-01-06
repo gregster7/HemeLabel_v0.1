@@ -117,7 +117,7 @@ def label_slide(request, slide_id):
 	diagnoses = slide.diagnosis
 	print('diagnosis', diagnoses)
 	regions = slide.region_set.all()
-	context = {'slide': slide, 'regions': regions, 'diagnosese': diagnoses, 'dx_options': Diagnosis.objects.all()}
+	context = {'slide': slide, 'regions': regions, 'diagnoses': diagnoses, 'dx_options': Diagnosis.objects.all()}
 	return render(request, 'labeller/label_slide.html', context)
 
 # def label_slide2(request, slide_id):
@@ -346,15 +346,42 @@ def toggle_region_complete_seg(request):
 	return JsonResponse(results)
 
 @login_required
-def add_new_cell(request):
-	POST = request.POST
-	rid = POST['rid']
-	center_x = float(POST['center_x'])
-	center_y = float(POST['center_y'])
-	box_dim = 90 # Box dimension (it is a square)
-	left = center_x - box_dim/2
-	top = center_y - box_dim/2
-	return JsonResponse(create_new_cell(rid, left, top, box_dim, box_dim, request.user))
+def add_diagnosis_to_slide(request):
+	try:
+		POST = request.POST
+		diagnosis = Diagnosis.objects.get(name=POST['diagnosisName'])
+		slide = Slide.objects.get(sid=POST['sid'])
+		slide.diagnosis.add(diagnosis)
+		slide.save()
+		return JsonResponse({'success':True})
+
+	except Exception as e: 
+		print(e)
+		return JsonResponse({'success':False})
+
+def remove_diagnosis_from_slide(request):
+	try:
+		POST = request.POST
+		diagnosis = Diagnosis.objects.get(name=POST['diagnosisName'])
+		slide = Slide.objects.get(sid=POST['sid'])
+		slide.diagnosis.remove(diagnosis)
+		slide.save()
+		return JsonResponse({'success':True})
+
+	except Exception as e: 
+		print(e)
+		return JsonResponse({'success':False})
+
+# @login_required
+# def add_new_cell(request):
+# 	POST = request.POST
+# 	rid = POST['rid']
+# 	center_x = float(POST['center_x'])
+# 	center_y = float(POST['center_y'])
+# 	box_dim = 90 # Box dimension (it is a square)
+# 	left = center_x - box_dim/2
+# 	top = center_y - box_dim/2
+# 	return JsonResponse(create_new_cell(rid, left, top, box_dim, box_dim, request.user))
 
 @login_required
 def delete_region(request):
