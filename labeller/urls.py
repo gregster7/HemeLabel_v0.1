@@ -29,25 +29,26 @@ urlpatterns = [
 
 	################################ base.html nav bar ################################
 
-	# Home page
 	re_path(r'^$', views.index, name='index'),
 
-	# Show all regions
 	re_path(r'^regions/$', views.regions, name='regions'),
 
-	# Show all slides
 	re_path(r'^slides/$', views.slides, name='slides'),
 
-	# Page for viewing all projects created when uploading cells
+	# Page for viewing all projects created when uploading cells - under construction
 	re_path(r'^projects/$', views.projects, name='projects'),
 
-	# Page for viewing labelling stats/progress
+	# Page for viewing labelling stats/progress - under construction
 	re_path(r'^stats/$', views.stats, name='stats'),
 
 	####################### other html pages (data labelling/export) #######################
 
 	# Page for labelling a slide
 	re_path(r'^label_slide/(?P<slide_id>\d+)/$', views.label_slide, name='label_slide'),
+
+	# testpage for bootstrap
+	re_path(r'^label_slide_bootstrap/(?P<slide_id>\d+)/$', views.label_slide, name='label_slide'),
+	re_path(r'^bootstrap_test.html', views.bootstrap_test, name='bootstrap_test'),
 
 	# Page for labelling a region of interest
 	re_path(r'^label_region_fabric/(?P<region_id>\d+)/$', views.label_region_fabric, name='label_region_fabric'),

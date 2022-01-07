@@ -2,7 +2,7 @@
 
 <div id="regions">
   
-    {% for region in regions %}
+    {% for region in slide.region_set.all %}
     <script>
       region = new Region('{{region.rid}}', '{{region.image.url}}');
       region.prependRegionDivToJQuerySelector('#regions');

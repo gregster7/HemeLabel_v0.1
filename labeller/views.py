@@ -64,9 +64,6 @@ def slides(request):
 	return render(request, 'labeller/slides.html', context)	
 
 
-
-
-
 def getAllCellTypesUserRegionHelper(user, region):
 	return CellType.objects.filter(cell__region=region, user=user)
 
@@ -88,44 +85,31 @@ def getAllCellTypesSlideUserJSON(user, slide):
 #	print('getAllCellTypesSlideUserJSON(user, slide)', user, slide)
 	return serializers.serialize("json", getAllCellTypesUserSlideHelper(user, slide))
 
+# Under construction - used for testing bootstrap
+@login_required
+def bootstrap_test(request):
+	return render(request, 'labeller/bootstrap_test.html')
+
+# Under construction - used for testing bootstrap
+@login_required
+def label_slide_bootstrap(request, slide_id):
+	slide = Slide.objects.get(sid=slide_id)
+	diagnoses = slide.diagnosis
+	regions = slide.region_set.all()
+	context = {'slide': slide, 'dx_options': Diagnosis.objects.all()}
+	return render(request, 'labeller/label_slide.html', context)
+
 
 @login_required
 def label_slide(request, slide_id):
 	print('label_slide', request, slide_id)
 	slide = Slide.objects.get(sid=slide_id)
-	# if (slide_id == '1010220220012190'):
-	# 	print('1010220220012190 is being changed')
-	# 	slide.dzi_path.name = 'slides/1010220220012190.dzi'
-	# 	slide.save()
-	# if (slide_id == '1010220220012180'):
-	# 	print('1010220220012190 is being changed')
-	# 	slide.dzi_path.name = 'slides/1010220220012190.dzi'
-	# 	slide.save()
-
-    # if request.method == 'POST':
-    #     form = DiagnosisForm(request.POST)
-    #     if form.is_valid():
-    #         comment = Comment(
-    #             author=form.cleaned_data["author"],
-    #             body=form.cleaned_data["body"],
-    #             post=post
-
-    #         )
-
-    #         comment.save()
 
 	diagnoses = slide.diagnosis
 	print('diagnosis', diagnoses)
 	regions = slide.region_set.all()
-	context = {'slide': slide, 'regions': regions, 'diagnoses': diagnoses, 'dx_options': Diagnosis.objects.all()}
+	context = {'slide': slide, 'dx_options': Diagnosis.objects.all()}
 	return render(request, 'labeller/label_slide.html', context)
-
-# def label_slide2(request, slide_id):
-# 	#print('label_slide', request, slide_id)
-# 	slide = Slide.objects.get(sid=slide_id)
-# 	regions = slide.region_set.all()
-# 	context = {'slide': slide, 'regions': regions}
-# 	return render(request, 'labeller/label_slide2.html', context)
 
 def get_all_cells_json(region):
 	cells_json = serializers.serialize("json", region.cell_set.all())
@@ -580,7 +564,7 @@ def label_region_fabric(request, region_id):
 	slide = region.slide
 	cells = region.cell_set.all()
 	if (cells.count() == 0):
-		cells = "none"
+		#cells = "none"
 		cells_json = "none"
 	else:
 		cells_json = serializers.serialize("json", region.cell_set.all())
@@ -1111,3 +1095,23 @@ def label_cells_in_project(request, project_id):
 # def slide_viewer(request):
 # 	return render(request, 'labeller/slide_viewer.html')
 
+	# if (slide_id == '1010220220012190'):
+	# 	print('1010220220012190 is being changed')
+	# 	slide.dzi_path.name = 'slides/1010220220012190.dzi'
+	# 	slide.save()
+	# if (slide_id == '1010220220012180'):
+	# 	print('1010220220012190 is being changed')
+	# 	slide.dzi_path.name = 'slides/1010220220012190.dzi'
+	# 	slide.save()
+
+    # if request.method == 'POST':
+    #     form = DiagnosisForm(request.POST)
+    #     if form.is_valid():
+    #         comment = Comment(
+    #             author=form.cleaned_data["author"],
+    #             body=form.cleaned_data["body"],
+    #             post=post
+
+    #         )
+
+    #         comment.save()

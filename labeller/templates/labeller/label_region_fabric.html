@@ -8,25 +8,28 @@
 <script src="{% static 'labeller/CellCounter.js' %}"></script>
 
 {% include "labeller/partials/help_display.html" %}
-
-<div id="labeller">
-	{% include "labeller/partials/region_annotator_fabric.html" %}
-	
-	<div id="column2_wrapper" >
-		{% include "labeller/partials/image_control_bars.html" %}
-		
-
-		{% include "labeller/partials/dot_legend.html" %}
-		{% include "labeller/partials/current_cell.html" %}
-
-	</div>
+<div id="current_cell_column2"  class="card" style="width: 300px;
+position: fixed;
+margin: 10px;
+z-index: 120;
+right: 10%;
+top: 78px;" draggable="false">
+<h2 id='current_cell_title'>Current Cell</h2>
+</div>
 
 
-	<div>
-	{% include "labeller/partials/mini_counter.html" %}
+<div class="container-fluid ">
+	<!-- <div style="width:{{region.floor_width}}px;"> -->
+		{% include "labeller/partials/region_annotator_fabric.html" %}
+	<!-- </div> -->
+				
+		<!--include "labeller/partials/current_cell.html" 
+		 include "labeller/partials/dot_legend.html" 
+		 include "labeller/partials/mini_counter.html"  -->
 	</div>
 </div>
 
+<div id="container"></div>
 
 {% include "labeller/partials/cell_summary.html" %}
 <div id="test_keyboard">Last Key Pressed: </div> 
@@ -80,7 +83,15 @@
 
 <script>
  $(document).ready(function() {
- 	Cell.addCellLabelKeyboardEventListeners()    
+	console.log('label_region_fabric.html: ready')
+ 	Cell.addCellLabelKeyboardEventListeners();
+
+	{% if cells %}
+		Cells.selectCellByCID(cells.last.cid)
+	{% else %}
+		$('#current_cell_column2').hide();
+	{% endif %}
+
  });
 </script>
 

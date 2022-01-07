@@ -74,10 +74,10 @@ class CellCounter {
 	static buildpageCounter (){
 		var lineage_divs = {};
 
-		$('#counter').append("<H3 class='counter header' id='total'>Total:</H3>");
+		$('#counter').append("<H6 class='counter header' id='total'>Total:</H6>");
 
 		for (var i=0; i<Cell.lineage_labels.length; i++) { 
-			var new_div="<H3 class='counter header' id='" + Cell.lineage_labels[i]+"'>"+ Cell.lineage_labels[i]+ ":</H3>";
+			var new_div="<H6 class='counter header' id='" + Cell.lineage_labels[i]+"'>"+ Cell.lineage_labels[i]+ ":</H6>";
 			$("#counter").append(new_div);
 		}
 

@@ -10,7 +10,7 @@ class CellSummary {
     }
 
     createBigTable() {
-      var table = '<table style="border:none" class="slide_page_table" id="classification_table_' +this.id_val+'">';
+      var table = '<table style="border:none" class="slide_page_table text-capitalize" id="classification_table_' +this.id_val+'">';
       table += '<tr class="class_table_row">';
       table += '<th class="class_table_td">Neutrophilic';
       table += '<th class="class_table_td">Other granulocytic';
@@ -48,7 +48,7 @@ class CellSummary {
       table += '<td class="class_table_td count_M4 '+this.id_val+'">Metamyelocyte (4):';
       table += '<td class="class_table_td count_B2 '+this.id_val+'">Basophil (r):';
       table += '<td class="class_table_td count_L3 '+this.id_val+'">LGL (f):';
-      table += '<td class="class_table_td count_ER4 '+this.id_val+'">Orthochromic/nuc red (v):';            
+      table += '<td class="class_table_td count_ER4 '+this.id_val+'">Orthochromic/Nuc red (v):';            
       table += '<td class="class_table_td count_PL4 '+this.id_val+'">Giant clump (/):';
       table += '<td class="class_table_td count_UL '+this.id_val+'">Unlabelled (u):';         
       // table += '<td class="class_table_td count_U4 '+this.id_val+'">Histiocyte (0):';
@@ -59,7 +59,7 @@ class CellSummary {
       table += '<td class="class_table_td count_L4 '+this.id_val+'">Plasma cell (g):';
       table += '<td class="class_table_td count_ER5 '+this.id_val+'">Reticulocyte (b):';   
       table += '<td class="class_table_td">';
-      table += '<td class="class_table_td count_U4 '+this.id_val+'">Mitotic body/karyorrhexis (0):';          
+      table += '<td class="class_table_td count_U4 '+this.id_val+'">Mitotic body/Karyorrhexis (0):';          
       
 
       table += '<tr class="class_table_row">';

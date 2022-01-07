@@ -1,22 +1,82 @@
-<div id="{{region.rid}}" class="region_container" style="width:{{region.floor_width}}px; display:flex; flex-direction: column;">
+
+<div id="{{region.rid}}" class="region_container " style="width:{{region.floor_width}}px; display:flex; flex-direction: column;">
 	<div id="region_container_fabric" style="height:{{region.floor_height}}px; width:{{region.floor_width}}px">
 		<div id='region_canvas_container' style="position:relative">
-			<!-- <canvas id="region_canvas_original" style="position:absolute"></canvas> -->
+		<!-- <canvas id="region_canvas_original" style="position:absolute"></canvas> -->
 			<img id="region_canvas_original" class="region region_image canvas" id="r{{region.rid}}" style="position: relative" src="{{region.image.url}}">
 			</img>
 		</div>
 		<canvas id="fabric_canvas" style="position:absolute"></canvas>
 	</div>
+</div>
 <!-- 	<div id="region_container_original" style="height:{{region.floor_height}}px; width:{{region.floor_width}}px">
 		<canvas id="region_canvas_original" style="position:relative"></canvas>
 	</div>
  -->	
 <!--  	<button id="fabric_add_square_button">Add cell (m)</button> -->
-	<button id="delete_cell_button">Delete cell (\)</button>
-	<button id="toggle_annotation_mode">Toggle annotation mode (Escape Key)</button>
+	<!-- <button id="delete_cell_button">Delete cell (\)</button>
+	<button id="toggle_annotation_mode">Toggle annotation mode (Escape Key)</button> -->
 <!-- 	<button id="toggle_circles_button">Toggle annotation mode (,)</button>
  --><!-- 	<button id="toggle_squares_button">Toggle squares (.)</button> -->
-	<table>
+
+ <div class="d-flex flex-row justify-content-left " >
+	<div class="col-2 p-2 justify-content-between" style="border: 1px solid purple">
+		<div class=" d-flex flex-nowrap">
+			<div><span class="dot_legend" style="background-color: yellow; border: solid 5px yellow;"></div> <div class="ml-5 pl-15">  Current Cell</div>
+		</div>
+		<div class="d-flex flex-nowrap">
+			<div><span class="dot_legend" style="background-color: red; border: solid 5px red;"></div> <div class="pl-2">  Unlabelled Cell</div>
+		</div>
+		<div class="d-flex flex-nowrap">
+			<div><span class="dot_legend" style="background-color: cyan; border: solid 5px cyan;"></div> <div class="pl-2">  Labelled Cell</div>
+		</div>
+	 </div>
+	<div class="col-2 p-2 justify-content-around" style="border: 1px solid purple" >
+		<button id="delete_cell_button" class="btn py-2" ><i class="bi-trash"></i> Delete cell (\)</button><br>
+		<button id="toggle_annotation_mode" class="btn py-0"><i class="bi-subtract"></i> Toggle annotation mode (Esc)</button>
+	</div>
+	<div class="col-2 p-2 justify-content-around" style="border: 1px solid purple">
+		<div class='form-check form-check-inline py-2'>
+			<input type="checkbox" id="region_complete_classif" name="region_complete_classif" value="region_complete_classif"  class="form-check-input">
+			<label for="region_complete_classif" class="form-check-label">Classification Complete</label><br>
+		</div>
+		<br>
+		<div class='form-check form-check-inline py-0' >
+			<input type="checkbox" id="region_complete_seg" name="region_complete_seg" value="region_complete_seg" class="form-check-input">
+			<label for="region_complete_seg" class="form-check-label">Segmentation complete</label>
+		</div>
+	</div>
+	<div class="p-2 justify-content-around" style="border: 1px solid purple">
+		{% include "labeller/partials/image_control_bars.html" %}
+	</div>
+  </div>
+
+
+<!-- <div class='row align-middle' >
+	<div class='col' >
+		<button id="delete_cell_button" class="btn" ><i class="bi-trash"></i> Delete cell (\)</button><br>
+		<button id="toggle_annotation_mode" class="btn "><i class="bi-subtract"></i> Toggle annotation mode (Escape Key)</button>
+	</div>
+	<div class='col-md' >
+		<div class='form-check form-check-inline'>
+			<input type="checkbox" id="region_complete_seg" name="region_complete_seg" value="region_complete_seg" class="form-check-input">
+			<label for="region_complete_seg" class="form-check-label">Mark region complete: segmentation</label>
+		</div>
+		<br>
+		<div class='form-check form-check-inline'>
+			<input type="checkbox" id="region_complete_classif" name="region_complete_classif" value="region_complete_classif"  class="form-check-input">
+			<label for="region_complete_classif" class="form-check-label">Mark region complete: classification</label><br>
+		</div>
+	</div>
+
+	<div class='col'>
+
+	</div>
+</div>
+</div> -->
+
+	 <!-- Pre bootstrap code -->
+	<!-- <table>
 		<tr>
 			<td>
 				<input type="checkbox" id="region_complete_seg" name="region_complete_seg" value="region_complete_seg">
@@ -29,11 +89,10 @@
 				<label for="region_complete_classif">Mark region complete: classification</label><br>
 			</td>
 		</tr>
-	</table>
-
+	</table> -->
+	
 
 <!-- 	<button id="test_button">Test Button</button> -->
-</div>
 
 {% load static %}
 
@@ -392,10 +451,11 @@ class RegionLabellerFabric {
 		canvas.remove(canvas.getActiveObject());
 		//Cell.deleteCellByCID( cid);
 		Cell.deleteCellByCID(cid);
-    console.log('removeSelectedBox new cid', Cell.currentCellCID())
-    RegionLabellerFabric.selectBoxAsActiveFromCID(Cell.currentCellCID());
+		console.log('removeSelectedBox new cid', Cell.currentCellCID())
+		RegionLabellerFabric.selectBoxAsActiveFromCID(Cell.currentCellCID());
 		//var nextCellCID = HorizontalCellList.nextCell(1);
 		console.log('removeSelectedBox')
+		
 		{% comment %} if (nextCellCID!=false) {
 
 			Cell.selectCellByCID(nextCellCID);
@@ -706,7 +766,9 @@ class RegionLabellerFabric {
 $ (document).ready(function() {
 	canvas = RegionLabellerFabric.setupCanvas();
 	normalCanvas = RegionLabellerFabric.setupNormalCanvas();
+
 	if ('{{cells_json}}'!='none') {
+		
 		console.log('region_annotator_fabric.html ready', '{{cells_json}}', '{{celltypes_json}}')		
 		var cells_json = '{{cells_json}}';
 		var cell_types = '{{celltypes_json}}';

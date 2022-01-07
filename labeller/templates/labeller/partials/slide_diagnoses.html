@@ -5,7 +5,7 @@
 <script>
 var diagnoses = []
 </script>
-
+<p class="text-capitalize">
 {% for dx in slide.diagnosis.all %}
   Diagnosis: {{dx.name}} ({{dx.abbreviation}}) &nbsp &nbsp &nbsp
   <script>
@@ -13,7 +13,8 @@ var diagnoses = []
   </script>  
 {% empty %}
   Diagnosis: None
-  
+</p>  
+
 {% endfor %}
 <form id="form_slide_pk_{{slide.sid}}" class="dx_form"> 
      <select name="dx_options" id="dx_options"placeholder="No diagnosis">
@@ -40,7 +41,7 @@ var diagnoses = []
     }
 
     var sid = $(".dx_form").attr('id').substr(("form_slide_pk_".length));
-    Diagnosis.submitDiagnosisForSlideAJAX(chosen_diagnosis, sid )
+    Diagnosis.submitDiagnosisForSlideAJAX(chosen_diagnosis, sid)
   });
 
 </script>

@@ -101,9 +101,9 @@ class Cell {
 	getDivForCellList(){
 //		console.log("Entering getDivForCellList", this);
 		var div = '<div class="cell_list_item '+this.getHTMLClasses()+'" id="celllistCID_' + this.cid+'">';
-		div = div +	'<p><img class="center cellImage '+this.cid+'" src="'+this.image_url+'"></p>';
-		div = div + '<p class="center" id="cellId_'+ this.cid+'">Cell ID: '+ this.cid +'</p>';
-		div = div + '<p class="center cell_type cellClass_'+this.cid;
+		div = div +	'<img class="center cellImage '+this.cid+'" src="'+this.image_url+'">';
+		div = div + '<p class="center cell_box_text" id="cellId_'+ this.cid+'">Cell ID: '+ this.cid +'</p>';
+		div = div + '<p class="center cell_box_text cell_type cellClass_'+this.cid;
 		div = div + '">'+this.getCellTypeName()+'</p></div>';
 
 		return div;
@@ -546,6 +546,7 @@ class Cell {
 	static selectCellByCID(cid){
 		// console.log("Entering selectCellByCID", cid);
 
+		$('#current_cell_column2').show();
 		$('.highlight').removeClass('highlight');
 		var current_cell = $('.cell_list_item.cell.'+cid).first().clone();
 		$('.cell.'+cid).addClass('highlight');
@@ -565,8 +566,9 @@ class Cell {
 	static deleteCellByCID(cell_cid){
 		Cell.deleteCellFromDatabase(cell_cid);
 		Cell.deleteCellFromPage(cell_cid);
-    CellCounter.updateCountsOnPageWrapper();
-    Cell.UpdateHorizontalCellCounts();
+		CellCounter.updateCountsOnPageWrapper();
+		Cell.UpdateHorizontalCellCounts();
+
 	}
 	static deleteCurrentCell () {
 		var cid = Cell.currentCellCID();
@@ -581,6 +583,7 @@ class Cell {
     }
 		$('.cell.'+cid).remove();
 		$('#centroid'+cid).remove();
+		$('#current_cell_column2').hide();
 	}
 
 
