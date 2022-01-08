@@ -2,25 +2,43 @@
 {% load static %}
 
 <script src="{% static 'labeller/Diagnosis.js' %}"></script>
-<script>
-var diagnoses = []
-</script>
-<p class="text-capitalize">
-{% for dx in slide.diagnosis.all %}
-  Diagnosis: {{dx.name}} ({{dx.abbreviation}}) &nbsp &nbsp &nbsp
-  <script>
-    diagnoses.push(new Diagnosis('{{dx.name}}', '{{dx.abbreviation}}'))
-  </script>  
-{% empty %}
-  Diagnosis: None
-</p>  
 
-{% endfor %}
+
+<div class='.d-inline-flex'>
+	<div class="d-flex flex-row" id="slide_info_row_{{slide.pk}}">
+		<a class="p-2 bold_purple_link" href="/label_slide/{{slide.sid}}/">Parent Slide Info:</a>
+		<div class="p-2">ID: {{slide.id}}</div>
+		<div class="p-2">SID: {{slide.sid}}</div>
+		<div class="p-2">Name: {{slide.name}}</div>
+		{% for dx in slide.diagnosis.all %}
+			
+			{% if forloop.first %}
+			<div class="py-2 pl-2 pr-0" id="dx_title_{{slide.pk}}">
+				<b>Diagnoses:</b></div>
+			{% endif %}
+				<div class="p-2 diagnosis_div_slide_{{slide.pk}}" id='diagnosis_div_{{slide.pk}}_{{dx.pk}}'>
+					{{dx.name}} ({{dx.abbreviation}}) 
+					<button id="delete_diagnosis_{{slide.pk}}_{{dx.pk}}" class="{{slide.pk}} {{dx.pk}} btn p-0"><i class="bi-trash"></i> </button>
+          <script>
+						$('#delete_diagnosis_{{slide.pk}}_{{dx.pk}}').on('click', Diagnosis.removeDiagnosisFromSlideClickHandler);		
+					</script>
+				</div>
+			
+		{% empty %}
+			<div class="p-2 dx_title" id="dx_title_{{slide.pk}}">
+				Diagnosis: None
+			</div>			
+		{% endfor %}
+		
+
+	</div>
+</div>
+
 <form id="form_slide_pk_{{slide.sid}}" class="dx_form"> 
      <select name="dx_options" id="dx_options"placeholder="No diagnosis">
         <option value="none" selected></option>
         {% for dx_option in dx_options %}
-        <option value="{{dx_option}}">{{dx_option}}</option>
+        <option value="{{slide.pk}}_{{dx_option.pk}}_{{dx_option}}" id="dx_option_pk_{{dx_option.pk}}">{{dx_option}}</option>
         {% endfor %}
       </select>
       <input type="submit" value="Add Diagnosis">
@@ -32,16 +50,22 @@ var diagnoses = []
   $(".dx_form").submit(function(e) {
     e.preventDefault();
     chosen_diagnosis = $('#dx_options').val()
-    console.log(diagnoses)
-    for (var i=0; i<diagnoses.length; i++) {
-      if (diagnoses[i].isDiagnosisChoiseEquivalent(chosen_diagnosis)) {
-        console.log("this slide already has this diagnosis")
-        return;
-      }
+    slide_pk = chosen_diagnosis.split('_')[0]
+    dx_pk = chosen_diagnosis.split('_')[1]
+    dx_text = chosen_diagnosis.split('_')[2]
+    console.log(chosen_diagnosis)
+    console.log(    $('#diagnosis_div_'+slide_pk+'_'+dx_pk).length)
+    
+    if (chosen_diagnosis == 'none') {
+      console.log('NONE')
     }
-
-    var sid = $(".dx_form").attr('id').substr(("form_slide_pk_".length));
-    Diagnosis.submitDiagnosisForSlideAJAX(chosen_diagnosis, sid)
+    else if ($('#diagnosis_div_'+slide_pk+'_'+dx_pk).length>0 ){
+      console.log('diagnosis already added')
+    }
+    else {
+      Diagnosis.addDiagnosisToSlideAJAX(slide_pk, dx_pk, dx_text)
+    }
+    
   });
 
 </script>

@@ -382,6 +382,28 @@ Image height is 665px
   border: none;
 }
 
+.bold_purple_link {
+  color: #663399ff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.bold_purple_link:hover {
+  color: #663399ff;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.purple_link {
+  color: #663399ff;
+  text-decoration: none;
+}
+
+.purple_link:hover {
+  color: #663399ff;
+  font-weight: bold;
+}
+
 .label_btn > a {
   color: #663399ff;
   text-decoration: none;

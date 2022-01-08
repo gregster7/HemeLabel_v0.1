@@ -6,6 +6,7 @@
 {% block content %}
 <script src="{% static 'labeller/Cell.js' %}"></script>
 <script src="{% static 'labeller/CellCounter.js' %}"></script>
+<script src="{% static 'labeller/Diagnosis.js' %}"></script>
 
 {% include "labeller/partials/help_display.html" %}
 <div id="current_cell_column2"  class="card" style="width: 300px;
@@ -34,6 +35,10 @@ top: 78px;" draggable="false">
 
 <div id="region_info_headline"></div>
 <div id="slide_back_link"></div>
+
+{% include "labeller/partials/slide_diagnoses.html" %}
+
+
 
 {% include "labeller/partials/main_lineages_horizontal.html" %}
 

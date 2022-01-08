@@ -80,7 +80,8 @@ urlpatterns = [
 	
 	#************************* SLIDE POSTS *************************#
 	re_path(r'^add_diagnosis_to_slide/', views.add_diagnosis_to_slide, name='add_diagnosis_to_slide'),
-	re_path(r'^remove_diagnosis_to_slide/', views.add_diagnosis_to_slide, name='add_diagnosis_to_slide'),
+	# Called remove and not delete because diagnosis is not deleted. It is just removed as a ManyToMany relation from slide
+	re_path(r'^remove_diagnosis_from_slide/', views.remove_diagnosis_from_slide, name='remove_diagnosis_from_slide'),
 	
 	#************************* REGION POSTS *************************#
 	re_path(r'^add_new_region/', views.add_new_region, name='add_new_region'),

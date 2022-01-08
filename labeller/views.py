@@ -333,8 +333,8 @@ def toggle_region_complete_seg(request):
 def add_diagnosis_to_slide(request):
 	try:
 		POST = request.POST
-		diagnosis = Diagnosis.objects.get(name=POST['diagnosisName'])
-		slide = Slide.objects.get(sid=POST['sid'])
+		diagnosis = Diagnosis.objects.get(id=POST['diagnosis_pk'])
+		slide = Slide.objects.get(id=POST['slide_pk'])
 		slide.diagnosis.add(diagnosis)
 		slide.save()
 		return JsonResponse({'success':True})
@@ -346,8 +346,8 @@ def add_diagnosis_to_slide(request):
 def remove_diagnosis_from_slide(request):
 	try:
 		POST = request.POST
-		diagnosis = Diagnosis.objects.get(name=POST['diagnosisName'])
-		slide = Slide.objects.get(sid=POST['sid'])
+		diagnosis = Diagnosis.objects.get(id=POST['diagnosis_pk'])
+		slide = Slide.objects.get(id=POST['slide_pk'])
 		slide.diagnosis.remove(diagnosis)
 		slide.save()
 		return JsonResponse({'success':True})
@@ -570,7 +570,7 @@ def label_region_fabric(request, region_id):
 		cells_json = serializers.serialize("json", region.cell_set.all())
 
 	celltypes_in_region = getAllCellTypesUserRegionJSON(request.user, region)
-	context = {'region': region, 'cells':cells, 'cells_json': cells_json, 'slide': slide, 'celltypes_json': celltypes_in_region}
+	context = {'region': region, 'cells':cells, 'dx_options': Diagnosis.objects.all(), 'cells_json': cells_json, 'slide': slide, 'celltypes_json': celltypes_in_region}
 	#print('label_region_fabric context', context)
 	return render(request, 'labeller/label_region_fabric.html', context)
 
