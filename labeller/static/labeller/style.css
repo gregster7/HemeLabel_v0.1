@@ -130,6 +130,8 @@ img {
   height: 10px;
   display: inline-block;
   z-index: 75;
+  /* box-sizing is needed for it to play well with bootstrap */
+  box-sizing: content-box;
 }
 
 .dot_legend {

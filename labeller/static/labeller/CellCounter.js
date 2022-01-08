@@ -109,13 +109,15 @@ class CellCounter {
 		CellCounter.replaceOldCountWithNewCount("#total.counter", sum);
 		CellCounter.updateMERatio(counts);
 
-		// Update Counts on Big Table and Slide Summary
+		// Update Counts on Big Table and Cell Summary
 		for (var key in Cell.classLabelDict) {
 			//Big Table
 			CellCounter.replaceOldCountWithNewCount("#count_"+key, counts[key]);
-			//Slide Summary
+			//Cell Summary
 			CellCounter.replaceOldCountWithNewCount(".count_"+key, counts[key]);
 		}
+		// Another way to do below line $('.cell_total').text('Total: ' + sum);
+		CellCounter.replaceOldCountWithNewCount(".cell_total", sum);
 	}
 
 	static replaceOldCountWithNewCount(jquery_selector, count) {
@@ -125,7 +127,7 @@ class CellCounter {
 			$(jquery_selector).html(new_count);
 		}
 		else {
-			console.log("replaceOldCountWithNewCount query selector returned nothing", jquery_selector);
+			//console.log("replaceOldCountWithNewCount query selector returned nothing", jquery_selector);
 		}
 	}
 }

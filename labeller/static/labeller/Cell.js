@@ -204,7 +204,7 @@ class Cell {
 		}
 
 		var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig,'"'));
-		console.log('cells_json_reformat', cells_json_reformat, typeof(cells_json_reformat), cells_json_reformat.length);
+//		console.log('cells_json_reformat', cells_json_reformat, typeof(cells_json_reformat), cells_json_reformat.length);
 
 
 		if (typeof celltypes_json !== 'undefined') {
@@ -215,10 +215,10 @@ class Cell {
 				// console.log (cell_types_reformat[i], cell_types_reformat[i].fields.cell)
 				type_dict [cell_types_reformat[i].fields.cell] = cell_types_reformat[i].fields.cell_type
 			}
-			console.log('type_dict', type_dict)
+//			console.log('type_dict', type_dict)
 		}
 		else {
-			console.log('Warning: celltypes_json us undefined')
+			console.log('Warning: celltypes_json is undefined')
 		}
 
 		var all_cells = {};
@@ -470,7 +470,7 @@ class Cell {
 			});
 			window.addEventListener('keyup', (e) => {
 				var code = e.code;
-				document.getElementById('test_keyboard').innerHTML = 'code = ' + code;
+				// $('#test_keyboard').inner() = 'code = ' + code;
 
 				console.log(typeof code, code)
 				switch(code) {
@@ -544,7 +544,7 @@ class Cell {
 
 
 	static selectCellByCID(cid){
-		// console.log("Entering selectCellByCID", cid);
+		console.log("Entering selectCellByCID", cid);
 
 		$('#current_cell_column2').show();
 		$('.highlight').removeClass('highlight');

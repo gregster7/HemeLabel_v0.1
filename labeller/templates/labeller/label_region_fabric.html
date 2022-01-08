@@ -18,7 +18,7 @@ top: 78px;" draggable="false">
 </div>
 
 
-<div class="container-fluid ">
+<div class="container-fluid" >
 	<!-- <div style="width:{{region.floor_width}}px;"> -->
 		{% include "labeller/partials/region_annotator_fabric.html" %}
 	<!-- </div> -->
@@ -29,13 +29,9 @@ top: 78px;" draggable="false">
 	</div>
 </div>
 
-<div id="container"></div>
-
 {% include "labeller/partials/cell_summary.html" %}
-<div id="test_keyboard">Last Key Pressed: </div> 
-{% comment %}
-	{% include "labeller/partials/big_table.html" %}
-{% endcomment %}
+<!-- <div id="test_keyboard">Last Key Pressed: </div>  -->
+
 <div id="region_info_headline"></div>
 <div id="slide_back_link"></div>
 
@@ -85,13 +81,14 @@ top: 78px;" draggable="false">
  $(document).ready(function() {
 	console.log('label_region_fabric.html: ready')
  	Cell.addCellLabelKeyboardEventListeners();
-
+	console.log('label_region_fabric.html: bp2')
 	{% if cells %}
-		Cells.selectCellByCID(cells.last.cid)
+		Cell.selectCellByCID({{cells.last.cid}})
+		//console.log('bla', cells)
 	{% else %}
 		$('#current_cell_column2').hide();
 	{% endif %}
-
+	console.log('label_region_fabric.html: bp3')
  });
 </script>
 

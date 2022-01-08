@@ -84,7 +84,8 @@ class HorizontalCellList {
       if(e.key === 'r' && e.ctrlKey) {
         e.preventDefault();
     }
-    }); {% endcomment %}
+    }); 
+	{% endcomment %}
     window.addEventListener('keydown', function(e) {
       if(e.keyCode == 32 && e.target == document.body) {
         e.preventDefault();
@@ -128,7 +129,8 @@ class HorizontalCellList {
 	}
 
 	static populateCellLists (cells_json, cell_types_json){
-		console.log('entering populatCellList', cells_json, cell_types_json);
+		//console.log('entering populatCellList', cells_json, cell_types_json);
+		console.log('entering populatCellList');
 		var cells = Cell.LoadCellsFromJson(cells_json, cell_types_json);
 		
     console.log('cells', cells)
@@ -165,9 +167,9 @@ $ (document).ready(function() {
 	if ('{{cells_json}}'!='none') {		
 	 	var cells_json = '{{cells_json}}';	 
 	 	var celltypes_json = '{{celltypes_json}}';	
-	 	console.log('main_lineages_horizontal ready cells_json', cells_json)
-		console.log('main_lineages_horizontal ready celltypes_json', celltypes_json)
-	 	console.log(celltypes_json)
+	 	// console.log('main_lineages_horizontal ready cells_json', cells_json)
+		// console.log('main_lineages_horizontal ready celltypes_json', celltypes_json)
+	 	// console.log(celltypes_json)
  		HorizontalCellList.addCellClassHorizontalRows();
  		HorizontalCellList.populateCellLists(cells_json, celltypes_json);
  		//Cell.UpdateHorizontalCellCounts();

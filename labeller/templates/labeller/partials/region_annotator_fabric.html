@@ -19,8 +19,8 @@
 <!-- 	<button id="toggle_circles_button">Toggle annotation mode (,)</button>
  --><!-- 	<button id="toggle_squares_button">Toggle squares (.)</button> -->
 
- <div class="d-flex flex-row justify-content-left " >
-	<div class="col-2 p-2 justify-content-between" style="border: 1px solid purple">
+ <div class="row justify-content-start slide_list_box " >
+	<div class="col p-2 justify-content-between">
 		<div class=" d-flex flex-nowrap">
 			<div><span class="dot_legend" style="background-color: yellow; border: solid 5px yellow;"></div> <div class="ml-5 pl-15">  Current Cell</div>
 		</div>
@@ -31,25 +31,25 @@
 			<div><span class="dot_legend" style="background-color: cyan; border: solid 5px cyan;"></div> <div class="pl-2">  Labelled Cell</div>
 		</div>
 	 </div>
-	<div class="col-2 p-2 justify-content-around" style="border: 1px solid purple" >
-		<button id="delete_cell_button" class="btn py-2" ><i class="bi-trash"></i> Delete cell (\)</button><br>
-		<button id="toggle_annotation_mode" class="btn py-0"><i class="bi-subtract"></i> Toggle annotation mode (Esc)</button>
+	<div class="col p-2 justify-content-around"  >
+		<button id="delete_cell_button" class="btn p-0" ><i class="bi-trash"></i> Delete cell (\)</button><br>
+		<button id="toggle_annotation_mode" class="btn p-0"><i class="bi-subtract"></i> Toggle annotation mode (Esc)</button>
 	</div>
-	<div class="col-2 p-2 justify-content-around" style="border: 1px solid purple">
-		<div class='form-check form-check-inline py-2'>
+	<div class="col p-2 justify-content-around" >
+		<div class='form-check form-check-inline p-0'>
 			<input type="checkbox" id="region_complete_classif" name="region_complete_classif" value="region_complete_classif"  class="form-check-input">
 			<label for="region_complete_classif" class="form-check-label">Classification Complete</label><br>
 		</div>
 		<br>
-		<div class='form-check form-check-inline py-0' >
+		<div class='form-check form-check-inline p-0' >
 			<input type="checkbox" id="region_complete_seg" name="region_complete_seg" value="region_complete_seg" class="form-check-input">
 			<label for="region_complete_seg" class="form-check-label">Segmentation complete</label>
 		</div>
 	</div>
-	<div class="p-2 justify-content-around" style="border: 1px solid purple">
+	<div class="col p-2 justify-content-left" >
 		{% include "labeller/partials/image_control_bars.html" %}
 	</div>
-  </div>
+</div>
 
 
 <!-- <div class='row align-middle' >
@@ -449,7 +449,6 @@ class RegionLabellerFabric {
 		console.log('removing rectangle', canvas.getActiveObject().name, canvas.getActiveObject());
 		var cid = canvas.getActiveObject().name
 		canvas.remove(canvas.getActiveObject());
-		//Cell.deleteCellByCID( cid);
 		Cell.deleteCellByCID(cid);
 		console.log('removeSelectedBox new cid', Cell.currentCellCID())
 		RegionLabellerFabric.selectBoxAsActiveFromCID(Cell.currentCellCID());

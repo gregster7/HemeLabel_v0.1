@@ -85,7 +85,7 @@ class CellSummary {
       // ul = ul + '<li class="label_btn"><a class="slide_label_btn" href= "'+ slide_path+'">Label</a></li>';
       // ul = ul + '<li class="slide_name" id="slide_name_' +sid+ '">Name: ' +slide_name+ '</li>';
       ul = ul + '<li><button type="button" id="slide_info_'+this.id_val+'" class="slide_info">Labelling Summary</li>';
-      ul = ul + '<li id="cell_total_'+this.id_val+'"></li></ul>';
+      ul = ul + '<li id="cell_total_'+this.id_val+'" class="cell_total"></li></ul>';
       ul = ul + '<div id="bigtable_' +this.id_val+ '" class="bigtable">' +this.createBigTable()+ '</div>';
    
       // ul = ul + '<li class="slide_label_btn" id="slide"'+sid+'">Show Slide Info</li></ul>';
@@ -129,8 +129,8 @@ class CellSummary {
 
               var cells_json = json['all_cells_json'];
               var celltypes_json = json['celltypes_json']
-              console.log(cells_json)
-              console.log(celltypes_json)
+              // console.log(cells_json)
+              // console.log(celltypes_json)
               //console.log(cells_json);
               var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig, '"'));
               //console.log(cells_json_reformat);
