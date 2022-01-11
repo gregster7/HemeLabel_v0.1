@@ -17,7 +17,7 @@ class Region {
 		new_div += '<li><button id="delete_region_button_'+this.rid+'" class="delete_region_button rid=' +this.rid+' ">Delete</button></li>'
 		new_div += '</ul>';
 		
-		new_div += '<img class="region_image" src="' + this.imgURL + '" id="'+this.getImageTagID()+'"></div>';
+		new_div += '<img class="region_thumb" src="' + this.imgURL + '" id="'+this.getImageTagID()+'"></div>';
 		
 		return new_div;
 	}

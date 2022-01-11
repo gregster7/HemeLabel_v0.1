@@ -6,56 +6,40 @@
 {% block content %}
 <script src="{% static 'labeller/Cell.js' %}"></script>
 <script src="{% static 'labeller/CellCounter.js' %}"></script>
-<script src="{% static 'labeller/Diagnosis.js' %}"></script>
 
 {% include "labeller/partials/help_display.html" %}
-<div id="current_cell_column2"  class="card" style="width: 300px;
-position: fixed;
-margin: 10px;
-z-index: 120;
-right: 10%;
-top: 78px;" draggable="false">
-<h2 id='current_cell_title'>Current Cell</h2>
+<div id="current_cell_popout" >
+	<h3 id='current_cell_title'>Current Cell</h2>
 </div>
 
-
-<div class="container-fluid" >
-	<!-- <div style="width:{{region.floor_width}}px;"> -->
-		{% include "labeller/partials/region_annotator_fabric.html" %}
-	<!-- </div> -->
-				
-		<!--include "labeller/partials/current_cell.html" 
-		 include "labeller/partials/dot_legend.html" 
-		 include "labeller/partials/mini_counter.html"  -->
-	</div>
-</div>
+<div class="mb-5">
+{% include "labeller/partials/region_annotator_fabric.html" %}
 
 {% include "labeller/partials/cell_summary.html" %}
 <!-- <div id="test_keyboard">Last Key Pressed: </div>  -->
 
 <div id="region_info_headline"></div>
-<div id="slide_back_link"></div>
 
 {% include "labeller/partials/slide_diagnoses.html" %}
 
 
-
+<div class="mb-5"></div>
 {% include "labeller/partials/main_lineages_horizontal.html" %}
-
+</div>
 
 <script> 
-	function getULForSlide(id, sid, slide_name) {
+	// function getULForSlide(id, sid, slide_name) {
 
-		slide_path = '/label_slide/'+sid+ '/';
-		var ul = '<ul class="slide_list slide_list_box">';
-		ul = ul + '<li ><b>Parent slide information</b></li>';
-		ul = ul + '<li class="slide_id">ID: '+ id +'</li>';
-		ul = ul + '<li class="slide_sid">SID: '+ sid +'</li>';
-		ul = ul + '<li class="slide_name" id="slide_name_' +sid+ '">Name: ' +slide_name+ '</li>';
-		ul = ul + '<li class="label_btn"><a class="slide_label_btn" href= "'+ slide_path+'">Go to slide</a></li>';
-		ul = ul + '</ul>'
-		return ul;
-	};
+	// 	slide_path = '/label_slide/'+sid+ '/';
+	// 	var ul = '<ul class="slide_list slide_list_box">';
+	// 	ul = ul + '<li ><b>Parent slide information</b></li>';
+	// 	ul = ul + '<li class="slide_id">ID: '+ id +'</li>';
+	// 	ul = ul + '<li class="slide_sid">SID: '+ sid +'</li>';
+	// 	ul = ul + '<li class="slide_name" id="slide_name_' +sid+ '">Name: ' +slide_name+ '</li>';
+	// 	ul = ul + '<li class="label_btn"><a class="slide_label_btn" href= "'+ slide_path+'">Go to slide</a></li>';
+	// 	ul = ul + '</ul>'
+	// 	return ul;
+	// };
 
 	
 
@@ -66,7 +50,7 @@ top: 78px;" draggable="false">
 		width = width.substr(0, width.indexOf('.'));
 		height = height.substr(0, height.indexOf('.'));
 
-		var ul = '<ul class="slide_list slide_list_box">';
+		var ul = '<ul class="py-3 justify-content-center  slide_list slide_list_box">';
 		ul = ul + '<li ><b>Region information</b></li>';
 		ul = ul + '<li class="slide_id">ID: '+ id +'</li>';
 		ul = ul + '<li class="slide_sid">RID: '+ rid +'</li>';
@@ -79,7 +63,7 @@ top: 78px;" draggable="false">
 	};
 
 	$('#region_info_headline').append(getULForRegion('{{region.pk}}', '{{region.rid}}', '{{region.x}}', '{{region.y}}', '{{region.width}}', '{{region.height}}'));
-	$('#slide_back_link').append(getULForSlide('{{slide.pk}}', '{{slide.sid}}', '{{slide.name}}'));
+	// $('#slide_back_link').append(getULForSlide('{{slide.pk}}', '{{slide.sid}}', '{{slide.name}}'));
 </script>
 
 <script>
@@ -91,7 +75,7 @@ top: 78px;" draggable="false">
 		Cell.selectCellByCID({{cells.last.cid}})
 		//console.log('bla', cells)
 	{% else %}
-		$('#current_cell_column2').hide();
+		$('#current_cell_popout').hide();
 	{% endif %}
 	console.log('label_region_fabric.html: bp3')
  });

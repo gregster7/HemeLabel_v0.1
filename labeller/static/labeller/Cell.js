@@ -174,7 +174,7 @@ class Cell {
       // console.log('hello there from updateHorizontalCellCounts.')
 			// console.log($('#h2_'+key).text())
 
-			var temp_div = '<h2 id="h2_'+key+'">'+Cell.classLabelDict[key]+' ('+cell_type_length+')</h2>';
+			var temp_div = '<h3 id="h2_'+key+'">'+Cell.classLabelDict[key]+' ('+cell_type_length+')</h2>';
 
 			$('#h2_'+key).replaceWith(temp_div)
 //		  console.log(key, $('#'+key+'_cells_inline').children().length);
@@ -189,7 +189,7 @@ class Cell {
 			var cell_type_length = $('#'+lineage_name+'_cells_inline').children().length;
 			// console.log($('#h2_'+lineage_name).text())
 
-			var temp_div = '<h2 id="h2_'+lineage_name+'">'+lineage_name+' ('+cell_type_length+')</h2>';
+			var temp_div = '<h3 id="h2_'+lineage_name+'">'+lineage_name+' ('+cell_type_length+')</h2>';
 
 
 			$('#h2_'+lineage_name).replaceWith(temp_div);
@@ -546,7 +546,7 @@ class Cell {
 	static selectCellByCID(cid){
 		console.log("Entering selectCellByCID", cid);
 
-		$('#current_cell_column2').show();
+		$('#current_cell_popout').show();
 		$('.highlight').removeClass('highlight');
 		var current_cell = $('.cell_list_item.cell.'+cid).first().clone();
 		$('.cell.'+cid).addClass('highlight');
@@ -556,7 +556,7 @@ class Cell {
 		current_cell.removeClass('cell_list_item')
 		current_cell.attr('id', cid);
 //		console.log(current_cell);
-		$('#current_cell_column2').append(current_cell);
+		$('#current_cell_popout').append(current_cell);
 
 //		console.log($('#current_cell_column2').children().length)
 		Cell.highlightCircle(cid);
@@ -583,7 +583,7 @@ class Cell {
     }
 		$('.cell.'+cid).remove();
 		$('#centroid'+cid).remove();
-		$('#current_cell_column2').hide();
+		$('#current_cell_popout').hide();
 	}
 
 

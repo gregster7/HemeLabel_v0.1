@@ -91,6 +91,7 @@ urlpatterns = [
 
 	#************************* PROJECT POSTS *************************#
 	path('create_project', views.create_project, name="create_project"),
+	re_path(r'^project/(?P<project_id>\d+)/', views.project, name='project'),
 
 	#************************* CELL GETS *************************#
 	re_path(r'^get_cell_feature_form/', views.get_cell_feature_form, name='get_cell_feature_form'),
@@ -113,6 +114,7 @@ urlpatterns = [
 	re_path(r'^delete_cell/', views.delete_cell, name='delete_cell'),
 	re_path(r'^change_cell_location/', views.change_cell_location, name='change_cell_location'),
 	re_path(r'^update_cell_class/', views.update_cell_class, name='update_cell_class'),
+	re_path(r'^add_additional_cellType_to_cell', views.add_additional_cellType_to_cell, name='add_additional_cellType_to_cell'),
 
 	#******************************************************************************************#
 

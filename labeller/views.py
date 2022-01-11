@@ -428,6 +428,11 @@ def add_new_region(request):
 	results = {'success':True, 'rid': date_time, 'region_path':region_path}
 	return JsonResponse(results)
 
+def add_additional_cellType_to_cell(request):
+	POST = request.POST
+	# request.user, Cell.objects.get(cid=POST['cid']), POST['cell_label']
+
+
 
 # Will attempt to assign a new cellType. If one does not exist, it will be created. 
 def update_cellType_helper(user, cell, cell_type):
@@ -782,6 +787,13 @@ def dropzone_image_w_projectID(request, project_id):
 		#return HttpResponse()
 
 	return HttpResponse()
+
+@login_required
+def project(request, project_id):
+	project = Project.objects.get(id=project_id)
+
+	context = {'project': project}
+	return render(request, 'labeller/project.html', context)
 
 # Not currently in use - may require fixing
 @login_required

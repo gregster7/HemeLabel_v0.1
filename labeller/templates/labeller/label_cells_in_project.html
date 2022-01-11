@@ -57,13 +57,11 @@
   <h2>Cell Labeler</h2>
 
   <div id='labeller'>
-    <div id="column2_wrapper" >
-      {% include "labeller/partials/current_cell.html" %}
+    <div id="current_cell_popout" >
+      <h3 id='current_cell_title'>Current Cell</h2>
     </div>
 
     <div>
-      {% include "labeller/partials/mini_counter.html" %}
-      <br>
       {% include "labeller/partials/export_project_data.html" %}
     </div>
   </div>
@@ -126,7 +124,7 @@
   <!-- <div class="cells_list_of_current_project"> -->
   <!-- </div> -->
 
-  {% include "labeller/partials/big_table.html" %}
+
   {% include "labeller/partials/main_lineages_horizontal.html" %}
 
 <script>

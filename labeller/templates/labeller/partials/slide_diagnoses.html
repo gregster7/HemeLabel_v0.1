@@ -3,17 +3,18 @@
 
 <script src="{% static 'labeller/Diagnosis.js' %}"></script>
 
-
-<div class='.d-inline-flex'>
-	<div class="d-flex flex-row" id="slide_info_row_{{slide.pk}}">
-		<a class="p-2 bold_purple_link" href="/label_slide/{{slide.sid}}/">Parent Slide Info:</a>
+<div class='bigtable_box d-flex d-flex justify-content-between align-items-center'>
+	<div class="d-flex flex-row   " >
+		<a class="p-2 bold_purple_link" href="/label_slide/{{slide.sid}}/">Slide Info:</a>
 		<div class="p-2">ID: {{slide.id}}</div>
 		<div class="p-2">SID: {{slide.sid}}</div>
 		<div class="p-2">Name: {{slide.name}}</div>
+    </div>
+    <div class="d-flex flex-row   " id="slide_info_row_{{slide.pk}}">
 		{% for dx in slide.diagnosis.all %}
 			
 			{% if forloop.first %}
-			<div class="py-2 pl-2 pr-0" id="dx_title_{{slide.pk}}">
+			<div class="py-2 pl-2 pr-0 bold" id="dx_title_{{slide.pk}}">
 				<b>Diagnoses:</b></div>
 			{% endif %}
 				<div class="p-2 diagnosis_div_slide_{{slide.pk}}" id='diagnosis_div_{{slide.pk}}_{{dx.pk}}'>
@@ -30,19 +31,23 @@
 			</div>			
 		{% endfor %}
 		
+    </div>
+    <div class="d-flex flex-row   " >
+      <form id="form_slide_pk_{{slide.sid}}" class="dx_form "> 
+        <select name="dx_options" id="dx_options"placeholder="No diagnosis">
+           <option value="none" selected></option>
+           {% for dx_option in dx_options %}
+           <option value="{{slide.pk}}_{{dx_option.pk}}_{{dx_option}}" id="dx_option_pk_{{dx_option.pk}}">{{dx_option}}</option>
+           {% endfor %}
+         </select>
+         <span class="p-1"></span>
+         <input type="submit" value="Add Diagnosis" style='font-size:1rem;'>
+         <span class="px-1"></span>
+     </form>
+   
+    </div>
 
-	</div>
-</div>
-
-<form id="form_slide_pk_{{slide.sid}}" class="dx_form"> 
-     <select name="dx_options" id="dx_options"placeholder="No diagnosis">
-        <option value="none" selected></option>
-        {% for dx_option in dx_options %}
-        <option value="{{slide.pk}}_{{dx_option.pk}}_{{dx_option}}" id="dx_option_pk_{{dx_option.pk}}">{{dx_option}}</option>
-        {% endfor %}
-      </select>
-      <input type="submit" value="Add Diagnosis">
-  </form>
+  </div>
 
 <script>
   

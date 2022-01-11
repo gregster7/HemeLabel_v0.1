@@ -1,18 +1,16 @@
 {% load static %}
 <div id="openseadragon_slideViewer" style="width: 100%; height: 700px;"></div>
-
-<p id="slide_info" style="text-align: center;"> 
-  Slide Info: &nbsp &nbsp &nbsp 
-  ID: {{slide.pk}} &nbsp &nbsp &nbsp  
-  SID: {{slide.sid}} &nbsp &nbsp &nbsp  
-  Name: {{slide.name}} &nbsp &nbsp &nbsp  
-  <button id="add_new_region_button">Crop New Region</button>
-</p>
-
-{% include "labeller/partials/image_control_bars.html" %}
-
 <script src="{% static 'labeller/openseadragon/openseadragon.min.js' %}"></script>
 
+<div class='d-flex justify-content-center align-items-center p-2'>
+  <div>
+    {% include "labeller/partials/image_control_bars.html" %}
+  </div>
+  <div>
+    <button id="add_new_region_button" class="btn px-1"><i class="bi-crop mx-2"></i>Crop New Region<span class="px-1"></span></button>
+  </div>
+</div>
+ 
 
 <script type="text/javascript">
 

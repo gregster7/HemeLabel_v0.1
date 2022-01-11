@@ -16,6 +16,8 @@ class Diagnosis(models.Model):
 	class Meta:
 		verbose_name_plural = 'Diagnoses'
 
+
+
 # This is not currently in use
 class CellFeature(models.Model):
 	featureName = models.CharField(max_length=64, blank=True, null=True)
@@ -55,6 +57,8 @@ class Slide (models.Model):
 	date_added = models.DateTimeField(auto_now_add=True)
 	dzi_path = models.FileField(upload_to="slides", max_length=300, blank=True, null=True)
 	svs_path = models.FileField(upload_to="slides", max_length=300, blank=True, null=True)
+	
+	# To rename to 'diagnoses'
 	diagnosis = models.ManyToManyField('Diagnosis', related_name='slides')
 
 	# Store filename as name
@@ -149,7 +153,8 @@ class Project(models.Model):
 	name = models.CharField(max_length=200, default="No Name")
 	date_added = models.DateTimeField(auto_now_add=True)
 	notes = models.CharField(max_length=10000, blank=True, null=True)
-
+	users = models.ManyToManyField(User, related_name='projects_with_user')
+	slides = models.ManyToManyField(User, related_name='slides_with_project')
 	# How to use many to many fields
 	# https://docs.djangoproject.com/en/3.1/topics/db/examples/many_to_many/
 	#regions = models.ManyToManyField('Region')
@@ -188,6 +193,7 @@ class Cell(models.Model):
 	project = models.ForeignKey('Project', on_delete=models.RESTRICT, blank=True, null=True)
 	image = models.ImageField(upload_to='cells')
 	notes = models.CharField(max_length=10000, blank=True, null=True)
+	cell_types = models.ManyToManyField('CellType', related_name='cells')
 
 	"""centers are relative to region if there is a region, if not they are relative to the slide"""
 	center_x = models.FloatField(default=-1)
