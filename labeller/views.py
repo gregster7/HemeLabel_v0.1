@@ -169,6 +169,12 @@ def get_all_cells_generic(request):
 	elif (id_type == 'rid'):
 		cells = Cell.objects.filter(region__rid=id_val)
 		celltypes_json = getAllCellTypesUserRegionJSON(request.user, Region.objects.get(rid=id_val))
+	elif (id_type == 'project_pk'):
+		project = Project.objects.get(id=id_val)
+		slides = Slide.objects.filter(slides_with_project=project)
+		cells = Cell.objects.filter(region__slide__in=slides)
+		cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+		celltypes_json = serializers.serialize("json", cellTypes)	
 	else:
 		results = {'success':False}
 		return JsonResponse(results);
@@ -619,7 +625,6 @@ def register(request):
 @login_required
 def projects(request):
 	"""Show all projects"""
-
 	# user_projects = Project.objects.filter(user=request.user.get_username()).order_by('id')
 	# context = {'user_projects': user_projects}
 
@@ -791,8 +796,13 @@ def dropzone_image_w_projectID(request, project_id):
 @login_required
 def project(request, project_id):
 	project = Project.objects.get(id=project_id)
+	slides = Slide.objects.filter(slides_with_project=project)
+	cells = Cell.objects.filter(region__slide__in=slides)
+	cells_json = serializers.serialize("json", cells)	
+	cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+	celltypes_json = serializers.serialize("json", cellTypes)	
 
-	context = {'project': project}
+	context = {'project': project, 'cells': cells, 'cells_json': cells_json, 'celltypes_json': celltypes_json}
 	return render(request, 'labeller/project.html', context)
 
 # Not currently in use - may require fixing

@@ -12,6 +12,10 @@
     var id_type = 'rid'
     var id_val = '{{region.rid}}'
   }
+  if (current_url.search('project') != -1){
+    var id_type = 'project_pk'
+    var id_val = '{{project.pk}}'
+  }
   else {
     console.log("Error in slide_summary.html")
   }
@@ -19,12 +23,12 @@
   var cellSummary = new CellSummary(id_type, id_val);
   $('#slide_info_row').append(cellSummary.getULForSlide());
   cellSummary.addInfoButtonOnClick();
-
+  
   //$('.bigtable').hide();
 </script>
 
 <script>
   $ (document).ready(function() {
-    $('.slide_info').trigger( "click" );
+    $('#slide_info'+id_type+'_'+id_val+).trigger( "click" );
   });
 </script>

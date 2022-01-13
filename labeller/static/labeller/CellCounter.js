@@ -124,6 +124,9 @@ class CellCounter {
 		if ($(jquery_selector).length){
 			var old_count = $(jquery_selector).html();
 			var new_count = old_count.substring(0, old_count.indexOf(":")+1) +" " + count;
+			if (jquery_selector=='.cell_total' && !old_count.includes('otal:')){
+				new_count = "Total: "+new_count;
+			}
 			$(jquery_selector).html(new_count);
 		}
 		else {

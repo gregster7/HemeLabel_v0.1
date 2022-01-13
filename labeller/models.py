@@ -154,7 +154,7 @@ class Project(models.Model):
 	date_added = models.DateTimeField(auto_now_add=True)
 	notes = models.CharField(max_length=10000, blank=True, null=True)
 	users = models.ManyToManyField(User, related_name='projects_with_user')
-	slides = models.ManyToManyField(User, related_name='slides_with_project')
+	slides = models.ManyToManyField(Slide, related_name='slides_with_project')
 	# How to use many to many fields
 	# https://docs.djangoproject.com/en/3.1/topics/db/examples/many_to_many/
 	#regions = models.ManyToManyField('Region')
