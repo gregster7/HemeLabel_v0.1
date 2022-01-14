@@ -1,4 +1,4 @@
-{% extends "labeller/base2.html" %}
+{% extends "labeller/base.html" %}
 {% load static %}
 
 
@@ -72,47 +72,41 @@
   };
 </script>
 
-<h2>Slides ({{slides|length}})</h2>
+<h2>Slides</h2>
 
-<!-- Slide Uploader (Dropzone) -->
-<div class="container-fluid justify-content-center dropzone_box">
-
-  <h3 style="border-bottom: 0px">Slide Uploader</h3>
-
-  <!-- <div id="slide_dz_div"> -->
+<div id="slide_dz_div">
   <form action="dropzone_slide" id="my-slide-dropzone" method="POST" enctype="multipart/form-data" class="dropzone js-reference-dropzone">
     {% csrf_token %}
   </form>
-    <!-- <hr style="width: 50%;"> -->
-  
-  <div class="d-flex flex-row-reverse pt-1 pb-2">
-    <button id="upload-btn" type="button" class="btn btn-primary p-2">Add Slides</button>
-  </div>
+
+  <br>
+
+  <button id="upload-btn" type="button">Add Slides</button>
 </div>
 
-<script src="{% static 'labeller/Diagnosis.js' %}"></script>
-<!-- Slides -->
-{% for slide in slides %}
-<div class="container-fluid slide_box" style="padding-right: 5px  !important; padding-left: 5px !important;">
-  <div class="container-fluid my-3 pt-2 pb-3 mx-0">
-    <!-- Slide Info -->
-    {% include "labeller/partials/slide_diagnoses.html" %}
+<div id="slides"></div>
 
-      <!-- Cell Summary -->
-    <div class="flex-row" id='slide_cellSummary_sid_{{slide.sid}}'></div>
-    <script>
-        var cellSummary = new CellSummary('sid', {{slide.sid}});
-        $('#slide_cellSummary_sid_{{slide.sid}}').append(cellSummary.getNewULForSlide());
-        cellSummary.addInfoButtonOnClick();
-        $('#bigtable_sid_{{slide.sid}}').hide()
-    </script>
-  </div>
-</div>
+<script>
 
-  {% empty %}
-    <p id="no_slide">No Slides</p>
-  {% endfor %}
+  $(document).ready(function() {
 
+    {% for slide in slides %}
+
+      $('#slides').append(Slide.getULForSlide({{slide.pk}}, '{{slide.sid}}', '{{slide.name}}'));
+      Slide.infoButtonOnClick('{{slide.sid}}');
+
+    {% empty %}
+
+      <p id="no_slide">No Slides</p>
+
+    {% endfor %}
+
+    $('.bigtable').hide();
+        
+  });
+
+</script>
+      
 
 {% endblock content %}
 

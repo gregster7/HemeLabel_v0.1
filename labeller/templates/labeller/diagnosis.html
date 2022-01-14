@@ -14,22 +14,18 @@
 <script src="{% static 'labeller/Slide.js' %}"></script>
 
 
-<div class="container-fluid padding">
-  <div class="text-center p-4"> <h2>Diagnosis: {{diagnosis.name}}</h2></div>
-</div>
+<h2>Diagnosis: {{diagnosis.name}}</h2>
 
 <!-- Cell Summary -->
 <div class="container-fluid justify-content-center slide_box">
   <div class="container-fluid m-2 py-4">
     {% include "labeller/partials/cell_summary2.html" %}
+    <script>$('#slide_info_diagnosis_pk_{{diagnosis.pk}}').text('Open cell summary for all slides with {{diagnosis.name}}')</script>
   </div>
 </div>
 
 <!-- Slides -->
-<div class="container-fluid padding">
-  <div class="text-center p-2"> <h2>Slides ({{slides|length}})</h2></div>
-  <div id='slides'></div>
-</div>
+<h2>Slides ({{slides|length}})</h2>
 
 {% for slide in slides %}
 <div class="container-fluid justify-content-center slide_box">
@@ -64,8 +60,7 @@
 
 
 <!-- Cells -->
-<div class="container-fluid padding">
-  <div class="text-center p-2"> <h2>Cells ({{cells|length}})</h2></div>
+<h2>Cells ({{cells|length}})</h2>
 {%   include "labeller/partials/main_lineages_horizontal.html" %}
 </div>
 

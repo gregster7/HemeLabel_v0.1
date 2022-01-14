@@ -156,7 +156,9 @@ th {
   color: black !important ;
   background-color: white !important ;
   border: 1px solid #6648b1 !important;
+  padding: 0.3rem 0.5rem !important;
 }
+
 .btn-slide-info:hover,
 .btn-slide-info:active,
 .btn-slide-info:focus,
@@ -164,11 +166,18 @@ th {
   background-color: #6648b1 !important;
   color: white !important;
   border: 1px solid #6648b1 !important;
+  padding: 0.3rem 0.5rem !important;
+}
+
+.dropzone_box{
+  width: 90% !important;
 }
 
 .slide_box {
   width: 90%;
   background-color: rgb(0, 0, 0, 0.05);
+  padding-right: 5px  !important;
+  padding-left: 5px !important;
 }
 
 .padding {

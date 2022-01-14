@@ -1,65 +1,70 @@
-<!-- UNDER CONSTRUCTION -->
 {% load static %}
-
-<script src="{% static 'labeller/Diagnosis.js' %}"></script>
-
-<div class='bigtable_box d-flex d-flex justify-content-between align-items-center'>
-	<div class="d-flex flex-row   " >
-		<a class="p-2 bold_purple_link" href="/label_slide/{{slide.sid}}/">Slide Info:</a>
-		<div class="p-2">ID: {{slide.id}}</div>
-		<div class="p-2">SID: {{slide.sid}}</div>
-		<div class="p-2">Name: {{slide.name}}</div>
+<!--- Three Column container-fluid -->
+<div class='bigtable_box container-fluid'>
+  <div class="row">
+    <!-- Column 1 -->
+    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+      	<!-- <div class="d-flex flex-row   " > -->
+      <a class="p-2 bold_purple_link" href="/label_slide/{{slide.sid}}/"><b>Slide Info:</b></a>
+      <div class="px-2">ID: {{slide.id}}</div>
+      <div class="px-2">SID: {{slide.sid}}</div>
+      <div class="px-2">Name: {{slide.name}}</div>
+    <!-- </div> -->
     </div>
-    <div class="d-flex flex-row   " id="slide_info_row_{{slide.pk}}">
-		{% for dx in slide.diagnoses.all %}
-			
-			{% if forloop.first %}
-			<div class="py-2 pl-2 pr-0 bold" id="dx_title_{{slide.pk}}">
-				<b>Diagnoses:</b></div>
-			{% endif %}
-				<div class="p-2 diagnosis_div_slide_{{slide.pk}}" id='diagnosis_div_{{slide.pk}}_{{dx.pk}}'>
-					{{dx.name}} ({{dx.abbreviation}}) 
-					<button id="delete_diagnosis_{{slide.pk}}_{{dx.pk}}" class="{{slide.pk}} {{dx.pk}} btn p-0"><i class="bi-trash"></i> </button>
+
+    <!-- Column 2 -->
+    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 text-right">
+      <div class="" id="slide_info_row_{{slide.pk}}">
+      {% for dx in slide.diagnoses.all %}
+        
+        {% if forloop.first %}
+        <div class="" id="dx_title_{{slide.pk}}">
+          <b>Diagnoses:</b></div>
+        {% endif %}
+        <div class=" diagnosis_div_slide_{{slide.pk}}" id='diagnosis_div_{{slide.pk}}_{{dx.pk}}'>
+          {{dx.name}} ({{dx.abbreviation}}) 
+          <button id="delete_diagnosis_{{slide.pk}}_{{dx.pk}}" class="{{slide.pk}} {{dx.pk}} btn p-0"><i class="bi-trash"></i> </button>
           <script>
-						$('#delete_diagnosis_{{slide.pk}}_{{dx.pk}}').on('click', Diagnosis.removeDiagnosisFromSlideClickHandler);		
-					</script>
-				</div>
-			
-		{% empty %}
-			<div class="p-2 dx_title" id="dx_title_{{slide.pk}}">
-				Diagnosis: None
-			</div>			
-		{% endfor %}
-		
-    </div>
-    <div class="d-flex flex-row   " >
+            $('#delete_diagnosis_{{slide.pk}}_{{dx.pk}}').on('click', Diagnosis.removeDiagnosisFromSlideClickHandler);		
+          </script>
+        </div>
+        {% empty %}
+          <div class=" dx_title" id="dx_title_{{slide.pk}}">
+            <b>Diagnosis:</b> None
+          </div>			
+        {% endfor %}
+      </div>
+    </div>  
+
+    <!-- Column 3 -->
+    <div class="col-xl-5 col-lg-4 col-md-12 col-sm-12 text-right">
+    <!-- <div class="d-flex flex-row-reverse" > -->
       <form id="form_slide_pk_{{slide.sid}}" class="dx_form "> 
-        <select name="dx_options" id="dx_options"placeholder="No diagnosis">
-           <option value="none" selected></option>
-           {% for dx_option in dx_options %}
-           <option value="{{slide.pk}}_{{dx_option.pk}}_{{dx_option}}" id="dx_option_pk_{{dx_option.pk}}">{{dx_option}}</option>
-           {% endfor %}
-         </select>
-         <span class="p-1"></span>
-         <input type="submit" value="Add Diagnosis" style='font-size:1rem;'>
-         <span class="px-1"></span>
-     </form>
-   
+        <select name="dx_options_slide_pk_{{slide.sid}}" id="dx_options_slide_pk_{{slide.sid}}" placeholder="No diagnosis" class="mb-2" style="font-size:.9rem;">
+          <option value="none" selected></option>
+          {% for dx_option in dx_options %}
+          <option value="{{slide.pk}}_{{dx_option.pk}}_{{dx_option}}" id="dx_option_pk_{{dx_option.pk}}">{{dx_option}}</option>
+          {% endfor %}
+        </select>
+        <input type="submit" value="Add Diagnosis" style='font-size:1rem; padding: .2rem 0.5rem 0.1rem .5rem !important;' class="btn btn-slide-info ">
+          <!-- <span class="px-1"></span> -->
+      </form> 
     </div>
+    
+  </div> <!-- Close Row -->
+</div> <!-- Close container-fluid -->
 
-  </div>
-
+<!-- Add diagnosis button logic -->
 <script>
-  
   // this is the id of the form
-  $(".dx_form").submit(function(e) {
+  $("#form_slide_pk_{{slide.sid}}").submit(function(e) {
     e.preventDefault();
-    chosen_diagnosis = $('#dx_options').val()
+    chosen_diagnosis = $('#dx_options_slide_pk_{{slide.sid}}').val()
     slide_pk = chosen_diagnosis.split('_')[0]
     dx_pk = chosen_diagnosis.split('_')[1]
     dx_text = chosen_diagnosis.split('_')[2]
-    console.log(chosen_diagnosis)
-    console.log(    $('#diagnosis_div_'+slide_pk+'_'+dx_pk).length)
+    // console.log(chosen_diagnosis)
+    // console.log(    $('#diagnosis_div_'+slide_pk+'_'+dx_pk).length)
     
     if (chosen_diagnosis == 'none') {
       console.log('NONE')
@@ -68,9 +73,9 @@
       console.log('diagnosis already added')
     }
     else {
+      console.log('adding diagnosis:'+chosen_diagnosis)
       Diagnosis.addDiagnosisToSlideAJAX(slide_pk, dx_pk, dx_text)
     }
     
   });
-
 </script>

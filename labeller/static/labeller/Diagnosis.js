@@ -44,7 +44,7 @@ class Diagnosis {
 			function(json){
 				if(json['success']==true) {
 					if( $(`.diagnosis_div_slide_${slide_pk}`).length ==0 ) {
-						$('#dx_title_'+slide_pk).text('Diagnoses: ');
+						$('#dx_title_'+slide_pk).html('<b>Diagnoses:</b> ');
 					}
 					$('#slide_info_row_'+slide_pk).append(Diagnosis.getSlideDiangosisDiv(slide_pk, diagnosis_pk, dx_text))
 					$('#delete_diagnosis_'+slide_pk+'_'+dx_pk).on('click', Diagnosis.removeDiagnosisFromSlideClickHandler);	

@@ -102,10 +102,14 @@ class Slide (models.Model):
 		# 	return str(str(self.id) + " " + str(self.sid))
 		# else:
 		# 	return str(str(self.id) + " " + self.name + " " + str(self.sid))
+		dx_str = ""
+		for dx in self.diagnoses.all():
+			dx_str = dx_str + " " + str(dx)
+
 		try:
-			return str(str(self.id) + " " + str(self.sid) + " " + self.name)
+			return str(str(self.id) + " " + str(self.sid) + " " + self.name + dx_str)
 		except:
-			return str(str(self.id) + " " + str(self.sid))
+			return str(str(self.id) + " " + str(self.sid) + dx_str)
 
 class Region(models.Model):
 	"""A region comes from a slide and can have multiple cells"""

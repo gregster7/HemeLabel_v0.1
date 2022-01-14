@@ -60,7 +60,7 @@ def slides(request):
 	else:
 		slides_json = 'none'
 
-	context = {'slides': slides, 'slides_json': slides_json}
+	context = {'slides': slides, 'slides_json': slides_json, 'dx_options': Diagnosis.objects.all()}
 	return render(request, 'labeller/slides.html', context)	
 
 
@@ -137,7 +137,7 @@ def change_cell_location(request):
 	return JsonResponse(results)
 
 def change_cell_location_helper(cid, left, top, width, height):
-	cell = Cell.objects.get(cid=cid);
+	cell = Cell.objects.get(cid=cid)
 	region = cell.region;
 	if ((top < 0) | (top + height > region.height) | (left < 0) | (left + width > region.width)):
 		return {'success':False, 'error':'box outside boundary'}
@@ -182,10 +182,10 @@ def get_all_cells_generic(request):
 		cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
 	else:
 		results = {'success':False}
-		return JsonResponse(results);
+		return JsonResponse(results)
 
 	results = {'success':True, 'all_cells_json':serializers.serialize("json", cells), 'celltypes_json': serializers.serialize("json", cellTypes)}
-	return JsonResponse(results);
+	return JsonResponse(results)
 
 # Used by CellCounter.js
 @login_required
@@ -819,9 +819,12 @@ def diagnosis(request, diagnosis_id):
 
 	# https://www.sankalpjonna.com/learn-django/the-right-way-to-use-a-manytomanyfield-in-django
 	slides = Slide.objects.filter(diagnoses=diagnosis)
-	print(slides)
-	cells = Cell.objects.filter(region__slide__in=slides)
+	# for slide in slides:
+	# 	print(slide, Cell.objects.filter(region__slide=slide))
+	# print(slides)
+	cells = Cell.objects.filter(region__slide__in=slides.all())
 	cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+	# print(cells)
 
 	cells_json = serializers.serialize("json", cells)	
 	celltypes_json = serializers.serialize("json", cellTypes)	
