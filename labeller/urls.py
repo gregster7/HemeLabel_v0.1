@@ -35,6 +35,8 @@ urlpatterns = [
 
 	re_path(r'^slides/$', views.slides, name='slides'),
 
+	re_path(r'^diagnoses/$', views.diagnoses, name='diagnoses'),
+
 	# Page for viewing all projects created when uploading cells - under construction
 	re_path(r'^projects/$', views.projects, name='projects'),
 
@@ -42,6 +44,11 @@ urlpatterns = [
 	re_path(r'^stats/$', views.stats, name='stats'),
 
 	####################### other html pages (data labelling/export) #######################
+
+	re_path(r'^project/(?P<project_id>\d+)/', views.project, name='project'),
+
+	re_path(r'^diagnosis/(?P<diagnosis_id>\d+)/', views.diagnosis, name='diagnosis'),
+
 
 	# Page for labelling a slide
 	re_path(r'^label_slide/(?P<slide_id>\d+)/$', views.label_slide, name='label_slide'),
@@ -91,7 +98,9 @@ urlpatterns = [
 
 	#************************* PROJECT POSTS *************************#
 	path('create_project', views.create_project, name="create_project"),
-	re_path(r'^project/(?P<project_id>\d+)/', views.project, name='project'),
+	
+	
+
 
 	#************************* CELL GETS *************************#
 	re_path(r'^get_cell_feature_form/', views.get_cell_feature_form, name='get_cell_feature_form'),

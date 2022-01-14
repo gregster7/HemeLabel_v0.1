@@ -59,7 +59,7 @@ class Slide (models.Model):
 	svs_path = models.FileField(upload_to="slides", max_length=300, blank=True, null=True)
 	
 	# To rename to 'diagnoses'
-	diagnosis = models.ManyToManyField('Diagnosis', related_name='slides')
+	diagnoses = models.ManyToManyField('Diagnosis', related_name='slides_with_diagnosis')
 
 	# Store filename as name
 	name = models.CharField(max_length=200, blank=True, null=True)
@@ -154,7 +154,7 @@ class Project(models.Model):
 	date_added = models.DateTimeField(auto_now_add=True)
 	notes = models.CharField(max_length=10000, blank=True, null=True)
 	users = models.ManyToManyField(User, related_name='projects_with_user')
-	slides = models.ManyToManyField(Slide, related_name='slides_with_project')
+	slides = models.ManyToManyField(Slide, related_name='project_with_slides')
 	# How to use many to many fields
 	# https://docs.djangoproject.com/en/3.1/topics/db/examples/many_to_many/
 	#regions = models.ManyToManyField('Region')

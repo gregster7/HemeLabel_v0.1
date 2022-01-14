@@ -94,7 +94,7 @@ def bootstrap_test(request):
 @login_required
 def label_slide_bootstrap(request, slide_id):
 	slide = Slide.objects.get(sid=slide_id)
-	diagnoses = slide.diagnosis
+	diagnoses = slide.diagnoses
 	regions = slide.region_set.all()
 	context = {'slide': slide, 'dx_options': Diagnosis.objects.all()}
 	return render(request, 'labeller/label_slide.html', context)
@@ -105,8 +105,8 @@ def label_slide(request, slide_id):
 	print('label_slide', request, slide_id)
 	slide = Slide.objects.get(sid=slide_id)
 
-	diagnoses = slide.diagnosis
-	print('diagnosis', diagnoses)
+	diagnoses = slide.diagnoses
+	print('diagnoses', diagnoses)
 	regions = slide.region_set.all()
 	context = {'slide': slide, 'dx_options': Diagnosis.objects.all()}
 	return render(request, 'labeller/label_slide.html', context)
@@ -165,7 +165,8 @@ def get_all_cells_generic(request):
 	print(id_type, id_val)
 	if (id_type == 'sid'):
 		cells = Cell.objects.filter(region__slide__sid=id_val)
-		celltypes_json = getAllCellTypesSlideUserJSON(request.user, Slide.objects.get(sid=id_val))
+		cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+		# celltypes_json = getAllCellTypesSlideUserJSON(request.user, Slide.objects.get(sid=id_val))
 	elif (id_type == 'rid'):
 		cells = Cell.objects.filter(region__rid=id_val)
 		celltypes_json = getAllCellTypesUserRegionJSON(request.user, Region.objects.get(rid=id_val))
@@ -174,12 +175,16 @@ def get_all_cells_generic(request):
 		slides = Slide.objects.filter(slides_with_project=project)
 		cells = Cell.objects.filter(region__slide__in=slides)
 		cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
-		celltypes_json = serializers.serialize("json", cellTypes)	
+	elif (id_type == 'diagnosis_pk'):
+		diagnosis = Diagnosis.objects.get(id=id_val)
+		slides = Slide.objects.filter(diagnoses=diagnosis)
+		cells = Cell.objects.filter(region__slide__in=slides)
+		cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
 	else:
 		results = {'success':False}
 		return JsonResponse(results);
 
-	results = {'success':True, 'all_cells_json':serializers.serialize("json", cells), 'celltypes_json': celltypes_json}
+	results = {'success':True, 'all_cells_json':serializers.serialize("json", cells), 'celltypes_json': serializers.serialize("json", cellTypes)}
 	return JsonResponse(results);
 
 # Used by CellCounter.js
@@ -339,10 +344,13 @@ def toggle_region_complete_seg(request):
 def add_diagnosis_to_slide(request):
 	try:
 		POST = request.POST
+		print(POST)
 		diagnosis = Diagnosis.objects.get(id=POST['diagnosis_pk'])
 		slide = Slide.objects.get(id=POST['slide_pk'])
-		slide.diagnosis.add(diagnosis)
+		slide.diagnoses.add(diagnosis)
 		slide.save()
+		print(slide, slide.diagnoses)
+		print('success')
 		return JsonResponse({'success':True})
 
 	except Exception as e: 
@@ -354,7 +362,7 @@ def remove_diagnosis_from_slide(request):
 		POST = request.POST
 		diagnosis = Diagnosis.objects.get(id=POST['diagnosis_pk'])
 		slide = Slide.objects.get(id=POST['slide_pk'])
-		slide.diagnosis.remove(diagnosis)
+		slide.diagnoses.remove(diagnosis)
 		slide.save()
 		return JsonResponse({'success':True})
 
@@ -621,6 +629,18 @@ def register(request):
 
 
 
+# Diagnoses page view
+@login_required
+def diagnoses(request):
+	"""Show all projects"""
+	# user_projects = Project.objects.filter(user=request.user.get_username()).order_by('id')
+	# context = {'user_projects': user_projects}
+	diagnoses = Diagnosis.objects.all()
+	context = {'diagnoses': diagnoses}
+
+	return render(request, 'labeller/diagnoses.html', context)
+
+
 # Projects page view
 @login_required
 def projects(request):
@@ -794,15 +814,35 @@ def dropzone_image_w_projectID(request, project_id):
 	return HttpResponse()
 
 @login_required
-def project(request, project_id):
-	project = Project.objects.get(id=project_id)
-	slides = Slide.objects.filter(slides_with_project=project)
+def diagnosis(request, diagnosis_id):
+	diagnosis = Diagnosis.objects.get(id=diagnosis_id)
+
+	# https://www.sankalpjonna.com/learn-django/the-right-way-to-use-a-manytomanyfield-in-django
+	slides = Slide.objects.filter(diagnoses=diagnosis)
+	print(slides)
 	cells = Cell.objects.filter(region__slide__in=slides)
-	cells_json = serializers.serialize("json", cells)	
 	cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+
+	cells_json = serializers.serialize("json", cells)	
 	celltypes_json = serializers.serialize("json", cellTypes)	
 
-	context = {'project': project, 'cells': cells, 'cells_json': cells_json, 'celltypes_json': celltypes_json}
+	context = {'diagnosis': diagnosis, 'slides': slides, 'cells': cells, 'cells_json': cells_json, 'celltypes_json': celltypes_json}
+
+	return render(request, 'labeller/diagnosis.html', context)
+
+
+@login_required
+def project(request, project_id):
+	project = Project.objects.get(id=project_id)
+	# slides = Slide.objects.filter(project_with_slides=project)
+	cells = Cell.objects.filter(region__slide__in=project.slides.all())
+	regions = Region.objects.filter(slide__in=project.slides.all())
+	cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+
+	cells_json = serializers.serialize("json", cells)	
+	celltypes_json = serializers.serialize("json", cellTypes)	
+
+	context = {'project': project, 'regions': regions, 'cells': cells, 'cells_json': cells_json, 'celltypes_json': celltypes_json}
 	return render(request, 'labeller/project.html', context)
 
 # Not currently in use - may require fixing

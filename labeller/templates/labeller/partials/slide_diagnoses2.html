@@ -6,7 +6,7 @@
 var diagnoses = []
 </script>
 <p class="text-capitalize">
-{% for dx in slide.diagnosis.all %}
+{% for dx in slide.diagnoses.all %}
   Diagnosis: {{dx.name}} ({{dx.abbreviation}}) &nbsp &nbsp &nbsp
   <script>
     diagnoses.push(new Diagnosis('{{dx.name}}', '{{dx.abbreviation}}'))

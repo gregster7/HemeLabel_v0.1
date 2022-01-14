@@ -11,7 +11,7 @@
 		<div class="p-2">Name: {{slide.name}}</div>
     </div>
     <div class="d-flex flex-row   " id="slide_info_row_{{slide.pk}}">
-		{% for dx in slide.diagnosis.all %}
+		{% for dx in slide.diagnoses.all %}
 			
 			{% if forloop.first %}
 			<div class="py-2 pl-2 pr-0 bold" id="dx_title_{{slide.pk}}">

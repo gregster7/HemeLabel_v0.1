@@ -13,7 +13,7 @@
 
 {% include "labeller/partials/cell_summary.html" %}
 
-<H2>Slides</H2>
+<H2>Slides ({{project.slides.all|length}})</H2>
 <div id='slides'></div>
 {% for slide in project.slides.all %}
   <script>
@@ -25,15 +25,14 @@
 {% endfor %}
 <script>$('.bigtable').hide();</script>
 
-<H2>Users</H2>
+<H2>Users ({{project.users.all|length}})</H2>
 {% for user in project.users.all %}
   {{user}}
 {% empty %}
 <p id="no_users">No Users</p>
 {% endfor %}
 
-<H2>Regions</H2>
-
+<H2>Regions ({{regions|length}})</H2>
 {% for slide in project.slides.all %}
   {% for region in slide.region_set.all %}
     {{region}}
@@ -43,9 +42,7 @@
 {% endfor %}
 
 
-
-<H2>Cells</H2>
-
+<H2>Cells ({{cells|length}})</H2>
 <div class="mb-5"></div>
 {% include "labeller/partials/main_lineages_horizontal.html" %}
 </div>

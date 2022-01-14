@@ -75,6 +75,18 @@ class CellSummary {
       return table;
     }
 
+    getNewULForSlide(){
+      var div = '<div class="container-fluid">\
+              <div class="d-flex flex-row align-middle">\
+                <button type="button" id="slide_info_'+this.id_type+'_'+this.id_val+'" class="slide_info p-2 btn btn-slide-info">Open Cell Summary</button>\
+                <div id="cell_total_'+this.id_type+'_'+this.id_val+'" class="cell_total p-2"></div>\
+              </div>\
+              <div id="bigtable_' +this.id_type+'_'+this.id_val+ '" class="bigtable p-2">' +this.createBigTable()+
+              '</div>\
+            </div>'
+      return div;
+
+    }
   
 
     getULForSlide() {

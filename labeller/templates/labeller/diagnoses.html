@@ -1,0 +1,24 @@
+{% extends 'labeller/base2.html' %}
+{% load static %}
+
+{% block title %}Diagnoses{% endblock %}
+
+{% block content %}
+
+  <div class="container-fluid">
+    <div class="text-center p-4"> <h2>Diagnoses ({{diagnoses|length}})</h2></div>
+    
+      {% for diagnosis in diagnoses %}
+      <div class="d-flex flex-row">
+        <p class="p-2">{{diagnosis}}</p>
+        <a href="/diagnosis/{{diagnosis.pk}}/" class="btn btn-primary p-2"><i class="bi-arrow-right-circle-fill"></i></a>  
+        
+      </div>
+      <hr>
+      {% empty %}
+        <p id="no_diagnoses">No diagnoses have been added yet.</p>
+      {% endfor %}
+
+  </div>
+
+{% endblock %}

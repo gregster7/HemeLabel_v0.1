@@ -1,0 +1,372 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins:400,500,700");
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  font-family: "Poppins", serif;
+  color: #222;
+}
+
+/* Bootstrap fix */
+p,
+h1 {
+  margin-bottom: 0;
+}
+
+h1 {
+  background-color: #663399ff;
+  padding: 10px;
+  color: white;
+  text-align: center;
+}
+
+h2 {
+  /* background-color: #663399ff; */
+  /* background-color: #f9f5f0; */
+  background-color: #f2f2f2ff;
+  padding: 10px;
+  /* color: white; */
+  color: #663399ff;
+  text-align: center;
+  text-transform: capitalize;
+  /* border-bottom: 1px solid purple; */
+}
+
+h3 {
+  /* background-color: rgb(224, 224, 224); */
+  border-bottom: 1px solid purple;
+  padding: 5px;
+  color: #663399ff;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.plum {
+  /* background-color: #461f33; */
+  background-color: rgb(79, 48, 109);
+  /* background-color: #663399ff; */
+}
+
+.copy_text {
+  color: rgb(216, 216, 216, 0.5);
+}
+
+hr {
+  width: 40%;
+  margin-left: 0%;
+}
+
+hr.center {
+  width: 50%;
+  margin: auto;
+  /* color: black; */
+  border-top: 2px solid rgb(0, 0, 0, 0.3);
+  margin-top: 3rem;
+  margin-bottom: 0rem;
+}
+
+.navbar {
+  padding: 0.8rem;
+}
+.navbar-nav li {
+  padding-right: 1.3rem;
+}
+.nav-link {
+  font-size: 1.1em !important;
+  color: white;
+}
+
+.carousel-inner img {
+  width: 100%;
+  height: 100%;
+}
+.carousel-caption {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.carousel-caption > h1 {
+  color: white
+  font-size: 600%;
+  text-shadow: 3px 3px 15px #000;
+  background-color: transparent;
+}
+
+.carousel-caption > h3 {
+  color: white;
+  font-size: 300%;
+  font-weight: 500;
+  text-shadow: 3px 3px 15px #000;
+  padding-bottom: 1rem;
+  border-bottom: 0px;
+}
+
+.carousel .carousel-indicators li {
+  background-color: rgba(70, 70, 70, 0.3);
+  /* border: 3px solid rgba(70, 70, 70, 0.3); */
+  padding-bottom: 0.2rem;
+}
+
+.carousel .carousel-indicators .active {
+  background-color: rgba(70, 70, 70, 0.8);
+}
+
+.class_table_row {
+  border-left: 1px solid #000;
+  border-right: 1px solid #000;
+  /* padding: 5px; */
+  line-height: 1;
+}
+.class_table_td {
+  border-left: 1px solid #000;
+  padding: 5px 10px;
+}
+td {
+  padding: 5px;
+  font-size: 85%;
+}
+th {
+  /* text-decoration: underline; */
+  /* text-align: center; */
+}
+.btn-primary {
+  color: black !important ;
+  background-color: white !important ;
+  /* border: 1px solid #6648b1 !important; */
+  border: 1px solid white !important;
+  /* border: 1px solid #6648b1; */
+}
+
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:focus,
+.btn-primary:active:focus {
+  color: black !important ;
+  background-color: #6648b1 !important;
+  color: white !important;
+  /* background-color: white !important ; */
+  /* border: 1px solid #6648b1; */
+  /* background-color: #563d7c; */
+  /* border: 1px solid #563d7c; */
+}
+
+.btn-slide-info {
+  color: black !important ;
+  background-color: white !important ;
+  border: 1px solid #6648b1 !important;
+}
+.btn-slide-info:hover,
+.btn-slide-info:active,
+.btn-slide-info:focus,
+.btn-slide-info:active:focus {
+  background-color: #6648b1 !important;
+  color: white !important;
+  border: 1px solid #6648b1 !important;
+}
+
+.slide_box {
+  width: 90%;
+  background-color: rgb(0, 0, 0, 0.05);
+}
+
+.padding {
+  padding-top: 2rem;
+}
+
+/* khaki {
+  color: #d5d5d5;
+} */
+
+.jumbotron {
+  padding: 4rem;
+  border-radius: 0;
+  margin-bottom: 0;
+}
+
+.padding {
+  padding-bottom: 2rem;
+}
+
+a {
+  color: #663399ff;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #663399ff;
+  font-weight: bold;
+}
+
+.inline_cells {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  overflow-x: scroll !important;
+  width: 100%;
+  /* overflow-y: visible; */
+  /* overflow-x: scroll; */
+  /* white-space: nowrap; */
+}
+
+.cell_box_text {
+  padding: 2px;
+  margin: 0px;
+}
+/*
+Image width is 1037px
+Image height is 665px
+*/
+#helpscreen {
+  position: fixed;
+  z-index: 120;
+  top: 50%;
+  left: 50%;
+  margin-top: -332px; /* Negative half of height. */
+  margin-left: -518px; /* Negative half of width. */
+}
+
+.floating_region {
+  display: none;
+  position: fixed;
+  z-index: 120;
+  top: 50%;
+  left: 50%;
+  margin-top: -332px; /* Negative half of height. */
+  margin-left: -518px; /* Negative half of width. */
+}
+
+.highlight {
+  background: yellow;
+}
+
+.cell_list_item {
+  padding: 20px;
+  padding-top: 20px;
+  padding-bottom: 0px;
+}
+
+.cellImage {
+  margin-bottom: 10px;
+}
+
+.carousel-caption > h1 {
+  background-color: none !important;
+}
+
+h3.horizontal_list_category {
+  background-color: #bfbfbfff;
+  padding: 10px;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+/*---Media Queries --*/
+@media (max-width: 992px) {
+  .social a {
+    font-size: 4em;
+    padding: 2rem;
+  }
+}
+@media (max-width: 768px) {
+  .carousel-caption {
+    top: 45%;
+  }
+
+  .carousel-caption h1 {
+    font-size: 350%;
+  }
+
+  .carousel-caption h3 {
+    font-size: 140%;
+    font-weight: 400;
+    padding-bottom: 0.2rem;
+  }
+
+  .carousel-caption .btn {
+    font-size: 95%;
+    padding: 8px 14px;
+  }
+
+  .display-4 {
+    font-size: 200%;
+  }
+
+  .social a {
+    font-size: 2.5em;
+    padding: 1.2rem;
+  }
+}
+@media (max-width: 576px) {
+  .carousel-caption {
+    top: 40%;
+  }
+
+  .carousel-caption h1 {
+    font-size: 250%;
+  }
+
+  .carousel-caption h3 {
+    font-size: 110%;
+    font-weight: 400;
+    padding-bottom: 0.2rem;
+  }
+
+  .carousel-caption .btn {
+    font-size: 90%;
+    padding: 4px 8px;
+  }
+
+  .carousel-indicators {
+    display: none;
+  }
+
+  .diagnosis {
+    padding: 2rem;
+    margin: 2rem;
+  }
+
+  /* .display-4 {
+    font-size: 160%;
+  }
+
+  .social a {
+    font-size: 2em;
+    padding: 0.7rem;
+  } */
+}
+
+/*--- Fixed Background Image --*/
+figure {
+  position: relative;
+  width: 100%;
+  height: 70%;
+  margin: 0 !important;
+}
+.fixed-wrap {
+  clip: rect(0, auto, auto, 0);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+#fixed {
+  /* background-image: url("img/mac.png"); */
+  position: fixed;
+  display: block;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center center;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
+}
+/*--- Bootstrap Padding Fix --*/
+[class*="col-"] {
+  padding: 1rem;
+}
