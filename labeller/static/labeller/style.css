@@ -497,6 +497,27 @@ Image height is 665px
   padding: 0px 15px 0px 15px;
 }
 
+.btn-primary {
+  color: black !important ;
+  background-color: white !important ;
+  /* border: 1px solid #6648b1 !important; */
+  border: 1px solid white !important;
+  /* border: 1px solid #6648b1; */
+}
+
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:focus,
+.btn-primary:active:focus {
+  color: black !important ;
+  background-color: #6648b1 !important;
+  color: white !important;
+  /* background-color: white !important ; */
+  /* border: 1px solid #6648b1; */
+  /* background-color: #563d7c; */
+  /* border: 1px solid #563d7c; */
+}
+
 .btn-info-congrol-group {
   color: #663399ff;
   text-decoration: none;

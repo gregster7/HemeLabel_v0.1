@@ -59,7 +59,7 @@ class Slide (models.Model):
 	svs_path = models.FileField(upload_to="slides", max_length=300, blank=True, null=True)
 	
 	# To rename to 'diagnoses'
-	diagnoses = models.ManyToManyField('Diagnosis', related_name='slides_with_diagnosis')
+	diagnoses = models.ManyToManyField('Diagnosis', related_name='slides_with_diagnosis', blank=True)
 
 	# Store filename as name
 	name = models.CharField(max_length=200, blank=True, null=True)
@@ -96,15 +96,24 @@ class Slide (models.Model):
 	class Meta:
 		verbose_name_plural = 'Slides'
 
+	def getTissueString(self):
+		if (self.tissue):
+			return dict(self.TISSUE_CHOICES)[self.tissue]
+		else:
+			return ""
+
 	def __str__(self):
 		"""Return a string representation of the model."""
-		# if (self.name == None):
-		# 	return str(str(self.id) + " " + str(self.sid))
-		# else:
-		# 	return str(str(self.id) + " " + self.name + " " + str(self.sid))
+
 		dx_str = ""
 		for dx in self.diagnoses.all():
-			dx_str = dx_str + " " + str(dx)
+			dx_str += " " + str(dx)
+
+		dx_str += " " + self.getTissueString()
+
+		cells = Cell.objects.filter(region__slide=self)
+		if (cells):
+			dx_str += " Cells: " + str(len(cells))
 
 		try:
 			return str(str(self.id) + " " + str(self.sid) + " " + self.name + dx_str)

@@ -14,13 +14,22 @@
 
 <script type="text/javascript">
 
+
+
+
+//https://openseadragon.github.io/docs/OpenSeadragon.html#.Options
 var viewer = OpenSeadragon({
     id: "openseadragon_slideViewer",
     showNavigator:  true,
     debugMode: false,
     visibilityRatio: 1.0,
+    // pixelsPerWheelLine: 80, //Default = 40
+    // pixelsPerArrowPress: 80, //Default = 40
+    zoomPerScroll: 1.5, // Default 1.2
+    springStiffness: 9, //Default 6.5
     prefixUrl: "{% static 'labeller/openseadragon/images/' %}",
     tileSources: '/{{ slide.dzi_path }}',
+
 });
 
 var drag;

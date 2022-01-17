@@ -5,7 +5,10 @@
     <!-- Column 1 -->
     <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
       	<!-- <div class="d-flex flex-row   " > -->
-      <a class="p-2 bold_purple_link" href="/label_slide/{{slide.sid}}/"><b>Slide Info:</b></a>
+      <div class="px-2">
+        <b>Slide Info:</b>
+        <a href="/label_slide/{{slide.sid}}/" class="btn btn-primary p-1"><i class="bi-arrow-right-circle-fill"></i></a>
+      </div>
       <div class="px-2">ID: {{slide.id}}</div>
       <div class="px-2">SID: {{slide.sid}}</div>
       <div class="px-2">Name: {{slide.name}}</div>
@@ -52,7 +55,16 @@
     </div>
     
   </div> <!-- Close Row -->
+
+  <!-- Row 2 -->
+  <div class="row">
+      <div class="col-xl-12">
+        <div class="px-2"><b>Notes</b>: {{slide.userNotes}}</div>
+      </div>
+    </div>
+
 </div> <!-- Close container-fluid -->
+
 
 <!-- Add diagnosis button logic -->
 <script>

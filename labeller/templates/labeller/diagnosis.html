@@ -24,11 +24,29 @@
   </div>
 </div>
 
+<script src="{% static 'labeller/Diagnosis.js' %}"></script>
+
 <!-- Slides -->
 <h2>Slides ({{slides|length}})</h2>
 
 {% for slide in slides %}
-<div class="container-fluid justify-content-center slide_box">
+<div class="container-fluid slide_box" style="padding-right: 5px  !important; padding-left: 5px !important;">
+  <div class="container-fluid my-3 pt-2 pb-3 mx-0">
+    <!-- Slide Info -->
+    {% include "labeller/partials/slide_diagnoses.html" %}
+
+      <!-- Cell Summary -->
+    <div class="flex-row" id='slide_cellSummary_sid_{{slide.sid}}'></div>
+    <script>
+        var cellSummary = new CellSummary('sid', {{slide.sid}});
+        $('#slide_cellSummary_sid_{{slide.sid}}').append(cellSummary.getNewULForSlide());
+        cellSummary.addInfoButtonOnClick();
+        $('#bigtable_sid_{{slide.sid}}').hide()
+    </script>
+  </div>
+</div>
+
+<!-- <div class="container-fluid justify-content-center slide_box">
   <div class="container-fluid m-2 py-4">
     <div class='d-flex flex-row align-middle'>
       <div class='p-2'>
@@ -52,7 +70,7 @@
         $('#bigtable_sid_{{slide.sid}}').hide()
     </script>
   </div>
-</div>
+</div> -->
 
   {% empty %}
     <p id="no_slide">No Slides</p>
