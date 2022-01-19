@@ -139,7 +139,7 @@ class CellSummary {
           $.get('/get_all_cells_generic/', {'id_type':id_type, 'id_val':id_val}, function(json) {
               console.log('/get_all_cells_generic/');
 
-              var cells_json = json['all_cells_json'];
+              var cells_json = json['cells_json'];
               var celltypes_json = json['celltypes_json']
               // console.log(cells_json)
               // console.log(celltypes_json)

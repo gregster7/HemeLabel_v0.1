@@ -154,7 +154,7 @@ class Cell {
 	// 			current_cell = $('.cell_list_item#celllistCID_'+ cell.cid);
 
 		
-	// 			var all_cells = Cell.LoadCellsFromJson(json['all_cells_json'], json['celltypes']);
+	// 			var all_cells = Cell.LoadCellsFromJson(json['cells_json'], json['celltypes']);
 	// 			current_cell.on('click', function() { 
 	// 				Cell.updateCurrentCell($(this), all_cells)
 	// 			});

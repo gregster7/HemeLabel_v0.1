@@ -34,7 +34,7 @@ class CellCounter {
     console.log("entering updateCountsOnPageAJAXProject");
     $.get("/get_all_cells_in_project/", {'project_id':project_id}, function(json){
       if(json['success'] == true) {
-	      var cells_json = json['all_cells_json'];
+	      var cells_json = json['cells_json'];
 	      if (cells_json!='none') {		
 	        var cells = Cell.LoadCellsFromJson(cells_json, celltypes_json);
 					CellCounter.updateCountsOnPageNotJson(cells, project_id);
@@ -47,7 +47,7 @@ class CellCounter {
     console.log("entering updateCountsOnPageAJAXRegion");
 		$.get("/get_all_cells_in_region/", {'rid':rid}, function(json){
 	      if(json['success'] == true) {
-	      var cells_json = json['all_cells_json'];
+	      var cells_json = json['cells_json'];
 	      if (cells_json!='none') {		
 	        var cells = Cell.LoadCellsFromJson(cells_json, json['celltypes_json']);
 					CellCounter.updateCountsOnPageHelper(cells, rid);

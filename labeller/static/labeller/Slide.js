@@ -4,6 +4,10 @@ class Slide {
 		this.pk = String(slide_pk);
 	}
 
+	static getNewULForSlide(id, sid, slide_name){
+
+	}
+
 	static getULForSlide(id, sid, slide_name) {
 		var cellSummary = new CellSummary('sid', sid);
 		//$('#slide_info_row').append(cellSummary.getULForSlide());
@@ -43,14 +47,14 @@ class Slide {
 			  //console.log(json);
 			  //console.log(json['all_cells_json']);
 			  
-			  var cells_json_reformat = $.parseJSON(json['all_cells_json'].replace(/&quot;/ig,'"'));
+			  var cells_json_reformat = $.parseJSON(json['cells_json'].replace(/&quot;/ig,'"'));
 			  $this.addClass("clicked_once");
 			  $this.addClass('slide_info_down');
 			  $('#slide_list_' +sid).removeClass("slide_list_box");
 			  $('#bigtable_' +sid).slideDown().addClass("bigtable_box");
 			  $('#cell_total_'+sid).html('Total: ' + cells_json_reformat.length).fadeIn();
 	
-			  Slide.UpdateCountsOnPage(json['all_cells_json'], json['celltypes_json'], sid);
+			  Slide.UpdateCountsOnPage(json['cells_json'], json['celltypes_json'], sid);
 	
 			});      
 		  };

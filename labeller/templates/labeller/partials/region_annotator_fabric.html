@@ -33,7 +33,7 @@
 	 </div>
 	<div class="col p-2 justify-content-around"  >
 		<button id="delete_cell_button" class="btn p-0" ><i class="bi-trash"></i> Delete cell (\)</button><br>
-		<button id="toggle_annotation_mode" class="btn p-0"><i class="bi-circle-square mx-2"></i> Toggle annotation mode (Esc)</button>
+		<button id="toggle_annotation_mode" class="btn p-0"><i class="bi-circle-square"></i> Toggle annotation mode (Esc)</button>
 	</div>
 	<div class="col p-2 justify-content-around" >
 		<div class='form-check form-check-inline p-0'>
@@ -181,7 +181,7 @@ class RegionLabellerFabric {
 				}
 				else if(json['success'] == true) {
 					var cell = JSON.parse(json['cell_json'])[0];
-					// var all_cells = Cell.LoadCellsFromJson(json['all_cells_json']);
+					// var all_cells = Cell.LoadCellsFromJson(json['cells_json']);
 					cell = new Cell(cell);
 					console.log("cell is", cell);
 					Cell.updateCellAfterLocationChange(cell);  //updates cell images in preview and horizontal bar
@@ -394,7 +394,7 @@ class RegionLabellerFabric {
 
 			else if(json['success'] == true) {
 				var cell = JSON.parse(json['new_cell_json'])[0];
-				// var all_cells = Cell.LoadCellsFromJson(json['all_cells_json']);
+				// var all_cells = Cell.LoadCellsFromJson(json['cells_json']);
 				cell = new Cell(cell);
 				var new_cell_div = cell.getDivForCellList();
         		$('#UL_cells_inline').prepend($(new_cell_div).clone());

@@ -169,7 +169,8 @@ def get_all_cells_generic(request):
 		# celltypes_json = getAllCellTypesSlideUserJSON(request.user, Slide.objects.get(sid=id_val))
 	elif (id_type == 'rid'):
 		cells = Cell.objects.filter(region__rid=id_val)
-		celltypes_json = getAllCellTypesUserRegionJSON(request.user, Region.objects.get(rid=id_val))
+		cellTypes = CellType.objects.filter(cell__region=id_val, user=request.user)
+		# celltypes_json = getAllCellTypesUserRegionJSON(request.user, Region.objects.get(rid=id_val))
 	elif (id_type == 'project_pk'):
 		project = Project.objects.get(id=id_val)
 		slides = Slide.objects.filter(slides_with_project=project)
@@ -184,7 +185,8 @@ def get_all_cells_generic(request):
 		results = {'success':False}
 		return JsonResponse(results)
 
-	results = {'success':True, 'all_cells_json':serializers.serialize("json", cells), 'celltypes_json': serializers.serialize("json", cellTypes)}
+	results = {'success':True, 'cells_json':serializers.serialize("json", cells), 'celltypes_json': serializers.serialize("json", cellTypes)}
+	#print('get all cells generic results', results['cells_json'])
 	return JsonResponse(results)
 
 # Used by CellCounter.js
@@ -196,10 +198,8 @@ def get_all_cells_in_region(request):
 	region = Region.objects.get(rid=rid)
 	print(region)
 
-	all_cells_json = serializers.serialize("json", region.cell_set.all())
-	results = {'success':True, 'all_cells_json':all_cells_json, 'celltypes_json': getAllCellTypesUserRegionJSON(request.user, region)}
-#	print(all_cells_json)
-#	print(getAllCellTypesUserRegionJSON(request.user, region))
+	cells_json = serializers.serialize("json", region.cell_set.all())
+	results = {'success':True, 'cells_json':cells_json, 'celltypes_json': getAllCellTypesUserRegionJSON(request.user, region)}
 	return JsonResponse(results)
 
 # Used by slides.html
@@ -211,8 +211,8 @@ def get_all_cells_in_slide(request):
 	cells = Cell.objects.filter(region__slide__sid=sid)
 	print('length of cells', len(cells))
 	slide = Slide.objects.get(sid=sid)
-	all_cells_json = serializers.serialize("json", cells)
-	results = {'success':True, 'all_cells_json':all_cells_json, 'celltypes_json': getAllCellTypesSlideUserJSON(request.user, slide)}
+	cells_json = serializers.serialize("json", cells)
+	results = {'success':True, 'cells_json':cells_json, 'celltypes_json': getAllCellTypesSlideUserJSON(request.user, slide)}
 	print('exiting get_all_cells_in_slide')
 	return JsonResponse(results);
 
@@ -286,14 +286,9 @@ def create_new_cell(rid, left, top, width, height, user):
 		new_cell.center_y_slide = new_cell.center_y + region.y;
 		new_cell.save()
 		new_cell_type = CellType.objects.create(cell=new_cell, user = user)
-		# cells = region.cell_set.all()
+
 		new_cell_json = serializers.serialize("json", [new_cell])
 		new_cell_type_json = serializers.serialize("json", [new_cell_type])
-#		all_cells_json = get_all_cells_json(region)
-#		celltypes_in_region = getAllCellTypesUserRegionJSON(user, region)
-#		celltypes_in_region = serializers.serialize("json", celltypes_in_region)
-
-#		results = {'success':True, 'new_cell_json':new_cell_json, 'all_cells_json':all_cells_json, 'new_cell_type_json': new_cell_type_json, 'celltypes_json': getAllCellTypesUserRegionJSON(request.user, region)}
 		results = {'success':True, 'new_cell_json':new_cell_json}
 		return results
 
@@ -309,7 +304,7 @@ def add_new_cell_box(request):
 	width = float(POST['width'])
 
 	# Note: the return for create_new_cell is:
-		#results = {'success':True, 'new_cell_json':new_cell_json, 'all_cells_json':all_cells_json, 'new_cell_type_json': new_cell_type_json, 'celltypes_json': all_cell_types_json, 'celltypes': celltypes_in_region}
+		#results = {'success':True, 'new_cell_json':new_cell_json, 'cells_json':cells_json, 'new_cell_type_json': new_cell_type_json, 'celltypes_json': all_cell_types_json, 'celltypes': celltypes_in_region}
 	results = create_new_cell(rid, left, top, width, height, request.user);
 
 	return JsonResponse(results)
@@ -397,7 +392,6 @@ def delete_cell(request):
 	print('deleting cell %s' %cid)
 	cell = Cell.objects.filter(cid=cid).delete()
 	print('deleting', cell)
-#	results = {'success':True, 'all_cells_json':get_all_cells_json(cell.region)}
 	results = {'success':True}
 	return JsonResponse(results)
 
@@ -538,7 +532,7 @@ def update_cell_class_in_project(request):
 	# cell.save()
 	update_cellType_helper(request.user, Cell.objects.get(cid=POST['cid']), POST['cell_label'])
 
-	results = {'success':True, 'all_cells_json':get_all_cells_json_project(cell.project)}
+	results = {'success':True, 'cells_json':get_all_cells_json_project(cell.project)}
 	return JsonResponse(results)
 
 @login_required
@@ -600,8 +594,8 @@ def get_all_cells_in_project(request):
 	project_id = GET['project_id']
 	print(project_id)
 	project = Project.objects.get(id=project_id)
-	all_cells_json = serializers.serialize("json", project.cell_set.all())
-	results = {'success':True, 'all_cells_json':all_cells_json, 'celltypes_json': getAllCellTypesUserJSON(request.user)}
+	cells_json = serializers.serialize("json", project.cell_set.all())
+	results = {'success':True, 'cells_json':cells_json, 'celltypes_json': getAllCellTypesUserJSON(request.user)}
 	return JsonResponse(results)
 	
 
