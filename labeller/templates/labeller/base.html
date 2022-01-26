@@ -27,6 +27,7 @@
 	<li><a href="{% url 'labeller:index' %}">Home</a></li>
 
   {% if user.is_authenticated %}
+  <script>console.log("User is:", '{{user}}')</script>
 
     <li><a href="{% url 'labeller:diagnoses' %}">Diagnoses</a></li>
     <li><a href="{% url 'labeller:slides' %}">Slides</a></li>

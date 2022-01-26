@@ -160,8 +160,7 @@ if (document.getElementById('add_new_region_button')!=null) {
 
 console.log('viewer2', viewer)
 
-$ (document).ready(function() {
-  
+viewer.addHandler('open', function() { 
   slide_box_debug = true;
 
   if (slide_box_debug){
@@ -171,25 +170,28 @@ $ (document).ready(function() {
     var region_num = 0; 
     {% for region in slide.region_set.all %}
       console.log('viewer4', viewer)
-      console.log('viewer source', viewer.source)
+      // console.log('viewer source', viewer.source)
 
 
       console.log('region', {{region}})
       region_num++;
       var overlayElement = document.createElement('div');
-      var dzi_width = viewer.source.width;
-      var dzi_height = viewer.source.height;
-      console.log('dzi width and height', dzi_width, dzi_height)
+      // var dzi_width = viewer.source.width;
+      // var dzi_height = viewer.source.height;
+      // console.log('dzi width and height', dzi_width, dzi_height)
       overlayElement.id = 'region_box_' + String({{region.rid}});
       overlayElement.class = "slide_region_OSD"
       overlayElement.style.border = "4px solid red"
       if ({{region.rid}}==20220117190431 ||{{region.rid}}==20211118010730){
         overlayElement.style.border = "8px solid green"
       }
+      // console.log('viewport coordinate conversion', {{region.x}}, {{region.x}}/dzi_width, viewer.viewport.imageToViewportCoordinates({{region.x}}, {{region.y}}));
+      // console.log('viewport coordinate conversion2', {{region.x}}, {{region.x}}/dzi_width, viewer.viewport.imageToViewportRectangle({{region.x}}, {{region.y}}, {{region.width}}, {{region.height}}));
 
-      var rect = new OpenSeadragon.Rect({{region.x}}/dzi_width, {{region.y}}/dzi_height, {{region.width}}/dzi_width, {{region.height}}/dzi_height)
+//      var rect = new OpenSeadragon.Rect({{region.x}}/dzi_width, {{region.y}}/dzi_height, {{region.width}}/dzi_width, {{region.height}}/dzi_height);
+      var rect = viewer.viewport.imageToViewportRectangle({{region.x}}, {{region.y}}, {{region.width}}, {{region.height}});
       // var rect = new OpenSeadragon.Rect({{region.x}}/dzi_width, {{region.y}}/dzi_height, {{region.width}}/dzi_width, {{region.height}}/dzi_height)
-      console.log({{region.x}}/dzi_width, {{region.y}}/dzi_height, {{region.width}}/dzi_width, {{region.height}}/dzi_height)
+      // console.log({{region.x}}/dzi_width, {{region.y}}/dzi_height, {{region.width}}/dzi_width, {{region.height}}/dzi_height)
       viewer.addOverlay(overlayElement, rect);
       console.log('overlayElement', overlayElement);
       $('#'+overlayElement.id).click(function(event){
@@ -199,6 +201,13 @@ $ (document).ready(function() {
 
     {% endfor %}
   }
+});
+
+$ (document).ready(function() {
+  
+  
+});
+</script>
 
   // console.log('sid is', {{slide.sid}});
 
@@ -233,5 +242,3 @@ $ (document).ready(function() {
 
   // });
 
-});
-</script>

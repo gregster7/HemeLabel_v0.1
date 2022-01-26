@@ -50,6 +50,7 @@
                 <li class="nav-item"><a class="nav-link" href="{% url 'labeller:index' %}">Home</a></li>
 
                 {% if user.is_authenticated %}
+                <script>console.log("User is:", '{{user}}')</script>
                 <li class="nav-item"><a class="nav-link" href="{% url 'labeller:diagnoses' %}">Diagnoses</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'labeller:slides' %}">Slides</a></li>
                 <li class="nav-item"><a class="nav-link" href="{% url 'labeller:regions' %}">Regions</a></li>
