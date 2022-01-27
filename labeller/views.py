@@ -70,7 +70,7 @@ def export_cell_data(request):
 	# If we later want to output it as a HttpResponse
 	#	https://stackoverflow.com/questions/29672477/django-export-current-queryset-to-csv-by-button-click-in-browser
 
-	export_all_cell_classes_in_single_folder = True
+	export_all_cell_classes_in_single_folder = False
 	if export_all_cell_classes_in_single_folder:
 		with open(export_path+'classes.csv', 'w', newline='') as f:
 			writer = csv.writer(f)
