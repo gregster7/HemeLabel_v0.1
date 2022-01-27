@@ -51,52 +51,76 @@ def export_cell_image(cell, cell_path, size):
 	# 	str(size) + " " + str(size) 
 	# os.system(command)
 
-# Currently just exports for normal diagnosis
-@login_required
-def export_cell_data(request):
-	if (request.user.username!='admin'):
-		print('user access denied in export_cell_data')
-		return JsonResponse({'success':False})
-
-	export_path = settings.MEDIA_ROOT + '/export/'
-	export_path += datetime.now().strftime("%Y%m%d%H%M%S") + '/'
-	os.system('mkdir '+export_path)
-
-	diagnosis = Diagnosis.objects.get(abbreviation='nl')
-	slides = Slide.objects.filter(diagnoses=diagnosis)
-	cells = Cell.objects.filter(region__slide__in=slides.all())
-	cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
-
+def export_csv_user_slides(user, slides, export_path):
 	# If we later want to output it as a HttpResponse
 	#	https://stackoverflow.com/questions/29672477/django-export-current-queryset-to-csv-by-button-click-in-browser
+	cells = Cell.objects.filter(region__slide__in=slides.all())
+	cellTypes = CellType.objects.filter(user=user, cell__in=cells)
+	with open(export_path, 'w', newline='') as f:
+		writer = csv.writer(f)
+		writer.writerow(['labeller_username', 'Cell_pk', 'cell_class', 'cell_class_long', 'region_pk', 'slide_pk', 'slide_dx', 'slide_dx_abbrev'])
+		for ct in cellTypes:
+			writer.writerow([user.username, ct.cell.id, ct.cell_type, getCellTypeName(ct), ct.cell.region.id, ct.cell.region.slide.id, diagnosis.name, diagnosis.abbreviation])
 
-	export_all_cell_classes_in_single_folder = False
-	if export_all_cell_classes_in_single_folder:
-		with open(export_path+'classes.csv', 'w', newline='') as f:
-			writer = csv.writer(f)
-			writer.writerow(['labeller_username', 'Cell_pk', 'cell_class', 'cell_class_long', 'region_pk', 'slide_pk', 'slide_dx', 'slide_dx_abbrev'])
-			for ct in cellTypes:
-				writer.writerow([request.user.username, ct.cell.id, ct.cell_type, getCellTypeName(ct), ct.cell.region.id, ct.cell.region.slide.id, diagnosis.name, diagnosis.abbreviation])
+def export_each_slide_csv_cellTypes_slides(user, slides, export_path):
+	cells = Cell.objects.filter(region__slide__in=slides.all())
+	cellTypes = CellType.objects.filter(user=user, cell__in=cells)
+	ct_names = cellTypes.values('cell_type').distinct()
+	distinct_cell_types = CellType.objects.values_list('cell_type', flat=True).distinct().order_by('cell_type')
+	with open(export_path, 'w', newline='') as f:
+		writer = csv.writer(f)
+		writer.writerow(['slide_id', 'slide_name', 'diagnoses', 'total']+list(distinct_cell_types))
 
-		sizes = [48, 64, 96, 128]
-		for size in sizes:
-			cell_folder = export_path+str(size)+'/'
-			os.system('mkdir '+cell_folder)
-			counter = 0
-			for cell in cells:
-				counter += 1
-				if (counter > 10):
-					break
-				cell_path = cell_folder + str(cell.id) + '.jpg'
-				export_cell_image(cell, cell_path, size)
-					
-	export_all_cell_classes_in_class_based_folders = True
-	if export_all_cell_classes_in_class_based_folders:
+		# for ct_name in distinct_cell_types:
+
+		for slide in slides:
+			print("####" + str(slide))
+			dx_str = ''
+			for dx in slide.diagnoses.all().order_by('name'):
+				dx_str += " " + str(dx)
+			cells = Cell.objects.filter(region__slide=slide)
+			outputRow = [slide.id, slide.name, dx_str, len(cells)]
+			for ct_name in distinct_cell_types:				
+				count = CellType.objects.filter(user=user, cell__in=cells, cell_type=ct_name).count()
+				outputRow = outputRow + [count]
+				# print (ct_name + ": "+ str(count))
+			writer.writerow(outputRow)
+
+	return
+
+	with open(export_path, 'w', newline='') as f:
+		# add header
+		writer = csv.writer(f)
+		for slide in slides:
+			cells = Cell.objects.filter(slide=slide)
+			# cellTypes = CellType.objects.filter(user=user, cell__in=cells).values('cell_type').distinct().count()
+
+
+
+		writer.writerow(['labeller_username', 'Cell_pk', 'cell_class', 'cell_class_long', 'region_pk', 'slide_pk', 'slide_dx', 'slide_dx_abbrev'])
+		for ct in cellTypes:
+			writer.writerow([user.username, ct.cell.id, ct.cell_type, getCellTypeName(ct), ct.cell.region.id, ct.cell.region.slide.id, diagnosis.name, diagnosis.abbreviation])
+
+
+def export_cell_images_flat(cells, export_path, sizes):
+	sizes = [48, 64, 96]
+	for size in sizes:
+		cell_folder = export_path+str(size)+'/'
+		os.system('mkdir '+cell_folder)
+		counter = 0
+		for cell in cells:
+			counter += 1
+			if (counter > 10):
+				break
+			cell_path = cell_folder + str(cell.id) + '.jpg'
+			export_cell_image(cell, cell_path, size)
+
+
+def export_cell_images_celltype_folders(cellTypes, export_path, sizes):
 		distinct_cell_types = CellType.objects.values_list('cell_type', flat=True).distinct()
 		# print(cellTypes.values('cell_type').distinct())
 		# print(len(cellTypes.values('cell_type').distinct()))
-
-		sizes = [48, 64, 96, 128]
+		
 		for size in sizes:
 			cell_folder_outer = export_path+str(size)+'_sorted/'
 			os.system('mkdir '+cell_folder_outer)
@@ -113,6 +137,33 @@ def export_cell_data(request):
 					cell = ct.cell
 					cell_path = cell_folder + str(cell.id) + '.jpg'
 					export_cell_image(cell, cell_path, size)
+
+
+# Currently just exports for normal diagnosis
+@login_required
+def export_cell_data(request):
+	if (request.user.username!='admin'):
+		print('user access denied in export_cell_data')
+		return JsonResponse({'success':False})
+
+
+	export_path = settings.MEDIA_ROOT + '/export/'
+	export_path += datetime.now().strftime("%Y%m%d%H%M%S") + '/'
+	os.system('mkdir '+export_path)
+
+	diagnosis = Diagnosis.objects.get(abbreviation='nl')
+	slides = Slide.objects.filter(diagnoses=diagnosis)
+	#export_csv_user_slides(request.user, slides, export_path+'classes.csv')
+	export_each_slide_csv_cellTypes_slides(request.user, slides, export_path+'slides_with_cellTypes.csv')
+	sizes = [48, 64, 96, 128]
+	# cells = Cell.objects.filter(region__slide__in=slides.all()) <-- to delete after testing
+	cells = Cell.objects.filter(region__slide__in=slides)
+	# export_cell_images_flat(cells, export_path, sizes)					
+
+
+	cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+	# export_cell_images_celltype_folders(cellTypes, export_path, sizes)
+
 					
 	return JsonResponse({'success':True})
 
