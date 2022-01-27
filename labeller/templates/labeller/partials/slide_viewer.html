@@ -167,14 +167,12 @@ viewer.addHandler('open', function() {
     console.log('viewer3', viewer)
 
     
-    var region_num = 0; 
     {% for region in slide.region_set.all %}
-      console.log('viewer4', viewer)
+      // console.log('viewer4', viewer)
       // console.log('viewer source', viewer.source)
 
 
       console.log('region', {{region}})
-      region_num++;
       var overlayElement = document.createElement('div');
       // var dzi_width = viewer.source.width;
       // var dzi_height = viewer.source.height;

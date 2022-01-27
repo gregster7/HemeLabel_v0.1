@@ -1,0 +1,680 @@
+labeller_username,Cell_pk,cell_class,cell_class_long,region_pk,slide_pk,slide_dx,slide_dx_abbrev
+admin,993,M4,Metamyelocyte,4513,11,Normal,nl
+admin,994,M3,Myelocyte,4513,11,Normal,nl
+admin,995,M5,Band neutrophil,4513,11,Normal,nl
+admin,996,M4,Metamyelocyte,4513,11,Normal,nl
+admin,997,M5,Band neutrophil,4513,11,Normal,nl
+admin,998,M6,Segmented netrophil,4513,11,Normal,nl
+admin,999,M6,Segmented netrophil,4513,11,Normal,nl
+admin,1000,M5,Band neutrophil,4513,11,Normal,nl
+admin,1001,M5,Band neutrophil,4513,11,Normal,nl
+admin,1002,M6,Segmented netrophil,4513,11,Normal,nl
+admin,1003,ER4,Orthochromic (nuc red),4513,11,Normal,nl
+admin,1004,M4,Metamyelocyte,4513,11,Normal,nl
+admin,1005,ER4,Orthochromic (nuc red),4513,11,Normal,nl
+admin,1006,ER3,Polychromatophilic,4513,11,Normal,nl
+admin,1007,ER3,Polychromatophilic,4513,11,Normal,nl
+admin,1008,ER3,Polychromatophilic,4513,11,Normal,nl
+admin,1009,ER4,Orthochromic (nuc red),4513,11,Normal,nl
+admin,1010,ER4,Orthochromic (nuc red),4513,11,Normal,nl
+admin,1011,M4,Metamyelocyte,4513,11,Normal,nl
+admin,1012,M4,Metamyelocyte,4513,11,Normal,nl
+admin,1013,M4,Metamyelocyte,4513,11,Normal,nl
+admin,1014,M3,Myelocyte,4513,11,Normal,nl
+admin,1015,M4,Metamyelocyte,4513,11,Normal,nl
+admin,1016,ER3,Polychromatophilic,4513,11,Normal,nl
+admin,1017,ER3,Polychromatophilic,4513,11,Normal,nl
+admin,1018,ER4,Orthochromic (nuc red),4513,11,Normal,nl
+admin,1019,ER3,Polychromatophilic,4513,11,Normal,nl
+admin,1022,E2,Mature Eosinophil,4515,11,Normal,nl
+admin,1023,M2,Promyelocyte,4515,11,Normal,nl
+admin,1024,E1,Immature Eosinophil,4515,11,Normal,nl
+admin,1025,M5,Band neutrophil,4515,11,Normal,nl
+admin,1026,M3,Myelocyte,4515,11,Normal,nl
+admin,1027,M4,Metamyelocyte,4515,11,Normal,nl
+admin,1028,M3,Myelocyte,4515,11,Normal,nl
+admin,1029,M3,Myelocyte,4515,11,Normal,nl
+admin,1030,M3,Myelocyte,4515,11,Normal,nl
+admin,1031,M5,Band neutrophil,4515,11,Normal,nl
+admin,1032,M5,Band neutrophil,4515,11,Normal,nl
+admin,1033,M4,Metamyelocyte,4515,11,Normal,nl
+admin,1034,M5,Band neutrophil,4515,11,Normal,nl
+admin,1035,M6,Segmented netrophil,4515,11,Normal,nl
+admin,1036,L2,Small Mature Lymphocyte,4515,11,Normal,nl
+admin,1037,M5,Band neutrophil,4515,11,Normal,nl
+admin,1038,M4,Metamyelocyte,4515,11,Normal,nl
+admin,1039,M5,Band neutrophil,4515,11,Normal,nl
+admin,1040,M5,Band neutrophil,4515,11,Normal,nl
+admin,1041,M5,Band neutrophil,4515,11,Normal,nl
+admin,1042,M5,Band neutrophil,4515,11,Normal,nl
+admin,1043,M4,Metamyelocyte,4515,11,Normal,nl
+admin,1044,M2,Promyelocyte,4515,11,Normal,nl
+admin,1045,M4,Metamyelocyte,4515,11,Normal,nl
+admin,1046,M4,Metamyelocyte,4515,11,Normal,nl
+admin,1047,M5,Band neutrophil,4515,11,Normal,nl
+admin,1048,M5,Band neutrophil,4515,11,Normal,nl
+admin,1049,M4,Metamyelocyte,4515,11,Normal,nl
+admin,1050,L4,Plasma Cell,4515,11,Normal,nl
+admin,1051,M4,Metamyelocyte,4515,11,Normal,nl
+admin,1052,M4,Metamyelocyte,4515,11,Normal,nl
+admin,1053,M6,Segmented netrophil,4515,11,Normal,nl
+admin,1054,M4,Metamyelocyte,4515,11,Normal,nl
+admin,1055,M4,Metamyelocyte,4515,11,Normal,nl
+admin,1056,M3,Myelocyte,4515,11,Normal,nl
+admin,1057,M4,Metamyelocyte,4515,11,Normal,nl
+admin,1058,ER4,Orthochromic (nuc red),4515,11,Normal,nl
+admin,1059,ER4,Orthochromic (nuc red),4515,11,Normal,nl
+admin,1060,MO1,Monoblast,4515,11,Normal,nl
+admin,1061,M3,Myelocyte,4529,11,Normal,nl
+admin,1062,M3,Myelocyte,4529,11,Normal,nl
+admin,1063,M2,Promyelocyte,4529,11,Normal,nl
+admin,1064,M2,Promyelocyte,4529,11,Normal,nl
+admin,1065,M2,Promyelocyte,4529,11,Normal,nl
+admin,1066,M2,Promyelocyte,4529,11,Normal,nl
+admin,1068,L2,Small Mature Lymphocyte,4529,11,Normal,nl
+admin,1069,L2,Small Mature Lymphocyte,4529,11,Normal,nl
+admin,1070,L2,Small Mature Lymphocyte,4529,11,Normal,nl
+admin,1071,ER4,Orthochromic (nuc red),4529,11,Normal,nl
+admin,1072,ER4,Orthochromic (nuc red),4529,11,Normal,nl
+admin,1073,ER4,Orthochromic (nuc red),4529,11,Normal,nl
+admin,1074,ER4,Orthochromic (nuc red),4529,11,Normal,nl
+admin,1075,M4,Metamyelocyte,4529,11,Normal,nl
+admin,1076,M4,Metamyelocyte,4529,11,Normal,nl
+admin,1077,M5,Band neutrophil,4529,11,Normal,nl
+admin,1078,L2,Small Mature Lymphocyte,4529,11,Normal,nl
+admin,1079,M4,Metamyelocyte,4529,11,Normal,nl
+admin,1080,M2,Promyelocyte,4529,11,Normal,nl
+admin,1081,L2,Small Mature Lymphocyte,4529,11,Normal,nl
+admin,1082,ER4,Orthochromic (nuc red),4529,11,Normal,nl
+admin,1084,E1,Immature Eosinophil,4527,11,Normal,nl
+admin,1085,B2,Mature Basophil,4527,11,Normal,nl
+admin,1086,M3,Myelocyte,4527,11,Normal,nl
+admin,1087,M3,Myelocyte,4527,11,Normal,nl
+admin,1088,M3,Myelocyte,4527,11,Normal,nl
+admin,1089,M1,Blast,4527,11,Normal,nl
+admin,1090,L4,Plasma Cell,4527,11,Normal,nl
+admin,1091,M3,Myelocyte,4527,11,Normal,nl
+admin,1092,M4,Metamyelocyte,4527,11,Normal,nl
+admin,1093,M3,Myelocyte,4527,11,Normal,nl
+admin,1094,M2,Promyelocyte,4527,11,Normal,nl
+admin,1095,UL,Unlabelled,4527,11,Normal,nl
+admin,1096,E2,Mature Eosinophil,4528,11,Normal,nl
+admin,1097,M4,Metamyelocyte,4528,11,Normal,nl
+admin,1098,M3,Myelocyte,4528,11,Normal,nl
+admin,1099,M2,Promyelocyte,4528,11,Normal,nl
+admin,1100,M3,Myelocyte,4528,11,Normal,nl
+admin,1101,M4,Metamyelocyte,4528,11,Normal,nl
+admin,1102,ER4,Orthochromic (nuc red),4528,11,Normal,nl
+admin,1103,ER4,Orthochromic (nuc red),4528,11,Normal,nl
+admin,1104,ER4,Orthochromic (nuc red),4528,11,Normal,nl
+admin,1105,M6,Segmented netrophil,4528,11,Normal,nl
+admin,1106,M5,Band neutrophil,4528,11,Normal,nl
+admin,1107,ER3,Polychromatophilic,4528,11,Normal,nl
+admin,1108,ER4,Orthochromic (nuc red),4528,11,Normal,nl
+admin,1109,ER4,Orthochromic (nuc red),4528,11,Normal,nl
+admin,1110,ER4,Orthochromic (nuc red),4528,11,Normal,nl
+admin,1111,M6,Segmented netrophil,4529,11,Normal,nl
+admin,1112,M4,Metamyelocyte,4529,11,Normal,nl
+admin,1113,M3,Myelocyte,4526,11,Normal,nl
+admin,1114,M3,Myelocyte,4526,11,Normal,nl
+admin,1115,M3,Myelocyte,4526,11,Normal,nl
+admin,1116,M3,Myelocyte,4526,11,Normal,nl
+admin,1117,M3,Myelocyte,4526,11,Normal,nl
+admin,1118,E1,Immature Eosinophil,4526,11,Normal,nl
+admin,1119,M3,Myelocyte,4526,11,Normal,nl
+admin,1120,L2,Small Mature Lymphocyte,4526,11,Normal,nl
+admin,1121,M4,Metamyelocyte,4526,11,Normal,nl
+admin,1122,M4,Metamyelocyte,4526,11,Normal,nl
+admin,1123,M2,Promyelocyte,4526,11,Normal,nl
+admin,1124,M3,Myelocyte,4526,11,Normal,nl
+admin,1125,M3,Myelocyte,4526,11,Normal,nl
+admin,1126,M2,Promyelocyte,4526,11,Normal,nl
+admin,1127,M2,Promyelocyte,4526,11,Normal,nl
+admin,1128,M3,Myelocyte,4526,11,Normal,nl
+admin,1129,ER4,Orthochromic (nuc red),4526,11,Normal,nl
+admin,1130,ER4,Orthochromic (nuc red),4526,11,Normal,nl
+admin,1131,ER4,Orthochromic (nuc red),4526,11,Normal,nl
+admin,1132,M5,Band neutrophil,4526,11,Normal,nl
+admin,1133,M6,Segmented netrophil,4526,11,Normal,nl
+admin,1134,M2,Promyelocyte,4526,11,Normal,nl
+admin,1135,M3,Myelocyte,4526,11,Normal,nl
+admin,1136,ER3,Polychromatophilic,4526,11,Normal,nl
+admin,1137,ER3,Polychromatophilic,4526,11,Normal,nl
+admin,1138,M3,Myelocyte,4526,11,Normal,nl
+admin,1139,M3,Myelocyte,4526,11,Normal,nl
+admin,1140,M3,Myelocyte,4526,11,Normal,nl
+admin,1141,M5,Band neutrophil,4526,11,Normal,nl
+admin,1142,M3,Myelocyte,4526,11,Normal,nl
+admin,1143,M6,Segmented netrophil,4526,11,Normal,nl
+admin,1144,ER4,Orthochromic (nuc red),4526,11,Normal,nl
+admin,1145,M2,Promyelocyte,4526,11,Normal,nl
+admin,1146,E1,Immature Eosinophil,4525,11,Normal,nl
+admin,1147,E1,Immature Eosinophil,4525,11,Normal,nl
+admin,1148,M3,Myelocyte,4525,11,Normal,nl
+admin,1149,M3,Myelocyte,4525,11,Normal,nl
+admin,1150,M4,Metamyelocyte,4525,11,Normal,nl
+admin,1151,M5,Band neutrophil,4525,11,Normal,nl
+admin,1152,M6,Segmented netrophil,4525,11,Normal,nl
+admin,1153,M6,Segmented netrophil,4525,11,Normal,nl
+admin,1154,M6,Segmented netrophil,4525,11,Normal,nl
+admin,1155,M6,Segmented netrophil,4525,11,Normal,nl
+admin,1156,M6,Segmented netrophil,4525,11,Normal,nl
+admin,1157,ER4,Orthochromic (nuc red),4525,11,Normal,nl
+admin,1158,MO1,Monoblast,4524,11,Normal,nl
+admin,1159,MO1,Monoblast,4524,11,Normal,nl
+admin,1160,MO1,Monoblast,4524,11,Normal,nl
+admin,1161,M5,Band neutrophil,4524,11,Normal,nl
+admin,1162,M5,Band neutrophil,4524,11,Normal,nl
+admin,1163,ER4,Orthochromic (nuc red),4524,11,Normal,nl
+admin,1164,ER3,Polychromatophilic,4524,11,Normal,nl
+admin,1165,M3,Myelocyte,4524,11,Normal,nl
+admin,1166,ER4,Orthochromic (nuc red),4524,11,Normal,nl
+admin,1167,ER4,Orthochromic (nuc red),4524,11,Normal,nl
+admin,1168,ER4,Orthochromic (nuc red),4524,11,Normal,nl
+admin,1169,ER4,Orthochromic (nuc red),4524,11,Normal,nl
+admin,1170,ER4,Orthochromic (nuc red),4524,11,Normal,nl
+admin,1171,ER4,Orthochromic (nuc red),4524,11,Normal,nl
+admin,1172,ER4,Orthochromic (nuc red),4524,11,Normal,nl
+admin,1173,M5,Band neutrophil,4524,11,Normal,nl
+admin,1174,ER4,Orthochromic (nuc red),4523,11,Normal,nl
+admin,1175,L4,Plasma Cell,4523,11,Normal,nl
+admin,1176,E1,Immature Eosinophil,4523,11,Normal,nl
+admin,1177,ER4,Orthochromic (nuc red),4523,11,Normal,nl
+admin,1178,MO2,Monocyte,4523,11,Normal,nl
+admin,1179,MO2,Monocyte,4523,11,Normal,nl
+admin,1180,M6,Segmented netrophil,4523,11,Normal,nl
+admin,1181,ER4,Orthochromic (nuc red),4523,11,Normal,nl
+admin,1182,ER4,Orthochromic (nuc red),4523,11,Normal,nl
+admin,1183,ER4,Orthochromic (nuc red),4523,11,Normal,nl
+admin,1184,E1,Immature Eosinophil,4523,11,Normal,nl
+admin,1185,ER3,Polychromatophilic,4523,11,Normal,nl
+admin,1186,ER3,Polychromatophilic,4523,11,Normal,nl
+admin,1187,ER3,Polychromatophilic,4523,11,Normal,nl
+admin,1188,ER4,Orthochromic (nuc red),4523,11,Normal,nl
+admin,1189,ER4,Orthochromic (nuc red),4523,11,Normal,nl
+admin,1190,ER4,Orthochromic (nuc red),4523,11,Normal,nl
+admin,1191,M4,Metamyelocyte,4523,11,Normal,nl
+admin,1193,U1,Artifact,4528,11,Normal,nl
+admin,1194,U1,Artifact,4528,11,Normal,nl
+admin,1195,U1,Artifact,4528,11,Normal,nl
+admin,1196,U1,Artifact,4529,11,Normal,nl
+admin,1197,U1,Artifact,4529,11,Normal,nl
+admin,1198,U1,Artifact,4529,11,Normal,nl
+admin,1199,U1,Artifact,4529,11,Normal,nl
+admin,1200,U1,Artifact,4523,11,Normal,nl
+admin,1201,U1,Artifact,4523,11,Normal,nl
+admin,1202,U1,Artifact,4523,11,Normal,nl
+admin,1203,U1,Artifact,4523,11,Normal,nl
+admin,1204,U1,Artifact,4523,11,Normal,nl
+admin,1205,U1,Artifact,4523,11,Normal,nl
+admin,1206,U1,Artifact,4523,11,Normal,nl
+admin,1207,U1,Artifact,4523,11,Normal,nl
+admin,1208,U1,Artifact,4523,11,Normal,nl
+admin,1209,U1,Artifact,4523,11,Normal,nl
+admin,1210,U1,Artifact,4523,11,Normal,nl
+admin,1211,U1,Artifact,4523,11,Normal,nl
+admin,1212,U1,Artifact,4523,11,Normal,nl
+admin,1213,U1,Artifact,4523,11,Normal,nl
+admin,1214,U1,Artifact,4523,11,Normal,nl
+admin,1215,U1,Artifact,4524,11,Normal,nl
+admin,1216,U1,Artifact,4524,11,Normal,nl
+admin,1217,U1,Artifact,4524,11,Normal,nl
+admin,1218,U1,Artifact,4524,11,Normal,nl
+admin,1219,U1,Artifact,4524,11,Normal,nl
+admin,1220,U1,Artifact,4524,11,Normal,nl
+admin,1221,U1,Artifact,4524,11,Normal,nl
+admin,1222,U1,Artifact,4524,11,Normal,nl
+admin,1223,U1,Artifact,4524,11,Normal,nl
+admin,1224,U1,Artifact,4524,11,Normal,nl
+admin,1225,U1,Artifact,4524,11,Normal,nl
+admin,1226,U1,Artifact,4524,11,Normal,nl
+admin,1227,U1,Artifact,4524,11,Normal,nl
+admin,1228,U1,Artifact,4524,11,Normal,nl
+admin,1229,U1,Artifact,4524,11,Normal,nl
+admin,1230,U1,Artifact,4524,11,Normal,nl
+admin,1231,U1,Artifact,4524,11,Normal,nl
+admin,1232,U1,Artifact,4524,11,Normal,nl
+admin,1233,U1,Artifact,4524,11,Normal,nl
+admin,1234,ER6,Mature RBC,4524,11,Normal,nl
+admin,1235,ER6,Mature RBC,4524,11,Normal,nl
+admin,1236,ER6,Mature RBC,4524,11,Normal,nl
+admin,1237,ER6,Mature RBC,4524,11,Normal,nl
+admin,1238,ER6,Mature RBC,4524,11,Normal,nl
+admin,1239,ER6,Mature RBC,4524,11,Normal,nl
+admin,1240,ER6,Mature RBC,4524,11,Normal,nl
+admin,1241,ER6,Mature RBC,4524,11,Normal,nl
+admin,1242,ER6,Mature RBC,4524,11,Normal,nl
+admin,1243,ER6,Mature RBC,4524,11,Normal,nl
+admin,1244,ER6,Mature RBC,4524,11,Normal,nl
+admin,1245,ER6,Mature RBC,4524,11,Normal,nl
+admin,1246,ER6,Mature RBC,4524,11,Normal,nl
+admin,1247,ER6,Mature RBC,4524,11,Normal,nl
+admin,1248,ER6,Mature RBC,4524,11,Normal,nl
+admin,1249,U1,Artifact,4525,11,Normal,nl
+admin,1250,U1,Artifact,4525,11,Normal,nl
+admin,1251,ER6,Mature RBC,4525,11,Normal,nl
+admin,1252,ER6,Mature RBC,4525,11,Normal,nl
+admin,1253,ER6,Mature RBC,4525,11,Normal,nl
+admin,1254,ER6,Mature RBC,4525,11,Normal,nl
+admin,1255,ER6,Mature RBC,4525,11,Normal,nl
+admin,1256,ER6,Mature RBC,4525,11,Normal,nl
+admin,1257,ER6,Mature RBC,4525,11,Normal,nl
+admin,1258,ER6,Mature RBC,4525,11,Normal,nl
+admin,1259,U3,Other,4518,11,Normal,nl
+admin,1260,U3,Other,4518,11,Normal,nl
+admin,1261,U3,Other,4517,11,Normal,nl
+admin,1262,U3,Other,4517,11,Normal,nl
+admin,1264,M2,Promyelocyte,4516,11,Normal,nl
+admin,1265,ER3,Polychromatophilic,4516,11,Normal,nl
+admin,1266,M3,Myelocyte,4516,11,Normal,nl
+admin,1267,M3,Myelocyte,4516,11,Normal,nl
+admin,1268,M4,Metamyelocyte,4516,11,Normal,nl
+admin,1269,M4,Metamyelocyte,4516,11,Normal,nl
+admin,1270,M5,Band neutrophil,4516,11,Normal,nl
+admin,1271,ER4,Orthochromic (nuc red),4516,11,Normal,nl
+admin,1272,ER4,Orthochromic (nuc red),4516,11,Normal,nl
+admin,1273,ER3,Polychromatophilic,4516,11,Normal,nl
+admin,1274,ER4,Orthochromic (nuc red),4516,11,Normal,nl
+admin,1275,ER4,Orthochromic (nuc red),4516,11,Normal,nl
+admin,1276,ER4,Orthochromic (nuc red),4516,11,Normal,nl
+admin,1277,ER4,Orthochromic (nuc red),4516,11,Normal,nl
+admin,1278,M3,Myelocyte,4516,11,Normal,nl
+admin,1279,M3,Myelocyte,4516,11,Normal,nl
+admin,1280,ER4,Orthochromic (nuc red),4517,11,Normal,nl
+admin,1281,M5,Band neutrophil,4530,12,Normal,nl
+admin,1282,M4,Metamyelocyte,4530,12,Normal,nl
+admin,1283,M4,Metamyelocyte,4530,12,Normal,nl
+admin,1284,M5,Band neutrophil,4530,12,Normal,nl
+admin,1285,M3,Myelocyte,4530,12,Normal,nl
+admin,1286,M3,Myelocyte,4530,12,Normal,nl
+admin,1287,M5,Band neutrophil,4530,12,Normal,nl
+admin,1288,M5,Band neutrophil,4530,12,Normal,nl
+admin,1289,M6,Segmented netrophil,4530,12,Normal,nl
+admin,1290,M5,Band neutrophil,4530,12,Normal,nl
+admin,1291,M5,Band neutrophil,4530,12,Normal,nl
+admin,1292,M6,Segmented netrophil,4530,12,Normal,nl
+admin,1293,M6,Segmented netrophil,4530,12,Normal,nl
+admin,1294,M6,Segmented netrophil,4530,12,Normal,nl
+admin,1295,M6,Segmented netrophil,4530,12,Normal,nl
+admin,1296,M4,Metamyelocyte,4530,12,Normal,nl
+admin,1297,MO1,Monoblast,4530,12,Normal,nl
+admin,1298,ER4,Orthochromic (nuc red),4530,12,Normal,nl
+admin,1299,E1,Immature Eosinophil,4530,12,Normal,nl
+admin,1300,U3,Other,4530,12,Normal,nl
+admin,1301,U3,Other,4530,12,Normal,nl
+admin,1302,U3,Other,4530,12,Normal,nl
+admin,1303,ER6,Mature RBC,4530,12,Normal,nl
+admin,1304,ER6,Mature RBC,4530,12,Normal,nl
+admin,1305,ER5,Reticulocyte,4530,12,Normal,nl
+admin,1306,ER6,Mature RBC,4530,12,Normal,nl
+admin,1307,ER6,Mature RBC,4530,12,Normal,nl
+admin,1308,U1,Artifact,4530,12,Normal,nl
+admin,1309,M2,Promyelocyte,4530,12,Normal,nl
+admin,1310,ER6,Mature RBC,4530,12,Normal,nl
+admin,1311,U1,Artifact,4530,12,Normal,nl
+admin,1312,M2,Promyelocyte,4531,12,Normal,nl
+admin,1313,M3,Myelocyte,4531,12,Normal,nl
+admin,1314,M3,Myelocyte,4531,12,Normal,nl
+admin,1315,M4,Metamyelocyte,4531,12,Normal,nl
+admin,1316,U3,Other,4531,12,Normal,nl
+admin,1317,ER2,Basophilic normoblast,4531,12,Normal,nl
+admin,1318,MO2,Monocyte,4531,12,Normal,nl
+admin,1319,M5,Band neutrophil,4531,12,Normal,nl
+admin,1320,M6,Segmented netrophil,4531,12,Normal,nl
+admin,1322,L2,Small Mature Lymphocyte,4531,12,Normal,nl
+admin,1323,M3,Myelocyte,4531,12,Normal,nl
+admin,1324,M3,Myelocyte,4531,12,Normal,nl
+admin,1325,M6,Segmented netrophil,4531,12,Normal,nl
+admin,1326,M6,Segmented netrophil,4531,12,Normal,nl
+admin,1327,M6,Segmented netrophil,4531,12,Normal,nl
+admin,1328,M5,Band neutrophil,4531,12,Normal,nl
+admin,1329,M4,Metamyelocyte,4531,12,Normal,nl
+admin,1331,M2,Promyelocyte,4531,12,Normal,nl
+admin,1332,M5,Band neutrophil,4531,12,Normal,nl
+admin,1333,M5,Band neutrophil,4531,12,Normal,nl
+admin,1334,L2,Small Mature Lymphocyte,4531,12,Normal,nl
+admin,1335,ER5,Reticulocyte,4531,12,Normal,nl
+admin,1336,ER5,Reticulocyte,4531,12,Normal,nl
+admin,1337,ER5,Reticulocyte,4531,12,Normal,nl
+admin,1338,ER5,Reticulocyte,4531,12,Normal,nl
+admin,1339,ER5,Reticulocyte,4531,12,Normal,nl
+admin,1340,ER5,Reticulocyte,4531,12,Normal,nl
+admin,1341,ER5,Reticulocyte,4531,12,Normal,nl
+admin,1342,ER2,Basophilic normoblast,4532,12,Normal,nl
+admin,1343,MO2,Monocyte,4532,12,Normal,nl
+admin,1344,M3,Myelocyte,4532,12,Normal,nl
+admin,1345,M4,Metamyelocyte,4532,12,Normal,nl
+admin,1346,ER4,Orthochromic (nuc red),4532,12,Normal,nl
+admin,1348,M4,Metamyelocyte,4532,12,Normal,nl
+admin,1349,M3,Myelocyte,4532,12,Normal,nl
+admin,1350,M4,Metamyelocyte,4532,12,Normal,nl
+admin,1351,M4,Metamyelocyte,4532,12,Normal,nl
+admin,1352,M5,Band neutrophil,4532,12,Normal,nl
+admin,1353,M5,Band neutrophil,4532,12,Normal,nl
+admin,1354,ER4,Orthochromic (nuc red),4532,12,Normal,nl
+admin,1355,ER3,Polychromatophilic,4532,12,Normal,nl
+admin,1356,M6,Segmented netrophil,4532,12,Normal,nl
+admin,1357,ER2,Basophilic normoblast,4532,12,Normal,nl
+admin,1358,U1,Artifact,4532,12,Normal,nl
+admin,1359,U1,Artifact,4532,12,Normal,nl
+admin,1360,U1,Artifact,4532,12,Normal,nl
+admin,1361,U1,Artifact,4532,12,Normal,nl
+admin,1362,U1,Artifact,4532,12,Normal,nl
+admin,1363,U1,Artifact,4532,12,Normal,nl
+admin,1364,U1,Artifact,4532,12,Normal,nl
+admin,1365,U1,Artifact,4532,12,Normal,nl
+admin,1366,M6,Segmented netrophil,4532,12,Normal,nl
+admin,1367,M6,Segmented netrophil,4532,12,Normal,nl
+admin,1369,M1,Blast,4532,12,Normal,nl
+admin,1370,ER1,Pronormoblast,4533,12,Normal,nl
+admin,1371,U3,Other,4533,12,Normal,nl
+admin,1372,U3,Other,4533,12,Normal,nl
+admin,1373,M2,Promyelocyte,4533,12,Normal,nl
+admin,1374,U3,Other,4533,12,Normal,nl
+admin,1375,ER6,Mature RBC,4533,12,Normal,nl
+admin,1376,ER6,Mature RBC,4533,12,Normal,nl
+admin,1377,ER6,Mature RBC,4533,12,Normal,nl
+admin,1378,ER6,Mature RBC,4533,12,Normal,nl
+admin,1379,ER6,Mature RBC,4533,12,Normal,nl
+admin,1380,ER6,Mature RBC,4533,12,Normal,nl
+admin,1381,ER6,Mature RBC,4533,12,Normal,nl
+admin,1382,ER6,Mature RBC,4533,12,Normal,nl
+admin,1383,ER6,Mature RBC,4533,12,Normal,nl
+admin,1384,ER6,Mature RBC,4533,12,Normal,nl
+admin,1385,ER6,Mature RBC,4533,12,Normal,nl
+admin,1386,ER6,Mature RBC,4533,12,Normal,nl
+admin,1387,ER6,Mature RBC,4533,12,Normal,nl
+admin,1388,ER6,Mature RBC,4533,12,Normal,nl
+admin,1389,ER6,Mature RBC,4533,12,Normal,nl
+admin,1390,M6,Segmented netrophil,4533,12,Normal,nl
+admin,1391,M6,Segmented netrophil,4533,12,Normal,nl
+admin,1392,M6,Segmented netrophil,4533,12,Normal,nl
+admin,1393,M6,Segmented netrophil,4533,12,Normal,nl
+admin,1394,M4,Metamyelocyte,4533,12,Normal,nl
+admin,1396,M2,Promyelocyte,4534,12,Normal,nl
+admin,1397,M2,Promyelocyte,4534,12,Normal,nl
+admin,1398,ER2,Basophilic normoblast,4534,12,Normal,nl
+admin,1399,M2,Promyelocyte,4534,12,Normal,nl
+admin,1400,M6,Segmented netrophil,4534,12,Normal,nl
+admin,1401,M6,Segmented netrophil,4534,12,Normal,nl
+admin,1402,M6,Segmented netrophil,4534,12,Normal,nl
+admin,1403,M6,Segmented netrophil,4534,12,Normal,nl
+admin,1404,M6,Segmented netrophil,4534,12,Normal,nl
+admin,1405,M6,Segmented netrophil,4534,12,Normal,nl
+admin,1406,M5,Band neutrophil,4534,12,Normal,nl
+admin,1407,M6,Segmented netrophil,4534,12,Normal,nl
+admin,1408,M5,Band neutrophil,4534,12,Normal,nl
+admin,1409,E1,Immature Eosinophil,4535,12,Normal,nl
+admin,1410,U3,Other,4535,12,Normal,nl
+admin,1411,U3,Other,4535,12,Normal,nl
+admin,1412,U3,Other,4535,12,Normal,nl
+admin,1413,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1414,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1415,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1416,E2,Mature Eosinophil,4535,12,Normal,nl
+admin,1417,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1418,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1419,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1420,L2,Small Mature Lymphocyte,4535,12,Normal,nl
+admin,1421,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1422,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1423,M2,Promyelocyte,4535,12,Normal,nl
+admin,1424,ER1,Pronormoblast,4535,12,Normal,nl
+admin,1425,E2,Mature Eosinophil,4535,12,Normal,nl
+admin,1426,U3,Other,4535,12,Normal,nl
+admin,1427,U3,Other,4535,12,Normal,nl
+admin,1428,U3,Other,4535,12,Normal,nl
+admin,1429,U3,Other,4535,12,Normal,nl
+admin,1430,M3,Myelocyte,4535,12,Normal,nl
+admin,1431,MO2,Monocyte,4535,12,Normal,nl
+admin,1432,M6,Segmented netrophil,4535,12,Normal,nl
+admin,1433,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1434,M1,Blast,4535,12,Normal,nl
+admin,1435,M3,Myelocyte,4535,12,Normal,nl
+admin,1436,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1437,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1438,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1439,ER3,Polychromatophilic,4535,12,Normal,nl
+admin,1440,M4,Metamyelocyte,4535,12,Normal,nl
+admin,1441,MO1,Monoblast,4535,12,Normal,nl
+admin,1442,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1443,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1444,M3,Myelocyte,4535,12,Normal,nl
+admin,1445,M4,Metamyelocyte,4535,12,Normal,nl
+admin,1446,E2,Mature Eosinophil,4535,12,Normal,nl
+admin,1447,M2,Promyelocyte,4535,12,Normal,nl
+admin,1448,M5,Band neutrophil,4535,12,Normal,nl
+admin,1449,U3,Other,4535,12,Normal,nl
+admin,1450,U3,Other,4535,12,Normal,nl
+admin,1451,U3,Other,4535,12,Normal,nl
+admin,1452,U3,Other,4535,12,Normal,nl
+admin,1453,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1454,M1,Blast,4535,12,Normal,nl
+admin,1455,MO2,Monocyte,4535,12,Normal,nl
+admin,1456,M6,Segmented netrophil,4535,12,Normal,nl
+admin,1457,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1458,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1459,M4,Metamyelocyte,4535,12,Normal,nl
+admin,1460,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1461,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1462,MO2,Monocyte,4535,12,Normal,nl
+admin,1463,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1464,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1465,ER4,Orthochromic (nuc red),4535,12,Normal,nl
+admin,1466,M4,Metamyelocyte,4535,12,Normal,nl
+admin,1467,U1,Artifact,4535,12,Normal,nl
+admin,1468,U1,Artifact,4535,12,Normal,nl
+admin,1469,U1,Artifact,4535,12,Normal,nl
+admin,1470,M6,Segmented netrophil,4535,12,Normal,nl
+admin,1471,ER4,Orthochromic (nuc red),4536,12,Normal,nl
+admin,1472,ER4,Orthochromic (nuc red),4536,12,Normal,nl
+admin,1473,ER4,Orthochromic (nuc red),4536,12,Normal,nl
+admin,1474,U3,Other,4536,12,Normal,nl
+admin,1475,M4,Metamyelocyte,4536,12,Normal,nl
+admin,1476,M6,Segmented netrophil,4536,12,Normal,nl
+admin,1477,ER4,Orthochromic (nuc red),4536,12,Normal,nl
+admin,1478,ER2,Basophilic normoblast,4536,12,Normal,nl
+admin,1479,ER2,Basophilic normoblast,4536,12,Normal,nl
+admin,1481,M6,Segmented netrophil,4536,12,Normal,nl
+admin,1482,MO2,Monocyte,4536,12,Normal,nl
+admin,1483,U1,Artifact,4536,12,Normal,nl
+admin,1484,U1,Artifact,4536,12,Normal,nl
+admin,1485,ER5,Reticulocyte,4536,12,Normal,nl
+admin,1486,ER5,Reticulocyte,4536,12,Normal,nl
+admin,1487,ER5,Reticulocyte,4536,12,Normal,nl
+admin,1488,ER6,Mature RBC,4536,12,Normal,nl
+admin,1489,ER6,Mature RBC,4536,12,Normal,nl
+admin,1490,ER6,Mature RBC,4536,12,Normal,nl
+admin,1491,ER6,Mature RBC,4536,12,Normal,nl
+admin,1492,ER6,Mature RBC,4536,12,Normal,nl
+admin,1493,ER6,Mature RBC,4536,12,Normal,nl
+admin,1494,ER6,Mature RBC,4536,12,Normal,nl
+admin,1495,ER6,Mature RBC,4536,12,Normal,nl
+admin,1496,ER6,Mature RBC,4536,12,Normal,nl
+admin,1497,ER6,Mature RBC,4536,12,Normal,nl
+admin,1498,ER6,Mature RBC,4536,12,Normal,nl
+admin,1499,ER6,Mature RBC,4536,12,Normal,nl
+admin,1500,ER6,Mature RBC,4536,12,Normal,nl
+admin,1501,ER5,Reticulocyte,4536,12,Normal,nl
+admin,1502,ER6,Mature RBC,4536,12,Normal,nl
+admin,1503,ER6,Mature RBC,4536,12,Normal,nl
+admin,1504,ER6,Mature RBC,4536,12,Normal,nl
+admin,1505,ER6,Mature RBC,4536,12,Normal,nl
+admin,1506,B2,Mature Basophil,4536,12,Normal,nl
+admin,1507,ER4,Orthochromic (nuc red),4536,12,Normal,nl
+admin,1508,M2,Promyelocyte,4537,12,Normal,nl
+admin,1509,M2,Promyelocyte,4537,12,Normal,nl
+admin,1510,M3,Myelocyte,4537,12,Normal,nl
+admin,1511,ER2,Basophilic normoblast,4537,12,Normal,nl
+admin,1512,L4,Plasma Cell,4537,12,Normal,nl
+admin,1513,ER3,Polychromatophilic,4537,12,Normal,nl
+admin,1514,ER4,Orthochromic (nuc red),4537,12,Normal,nl
+admin,1515,ER4,Orthochromic (nuc red),4537,12,Normal,nl
+admin,1516,ER4,Orthochromic (nuc red),4537,12,Normal,nl
+admin,1517,M5,Band neutrophil,4537,12,Normal,nl
+admin,1518,M6,Segmented netrophil,4537,12,Normal,nl
+admin,1519,ER4,Orthochromic (nuc red),4537,12,Normal,nl
+admin,1520,ER4,Orthochromic (nuc red),4537,12,Normal,nl
+admin,1521,ER3,Polychromatophilic,4537,12,Normal,nl
+admin,1522,ER4,Orthochromic (nuc red),4537,12,Normal,nl
+admin,1523,ER4,Orthochromic (nuc red),4537,12,Normal,nl
+admin,1524,ER5,Reticulocyte,4537,12,Normal,nl
+admin,1525,ER5,Reticulocyte,4537,12,Normal,nl
+admin,1526,U1,Artifact,4537,12,Normal,nl
+admin,1527,U1,Artifact,4537,12,Normal,nl
+admin,1528,U1,Artifact,4537,12,Normal,nl
+admin,1529,ER6,Mature RBC,4537,12,Normal,nl
+admin,1530,ER6,Mature RBC,4537,12,Normal,nl
+admin,1531,ER6,Mature RBC,4537,12,Normal,nl
+admin,1532,ER6,Mature RBC,4537,12,Normal,nl
+admin,1533,ER6,Mature RBC,4537,12,Normal,nl
+admin,1701,M2,Promyelocyte,4555,13,Normal,nl
+admin,1702,M3,Myelocyte,4555,13,Normal,nl
+admin,1703,M4,Metamyelocyte,4555,13,Normal,nl
+admin,1704,M4,Metamyelocyte,4555,13,Normal,nl
+admin,1705,M5,Band neutrophil,4555,13,Normal,nl
+admin,1706,M5,Band neutrophil,4555,13,Normal,nl
+admin,1707,M5,Band neutrophil,4555,13,Normal,nl
+admin,1708,ER4,Orthochromic (nuc red),4555,13,Normal,nl
+admin,1709,ER4,Orthochromic (nuc red),4555,13,Normal,nl
+admin,1710,L2,Small Mature Lymphocyte,4555,13,Normal,nl
+admin,1711,ER4,Orthochromic (nuc red),4555,13,Normal,nl
+admin,1712,ER4,Orthochromic (nuc red),4555,13,Normal,nl
+admin,1713,M5,Band neutrophil,4555,13,Normal,nl
+admin,1715,ER4,Orthochromic (nuc red),4555,13,Normal,nl
+admin,1716,ER5,Reticulocyte,4555,13,Normal,nl
+admin,1717,ER5,Reticulocyte,4555,13,Normal,nl
+admin,1718,ER5,Reticulocyte,4555,13,Normal,nl
+admin,1719,ER5,Reticulocyte,4555,13,Normal,nl
+admin,1720,ER5,Reticulocyte,4555,13,Normal,nl
+admin,1721,ER6,Mature RBC,4555,13,Normal,nl
+admin,1722,ER6,Mature RBC,4555,13,Normal,nl
+admin,1723,ER6,Mature RBC,4555,13,Normal,nl
+admin,1724,ER6,Mature RBC,4555,13,Normal,nl
+admin,1725,ER6,Mature RBC,4555,13,Normal,nl
+admin,1726,ER6,Mature RBC,4555,13,Normal,nl
+admin,1727,ER6,Mature RBC,4555,13,Normal,nl
+admin,1728,ER6,Mature RBC,4555,13,Normal,nl
+admin,1729,ER6,Mature RBC,4555,13,Normal,nl
+admin,1730,U1,Artifact,4555,13,Normal,nl
+admin,1731,U1,Artifact,4555,13,Normal,nl
+admin,1732,U1,Artifact,4555,13,Normal,nl
+admin,1733,U1,Artifact,4555,13,Normal,nl
+admin,1734,U1,Artifact,4555,13,Normal,nl
+admin,1735,M4,Metamyelocyte,4555,13,Normal,nl
+admin,1736,ER3,Polychromatophilic,4555,13,Normal,nl
+admin,1737,MO1,Monoblast,4555,13,Normal,nl
+admin,1738,MO1,Monoblast,4555,13,Normal,nl
+admin,1739,ER4,Orthochromic (nuc red),4556,13,Normal,nl
+admin,1740,ER4,Orthochromic (nuc red),4556,13,Normal,nl
+admin,1741,M2,Promyelocyte,4556,13,Normal,nl
+admin,1742,M4,Metamyelocyte,4556,13,Normal,nl
+admin,1743,M3,Myelocyte,4556,13,Normal,nl
+admin,1744,M4,Metamyelocyte,4556,13,Normal,nl
+admin,1745,M4,Metamyelocyte,4556,13,Normal,nl
+admin,1746,M4,Metamyelocyte,4556,13,Normal,nl
+admin,1747,ER4,Orthochromic (nuc red),4556,13,Normal,nl
+admin,1748,ER3,Polychromatophilic,4556,13,Normal,nl
+admin,1749,ER3,Polychromatophilic,4556,13,Normal,nl
+admin,1750,ER4,Orthochromic (nuc red),4556,13,Normal,nl
+admin,1751,ER4,Orthochromic (nuc red),4556,13,Normal,nl
+admin,1752,ER3,Polychromatophilic,4556,13,Normal,nl
+admin,1753,M3,Myelocyte,4556,13,Normal,nl
+admin,1754,ER4,Orthochromic (nuc red),4556,13,Normal,nl
+admin,1755,ER4,Orthochromic (nuc red),4556,13,Normal,nl
+admin,1756,M3,Myelocyte,4556,13,Normal,nl
+admin,1757,M3,Myelocyte,4556,13,Normal,nl
+admin,1758,M4,Metamyelocyte,4556,13,Normal,nl
+admin,1759,M4,Metamyelocyte,4556,13,Normal,nl
+admin,1760,M4,Metamyelocyte,4556,13,Normal,nl
+admin,1761,M3,Myelocyte,4556,13,Normal,nl
+admin,1762,ER3,Polychromatophilic,4556,13,Normal,nl
+admin,1763,ER3,Polychromatophilic,4556,13,Normal,nl
+admin,1764,ER2,Basophilic normoblast,4556,13,Normal,nl
+admin,1765,L2,Small Mature Lymphocyte,4556,13,Normal,nl
+admin,1766,ER4,Orthochromic (nuc red),4556,13,Normal,nl
+admin,1767,M5,Band neutrophil,4556,13,Normal,nl
+admin,1768,M3,Myelocyte,4556,13,Normal,nl
+admin,1769,M4,Metamyelocyte,4556,13,Normal,nl
+admin,1770,M3,Myelocyte,4556,13,Normal,nl
+admin,1771,M4,Metamyelocyte,4556,13,Normal,nl
+admin,1772,M4,Metamyelocyte,4556,13,Normal,nl
+admin,1773,M3,Myelocyte,4556,13,Normal,nl
+admin,1774,M5,Band neutrophil,4556,13,Normal,nl
+admin,1775,U3,Other,4556,13,Normal,nl
+admin,1776,U3,Other,4556,13,Normal,nl
+admin,1777,M3,Myelocyte,4556,13,Normal,nl
+admin,1778,ER3,Polychromatophilic,4556,13,Normal,nl
+admin,1779,ER4,Orthochromic (nuc red),4556,13,Normal,nl
+admin,1780,ER4,Orthochromic (nuc red),4556,13,Normal,nl
+admin,1781,ER4,Orthochromic (nuc red),4556,13,Normal,nl
+admin,1782,MO1,Monoblast,4556,13,Normal,nl
+admin,1783,ER1,Pronormoblast,4557,13,Normal,nl
+admin,1784,M3,Myelocyte,4557,13,Normal,nl
+admin,1785,M2,Promyelocyte,4557,13,Normal,nl
+admin,1786,U3,Other,4557,13,Normal,nl
+admin,1787,U3,Other,4557,13,Normal,nl
+admin,1788,U3,Other,4557,13,Normal,nl
+admin,1789,U3,Other,4557,13,Normal,nl
+admin,1790,U3,Other,4557,13,Normal,nl
+admin,1791,ER3,Polychromatophilic,4557,13,Normal,nl
+admin,1792,ER3,Polychromatophilic,4557,13,Normal,nl
+admin,1793,ER4,Orthochromic (nuc red),4557,13,Normal,nl
+admin,1794,M3,Myelocyte,4557,13,Normal,nl
+admin,1795,M3,Myelocyte,4557,13,Normal,nl
+admin,1796,M3,Myelocyte,4557,13,Normal,nl
+admin,1797,M3,Myelocyte,4557,13,Normal,nl
+admin,1798,ER4,Orthochromic (nuc red),4557,13,Normal,nl
+admin,1799,ER4,Orthochromic (nuc red),4557,13,Normal,nl
+admin,1800,ER4,Orthochromic (nuc red),4557,13,Normal,nl
+admin,1801,ER4,Orthochromic (nuc red),4557,13,Normal,nl
+admin,1802,ER4,Orthochromic (nuc red),4557,13,Normal,nl
+admin,1803,ER4,Orthochromic (nuc red),4557,13,Normal,nl
+admin,1804,M4,Metamyelocyte,4557,13,Normal,nl
+admin,1805,ER6,Mature RBC,4557,13,Normal,nl
+admin,1806,ER6,Mature RBC,4557,13,Normal,nl
+admin,1807,ER6,Mature RBC,4557,13,Normal,nl
+admin,1808,ER6,Mature RBC,4557,13,Normal,nl
+admin,1809,ER6,Mature RBC,4557,13,Normal,nl
+admin,1810,ER6,Mature RBC,4557,13,Normal,nl
+admin,1811,ER6,Mature RBC,4557,13,Normal,nl
+admin,1812,ER4,Orthochromic (nuc red),4557,13,Normal,nl
+admin,1813,E2,Mature Eosinophil,4557,13,Normal,nl
+admin,1814,ER3,Polychromatophilic,4557,13,Normal,nl
+admin,1815,ER4,Orthochromic (nuc red),4557,13,Normal,nl
+admin,1816,ER4,Orthochromic (nuc red),4557,13,Normal,nl
+admin,1817,ER6,Mature RBC,4557,13,Normal,nl
+admin,1818,ER2,Basophilic normoblast,4558,13,Normal,nl
+admin,1819,M2,Promyelocyte,4558,13,Normal,nl
+admin,1820,M2,Promyelocyte,4558,13,Normal,nl
+admin,1821,ER4,Orthochromic (nuc red),4558,13,Normal,nl
+admin,1822,ER4,Orthochromic (nuc red),4558,13,Normal,nl
+admin,1823,ER4,Orthochromic (nuc red),4558,13,Normal,nl
+admin,1824,ER4,Orthochromic (nuc red),4558,13,Normal,nl
+admin,1825,M5,Band neutrophil,4558,13,Normal,nl
+admin,1826,M4,Metamyelocyte,4558,13,Normal,nl
+admin,1827,M3,Myelocyte,4558,13,Normal,nl
+admin,1828,M3,Myelocyte,4558,13,Normal,nl
+admin,1829,ER4,Orthochromic (nuc red),4558,13,Normal,nl
+admin,1830,ER5,Reticulocyte,4558,13,Normal,nl
+admin,1831,M1,Blast,4558,13,Normal,nl
+admin,1832,ER4,Orthochromic (nuc red),4558,13,Normal,nl
+admin,1833,ER4,Orthochromic (nuc red),4558,13,Normal,nl
+admin,1834,M6,Segmented netrophil,4558,13,Normal,nl
+admin,1835,E1,Immature Eosinophil,4558,13,Normal,nl
+admin,1836,ER4,Orthochromic (nuc red),4558,13,Normal,nl
+admin,1837,M6,Segmented netrophil,4558,13,Normal,nl
+admin,1838,M2,Promyelocyte,4558,13,Normal,nl
+admin,1839,M2,Promyelocyte,4558,13,Normal,nl
+admin,1840,M2,Promyelocyte,4558,13,Normal,nl
+admin,1842,M2,Promyelocyte,4559,13,Normal,nl
+admin,1843,M2,Promyelocyte,4559,13,Normal,nl
+admin,1844,E1,Immature Eosinophil,4559,13,Normal,nl
+admin,1845,M3,Myelocyte,4559,13,Normal,nl
+admin,1846,M3,Myelocyte,4559,13,Normal,nl
+admin,1847,ER1,Pronormoblast,4559,13,Normal,nl
+admin,1848,M2,Promyelocyte,4559,13,Normal,nl
+admin,1849,ER3,Polychromatophilic,4559,13,Normal,nl
+admin,1850,ER4,Orthochromic (nuc red),4559,13,Normal,nl
+admin,1851,ER3,Polychromatophilic,4559,13,Normal,nl
+admin,1852,ER3,Polychromatophilic,4559,13,Normal,nl
