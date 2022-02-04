@@ -48,7 +48,8 @@ urlpatterns = [
 	re_path(r'^project/(?P<project_id>\d+)/', views.project, name='project'),
 
 	re_path(r'^diagnosis/(?P<diagnosis_id>\d+)/', views.diagnosis, name='diagnosis'),
-
+	
+	re_path(r'^cell_redirect/(?P<cell_pk>\d+)/', views.cell_redirect, name='cell_redirect'),
 
 	# Page for labelling a slide
 	re_path(r'^label_slide/(?P<slide_id>\d+)/$', views.label_slide, name='label_slide'),

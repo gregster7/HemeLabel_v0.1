@@ -26,7 +26,7 @@ class CellCounter {
       CellCounter.updateCountsOnPageAJAXRegion(id);
     }
     else {
-      console.log("Error in updateCountsOnPageWrapper")
+      console.log("updateCountsOnPageWrapper not used for this page")
     }
   }
 

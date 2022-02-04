@@ -31,6 +31,8 @@ def index(request):
 	"""The home page for labeller"""
 	return render(request, 'labeller/index.html')
 
+
+
 def export_cell_image(cell, cell_path, size):
 	svs_path = settings.MEDIA_ROOT + cell.region.slide.svs_path.url
 	left = cell.region.x + cell.center_x - size/2
@@ -38,6 +40,18 @@ def export_cell_image(cell, cell_path, size):
 	command = "vips crop "+ svs_path + " " + cell_path + " " + \
 		str(left) + " " + str(top) + " " + \
 		str(size) + " " + str(size) 
+	os.system(command)
+
+
+def generate_cell_image_with_vips(region, cid, left, top, width, height):
+	region_path = settings.MEDIA_ROOT + region.image.url
+	cell_path = settings.MEDIA_ROOT + '/cells/' + str(cid) + '.jpg'
+	# left = cell.region.x + cell.center_x - size/2
+	# top = cell.region.y + cell.center_y - size/2
+
+	command = "vips crop "+ region_path + " " + cell_path + " " + \
+		str(left) + " " + str(top) + " " + \
+		str(width) + " " + str(height) 
 	os.system(command)
 
 	# Old region-based method of cropping
@@ -385,14 +399,7 @@ def get_cell_json(request):
 # 			default: 1
 # 			min: 1, max: 10000000
 
-def generate_cell_image_with_vips(region, cid, left, top, width, height):
-	cid = str(cid)
-	region_path = settings.MEDIA_ROOT + region.image.url
-	cell_path = settings.MEDIA_ROOT + '/cells/' + cid + '.jpg'
-	command = "vips crop "+ region_path + " " + cell_path + " " + \
-		str(left) + " " + str(top) + " " + \
-		str(width) + " " + str(height) 
-	os.system(command)
+
 
 # need to make sure CIDs do not start with trailing 0s as this causes problems
 
@@ -617,8 +624,8 @@ def getCellTypeName(cellType):
 
 		"E1": "Immature Eosinophil",
 		"E2": "Mature Eosinophil",
-		"B1": "Immature Basophil",
-		"B2": "Mature Basophil",
+		"B1": "Mast Cell",
+		"B2": "Basophil",
 		"MO1": "Monoblast",
 		"MO2": "Monocyte",
 
@@ -692,6 +699,13 @@ def stats(request):
 
 	context = {'regions': regions, 'regions_json': regions_json, 'cells':cells, 'cells_json': cells_json, 'celltypes_json': getAllCellTypesUserJSON(request.user)}
 	return render(request, 'labeller/stats.html', context)
+
+@login_required
+def cell_redirect(request, cell_pk):
+	cell = Cell.objects.get(id=cell_pk)
+	# return label_region_fabric(request, cell.region.rid)
+#	return redirect('/label_region_fabric/'+str(cell.region.rid))
+	return HttpResponseRedirect('/label_region_fabric/'+str(cell.region.rid)+'/')
 
 @login_required
 def label_region_fabric(request, region_id):

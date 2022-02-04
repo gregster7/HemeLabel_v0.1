@@ -100,8 +100,11 @@ class Cell {
 	// Currently problematic because we have multiple instances of div with same id
 	getDivForCellList(){
 //		console.log("Entering getDivForCellList", this);
+		var cell_link = '/cell_redirect/'+this.pk+'/';
 		var div = '<div class="cell_list_item '+this.getHTMLClasses()+'" id="celllistCID_' + this.cid+'">';
-		div = div +	'<img class="center cellImage '+this.cid+'" src="'+this.image_url+'">';
+		// div = div +	'<img class="center cellImage '+this.cid+'" src="'+this.image_url+'">';
+		div = div +	'<a href="'+cell_link+'" target="_blank">';
+		div = div + '<img class="center cellImage '+this.cid+'" src="'+this.image_url+'"></a>';
 		div = div + '<p class="center cell_box_text" id="cellId_'+ this.cid+'">Cell ID: '+ this.cid +'</p>';
 		div = div + '<p class="center cell_box_text cell_type cellClass_'+this.cid;
 		div = div + '">'+this.getCellTypeName()+'</p></div>';
@@ -291,8 +294,8 @@ class Cell {
 
 			"E1": "Immature Eosinophil",
 			"E2": "Mature Eosinophil",
-			"B1": "Immature Basophil",
-			"B2": "Mature Basophil",
+			"B1": "Mast Cell",
+			"B2": "Basophil",
 			"MO1": "Monoblast",
 			"MO2": "Monocyte",
 
@@ -393,12 +396,16 @@ class Cell {
 	}
 
 	static currentCellCID  () {
-		//console.log($('.current_cell'), $('.current_cell').length)
-		if ($('.current_cell').length <1){
-			return -1;
+		console.log($('.current_cell'), $('.current_cell').length)
+		if ($('.current_cell').length >= 1){
+			return Cell.getCIDfromDivID($('.current_cell')[0])
 		}
-
-		return Cell.getCIDfromDivID($('.current_cell')[0])
+		if ($('.clicked_cell').length >=1){
+			console.log('.clicked_cell:', Cell.getCIDfromDivID($('.clicked_cell')[0]))
+			return Cell.getCIDfromDivID($('.clicked_cell')[0])
+		}
+		console.log('no current cell selected in currentCellCID')
+		return -1
 	}
 
 	//If the lineage has changed, we need to remove the cell from the current cell list and move to the correct one.
@@ -507,6 +514,10 @@ class Cell {
 					case "Digit0": Cell.labelCurrentCell('U4'); break;
 
 					case "KeyU": Cell.labelCurrentCell('UL'); break;
+					case "KeyM": Cell.labelCurrentCell('PL1'); break;
+					case "Comma": Cell.labelCurrentCell('PL2'); break;
+					case "Period": Cell.labelCurrentCell('PL3'); break;
+					case "Slash": Cell.labelCurrentCell('PL4'); break;
 
 				}
 			});

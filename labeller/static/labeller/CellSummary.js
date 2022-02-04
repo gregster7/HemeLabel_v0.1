@@ -37,7 +37,7 @@ class CellSummary {
 
       table += '<tr class="class_table_row">';
       table += '<td class="class_table_td count_M3 '+this.printMe()+'">Myelocyte (3):';
-      table += '<td class="class_table_td count_B1 '+this.printMe()+'">Immature Baso (e):';
+      table += '<td class="class_table_td count_B1 '+this.printMe()+'">Mast Cell (e):';
       table += '<td class="class_table_td count_L2 '+this.printMe()+'">Mature Lymphocyte (d):';
       table += '<td class="class_table_td count_ER3 '+this.printMe()+'">Polychromatophilic (c):';            
       table += '<td class="class_table_td count_PL3 '+this.printMe()+'">Platelet clump (.):';  
@@ -49,7 +49,7 @@ class CellSummary {
       table += '<td class="class_table_td count_B2 '+this.printMe()+'">Basophil (r):';
       table += '<td class="class_table_td count_L3 '+this.printMe()+'">LGL (f):';
       table += '<td class="class_table_td count_ER4 '+this.printMe()+'">Orthochromic/Nuc red (v):';            
-      table += '<td class="class_table_td count_PL4 '+this.printMe()+'">Giant clump (/):';
+      table += '<td class="class_table_td count_PL4 '+this.printMe()+'">Giant Platelet (/):';
       table += '<td class="class_table_td count_UL '+this.printMe()+'">Unlabelled (u):';         
       // table += '<td class="class_table_td count_U4 '+this.printMe()+'">Histiocyte (0):';
 
