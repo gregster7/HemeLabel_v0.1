@@ -22,9 +22,9 @@ class CellSummary {
       table += '<tr class="class_table_row">';
       table += '<td class="class_table_td count_M1 '+this.printMe()+'">Blast (1):';
       table += '<td class="class_table_td count_E1 '+this.printMe()+'">Immature Eo (q):';
-      table += '<td class="class_table_td count_L0 '+this.printMe()+'">Lymphobast (a):';
+      table += '<td class="class_table_td count_L0 '+this.printMe()+'">Lymphoblast (a):';
       table += '<td class="class_table_td count_ER1 '+this.printMe()+'">Pronormoblast (z):';
-      table += '<td class="class_table_td count_PL1 '+this.printMe()+'">Immature Meg (m):';         
+      table += '<td class="class_table_td count_PL1 '+this.printMe()+'">Immature Megakaryocyte (m):';         
       table += '<td class="class_table_td count_U1 '+this.printMe()+'">Artifact (7):';
 
       table += '<tr class="class_table_row">';
@@ -32,23 +32,23 @@ class CellSummary {
       table += '<td class="class_table_td count_E2 '+this.printMe()+'">Eosinophil (w):';
       table += '<td class="class_table_td count_L1 '+this.printMe()+'">Hematogone (s):';
       table += '<td class="class_table_td count_ER2 '+this.printMe()+'">Basophilic normoblast (x):'; 
-      table += '<td class="class_table_td count_PL2 '+this.printMe()+'">Mature Meg (,):';         
+      table += '<td class="class_table_td count_PL2 '+this.printMe()+'">Mature Megakaryocyte (,):';         
       table += '<td class="class_table_td count_U2 '+this.printMe()+'">Unknown (8):';
 
       table += '<tr class="class_table_row">';
       table += '<td class="class_table_td count_M3 '+this.printMe()+'">Myelocyte (3):';
       table += '<td class="class_table_td count_B1 '+this.printMe()+'">Mast Cell (e):';
       table += '<td class="class_table_td count_L2 '+this.printMe()+'">Mature Lymphocyte (d):';
-      table += '<td class="class_table_td count_ER3 '+this.printMe()+'">Polychromatophilic (c):';            
-      table += '<td class="class_table_td count_PL3 '+this.printMe()+'">Platelet clump (.):';  
+      table += '<td class="class_table_td count_ER3 '+this.printMe()+'">Polychromatophilic Normoblast (c):';            
+      table += '<td class="class_table_td count_PL3 '+this.printMe()+'">Platelet Clump (.):';  
       table += '<td class="class_table_td count_U3 '+this.printMe()+'">Other (9):';
 
 
       table += '<tr class="class_table_row">';
       table += '<td class="class_table_td count_M4 '+this.printMe()+'">Metamyelocyte (4):';
       table += '<td class="class_table_td count_B2 '+this.printMe()+'">Basophil (r):';
-      table += '<td class="class_table_td count_L3 '+this.printMe()+'">LGL (f):';
-      table += '<td class="class_table_td count_ER4 '+this.printMe()+'">Orthochromic/Nuc red (v):';            
+      table += '<td class="class_table_td count_L3 '+this.printMe()+'">Reactive Lymphocyte/LGL (f):';
+      table += '<td class="class_table_td count_ER4 '+this.printMe()+'">Orthochromic Normoblast (v):';            
       table += '<td class="class_table_td count_PL4 '+this.printMe()+'">Giant Platelet (/):';
       table += '<td class="class_table_td count_UL '+this.printMe()+'">Unlabelled (u):';         
       // table += '<td class="class_table_td count_U4 '+this.printMe()+'">Histiocyte (0):';
@@ -57,7 +57,7 @@ class CellSummary {
       table += '<td class="class_table_td count_M5 '+this.printMe()+'">Band (5):';
       table += '<td class="class_table_td count_MO1 '+this.printMe()+'">Monoblast (t):';
       table += '<td class="class_table_td count_L4 '+this.printMe()+'">Plasma cell (g):';
-      table += '<td class="class_table_td count_ER5 '+this.printMe()+'">Reticulocyte (b):';   
+      table += '<td class="class_table_td count_ER5 '+this.printMe()+'">Polychromatophilic erythrocyte (b):';   
       table += '<td class="class_table_td">';
       table += '<td class="class_table_td count_U4 '+this.printMe()+'">Mitotic body/Karyorrhexis (0):';          
       
@@ -66,7 +66,7 @@ class CellSummary {
       table += '<td class="class_table_td count_M6 '+this.printMe()+'">Seg (6):';
       table += '<td class="class_table_td count_MO2 '+this.printMe()+'">Monocyte (y):';
       table += '<td class="class_table_td">';
-      table += '<td class="class_table_td count_ER6 '+this.printMe()+'">Mature RBC (n):';
+      table += '<td class="class_table_td count_ER6 '+this.printMe()+'">Mature Erythrocyte (n):';
 
       table += '<td class="class_table_td">';
       table += '<td class="class_table_td">';

@@ -15,7 +15,22 @@
 {% include "labeller/partials/slide_diagnoses.html" %}
 {% include "labeller/partials/cell_summary.html" %}
 <span class="p-2"></span>
+
+<!-- Regions -->
 {% include "labeller/partials/region_list.html" %}
+
+
+<!-- Cells -->
+<h2>Cells ({{cells|length}})</h2>
+{%   include "labeller/partials/main_lineages_horizontal.html" %}
+</div>
+
+<script>
+$(document).ready(function() {
+	console.log('diagnosis.html: ready')
+ 	Cell.addCellLabelKeyboardEventListeners();
+});
+</script>
 
 {% endblock content %}
 

@@ -71,6 +71,9 @@ urlpatterns = [
 	# Experimental
 	# Page for exporting Project Data
 	re_path(r'^export/', views.export_cell_data, name='export_cell_data'),
+	
+	re_path(r'^export_cells/$', views.export_all_cell_annotations_user, name='export_all_cell_annotations_user'),
+	
 
 
 	#******************************************************************************************#
