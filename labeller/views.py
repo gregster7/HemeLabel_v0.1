@@ -98,6 +98,39 @@ def export_all_cell_annotations_user(request):
     return JsonResponse({'success': True})
 
 
+def export_all_cell_annotations_for_user(request):
+    cellTypes = CellType.objects.filter(
+        user=request.user).order_by('cell_type')
+
+    export_path = settings.MEDIA_ROOT + '/export/'
+    export_path = export_path+datetime.now().strftime("%Y%m%d%H%M%S") + \
+        '_all_cell_annotations_'+request.user.username+'.csv'
+
+    with open(export_path, 'w', newline='') as f:
+        writer = csv.writer(f)
+        outputRow = ['cell_id', 'annotation_code', 'annotation_name', 'region',
+                     'slide', 'slide_diagnoses', 'annotator']
+        writer.writerow(outputRow)
+        # print(outputRow)
+
+        # counter = 0
+
+        for ct in cellTypes:
+            dx_str = ''
+            for dx in ct.cell.region.slide.diagnoses.all().order_by('name'):
+                dx_str += str(dx) + ", "
+
+            outputRow = [ct.cell.id, ct.cell_type, getCellTypeName(ct), ct.cell.region.id,
+                         ct.cell.region.slide.name, dx_str, request.user.username]
+            writer.writerow(outputRow)
+            # print(outputRow)
+            # counter += 1
+            # if (counter > 500):
+            #     break
+
+    return JsonResponse({'success': True})
+
+
 def export_csv_user_slides(user, slides, export_path):
     # If we later want to output it as a HttpResponse
     #	https://stackoverflow.com/questions/29672477/django-export-current-queryset-to-csv-by-button-click-in-browser
@@ -182,11 +215,11 @@ def export_cell_images_celltype_folders(cellTypes, export_path, sizes):
             cell_folder = cell_folder_outer + ctlabel + '/'
             os.system('mkdir '+cell_folder)
 
-            counter = 0
+            # counter = 0
             for ct in cellTypes.filter(cell_type=ctlabel):
-                counter += 1
-                if (counter > 10):
-                    break
+                # counter += 1
+                # if (counter > 10):
+                #     break
 
                 cell = ct.cell
                 cell_path = cell_folder + str(cell.id) + '.jpg'
@@ -209,13 +242,13 @@ def export_cell_data(request):
     #export_csv_user_slides(request.user, slides, export_path+'classes.csv')
     export_each_slide_csv_cellTypes_slides(
         request.user, slides, export_path+'slides_with_cellTypes.csv')
-    sizes = [48, 64, 96, 128]
+    sizes = [48, 64, 96]
     # cells = Cell.objects.filter(region__slide__in=slides.all()) <-- to delete after testing
     cells = Cell.objects.filter(region__slide__in=slides)
     # export_cell_images_flat(cells, export_path, sizes)
 
     cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
-    # export_cell_images_celltype_folders(cellTypes, export_path, sizes)
+    export_cell_images_celltype_folders(cellTypes, export_path, sizes)
 
     return JsonResponse({'success': True})
 
@@ -722,9 +755,9 @@ def getCellTypeNameFromStringCode(cell_type_code):
 
         "ER1": "Pronormoblast",
         "ER2": "Basophilic Normoblast",
-        "ER3": "Polychromatophilic normoblast",
-        "ER4": "Orthochromic normoblast",
-        "ER5": "Polychromatophilic erythrocyte",
+        "ER3": "Polychromatophilic Normoblast",
+        "ER4": "Orthochromic Normoblast",
+        "ER5": "Polychromatophilic Erythrocyte",
         "ER6": "Mature Erythrocyte",
 
         "U1": "Artifact",
@@ -733,7 +766,7 @@ def getCellTypeNameFromStringCode(cell_type_code):
         "U4": "Mitotic Body/karyorrhexis",
         "UL": "Unlabelled",
 
-        "PL1": "Megakaryoblast/Promegakaryocyte",
+        "PL1": "Immature Megakaryocyte",
         "PL2": "Mature Megakaryocyte",
         "PL3": "Platelet Clump",
         "PL4": "Giant Platelet",
@@ -995,6 +1028,7 @@ def dropzone_slide(request):
                 image.name = str(sid) + '.svs'
                 slide = Slide.objects.create(created_by=request.user, sid=sid, date_added=str(
                     datetime.now()), name=name, svs_path=image)
+
                 print(slide)
                 # print(slide.sid)
                 # print(slide.name)
