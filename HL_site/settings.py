@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-import os 
+import os
 
 from os import path
 
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
 
     # My apps
     'labeller',
+    'export',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -46,7 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    
+
 ]
 
 MIDDLEWARE = [
@@ -140,4 +141,3 @@ LOGIN_REDIRECT_URL = '/'
 
 # Logs any emails sent to server.
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
