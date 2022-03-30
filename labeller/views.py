@@ -1029,6 +1029,12 @@ def dropzone_slide(request):
                 slide = Slide.objects.create(created_by=request.user, sid=sid, date_added=str(
                     datetime.now()), name=name, svs_path=image)
 
+                if (name[:4] == 'nlbx'):
+                    print('normal slide')
+                    diagnosis = Diagnosis.objects.get(id=1)
+                    print(diagnosis)
+                    slide.diagnoses.add(diagnosis)
+
                 print(slide)
                 # print(slide.sid)
                 # print(slide.name)

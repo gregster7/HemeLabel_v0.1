@@ -76,12 +76,12 @@
     <p id="no_slide">No Slides</p>
   {% endfor %}
 
-
+{% comment %}
 <!-- Cells -->
 <h2>Cells ({{cells|length}})</h2>
 {%   include "labeller/partials/main_lineages_horizontal.html" %}
 </div>
-
+{% endcomment %}
 <script>
 $(document).ready(function() {
 	console.log('diagnosis.html: ready')

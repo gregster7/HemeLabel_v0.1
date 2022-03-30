@@ -244,7 +244,7 @@ function (_Emitter) {
          * the event `maxfilesexceeded` will be called. The dropzone element gets the
          * class `dz-max-files-reached` accordingly so you can provide visual feedback.
          */
-        maxFilesize: 256,
+        maxFilesize: 512,
 
         /**
          * The name of the file param that gets transferred.
@@ -1872,6 +1872,7 @@ function (_Emitter) {
   }, {
     key: "accept",
     value: function accept(file, done) {
+      console.log('maxfilesize', this.options.maxFilesize, file.size )
       if (this.options.maxFilesize && file.size > this.options.maxFilesize * 1024 * 1024) {
         done(this.options.dictFileTooBig.replace("{{filesize}}", Math.round(file.size / 1024 / 10.24) / 100).replace("{{maxFilesize}}", this.options.maxFilesize));
       } else if (!Dropzone.isValidFile(file, this.options.acceptedFiles)) {

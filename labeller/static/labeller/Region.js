@@ -5,6 +5,7 @@ class Region {
 	}
 
 	prependRegionDivToJQuerySelector(jquery_selector) {
+		$('no_regions_added_li').hide()
 		$(jquery_selector).prepend(this.createRegionDiv());
 		this.addRegionDeleteButtonEventListener();
 	}
@@ -70,7 +71,7 @@ class Region {
 
 			console.log("Was successful?: " + json['success'] +' '+ json['rid']+' '+ json['region_path']);	  
 			//Add new region to top of regions div
-			region = new Region(json['rid'],json['region_path']);
+			var region = new Region(json['rid'],json['region_path']);
 			region.prependRegionDivToJQuerySelector('#regions');
 			region.fadeRegionInAndOut();
 		});
