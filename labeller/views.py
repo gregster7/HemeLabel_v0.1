@@ -1126,7 +1126,7 @@ def diagnosis(request, diagnosis_id):
     celltypes_json = serializers.serialize("json", cellTypes)
 
     context = {'diagnosis': diagnosis, 'slides': slides, 'cells': cells,
-               'cells_json': cells_json, 'celltypes_json': celltypes_json}
+               'cells_json': cells_json, 'celltypes_json': celltypes_json,  'dx_options': Diagnosis.objects.all()}
 
     return render(request, 'labeller/diagnosis.html', context)
 
