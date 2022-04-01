@@ -1118,15 +1118,16 @@ def diagnosis(request, diagnosis_id):
     # for slide in slides:
     # 	print(slide, Cell.objects.filter(region__slide=slide))
     # print(slides)
-    cells = Cell.objects.filter(region__slide__in=slides.all())
-    cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
-    # print(cells)
 
-    cells_json = serializers.serialize("json", cells)
-    celltypes_json = serializers.serialize("json", cellTypes)
+    # cells = Cell.objects.filter(region__slide__in=slides.all())
+    # cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+    # cells_json = serializers.serialize("json", cells)
+    # celltypes_json = serializers.serialize("json", cellTypes)
+    # context = {'diagnosis': diagnosis, 'slides': slides, 'cells': cells,
+    #            'cells_json': cells_json, 'celltypes_json': celltypes_json,  'dx_options': Diagnosis.objects.all()}
 
-    context = {'diagnosis': diagnosis, 'slides': slides, 'cells': cells,
-               'cells_json': cells_json, 'celltypes_json': celltypes_json,  'dx_options': Diagnosis.objects.all()}
+    context = {'diagnosis': diagnosis, 'slides': slides,
+               'dx_options': Diagnosis.objects.all()}
 
     return render(request, 'labeller/diagnosis.html', context)
 
