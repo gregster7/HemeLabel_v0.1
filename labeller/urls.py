@@ -15,8 +15,6 @@ Including another URLconf
 """
 
 
-#cells = Cell.objects.all()
-
 from django.urls import path, include, re_path
 from . import views
 urlpatterns = [
@@ -47,6 +45,10 @@ urlpatterns = [
 
     re_path(r'^diagnosis/(?P<diagnosis_id>\d+)/',
             views.diagnosis, name='diagnosis'),
+
+    re_path(r'^all_cells_for_diagnosis/(?P<diagnosis_id>\d+)/',
+            views.all_cells_for_diagnosis, name='all_cells_for_diagnosis'),
+
 
     re_path(r'^cell_redirect/(?P<cell_pk>\d+)/',
             views.cell_redirect, name='cell_redirect'),

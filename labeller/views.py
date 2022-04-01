@@ -23,7 +23,7 @@ from django.core.files import File
 from django.core.files.images import ImageFile
 
 import pandas as pd
-#import openpyxl
+# import openpyxl
 import csv
 
 
@@ -239,7 +239,7 @@ def export_cell_data(request):
 
     diagnosis = Diagnosis.objects.get(abbreviation='nl')
     slides = Slide.objects.filter(diagnoses=diagnosis)
-    #export_csv_user_slides(request.user, slides, export_path+'classes.csv')
+    # export_csv_user_slides(request.user, slides, export_path+'classes.csv')
     export_each_slide_csv_cellTypes_slides(
         request.user, slides, export_path+'slides_with_cellTypes.csv')
     sizes = [48, 64, 96]
@@ -271,7 +271,7 @@ def get_cell_feature_form(request):
     cid = GET['cid']
     cell = Cell.objects.get(cid=cid)
     form = CellFeatureForm(instance=cell)
-    #context = {'cellForm': cellForm}
+    # context = {'cellForm': cellForm}
     return HttpResponse(form.as_p())
 
 
@@ -342,7 +342,7 @@ def label_slide(request, slide_id):
 
     diagnoses = slide.diagnoses
     #	print('diagnoses', diagnoses)
-    #regions = slide.region_set.all()
+    # regions = slide.region_set.all()
 
     cells = Cell.objects.filter(region__slide=slide)
     cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
@@ -437,7 +437,7 @@ def get_all_cells_generic(request):
 
     results = {'success': True, 'cells_json': serializers.serialize(
         "json", cells), 'celltypes_json': serializers.serialize("json", cellTypes)}
-    #print('get all cells generic results', results['cells_json'])
+    # print('get all cells generic results', results['cells_json'])
     return JsonResponse(results)
 
 # Used by CellCounter.js
@@ -527,7 +527,7 @@ def create_new_cell(rid, left, top, width, height, user):
         return {'success': False, 'error': 'box outside boundary'}
 
     else:
-        #region = Region.objects.get(rid=rid)
+        # region = Region.objects.get(rid=rid)
         cid = create_new_cid()
         generate_cell_image_with_vips(region, cid, left, top, width, height)
         cell_path = '/cells/' + cid + '.jpg'
@@ -557,7 +557,7 @@ def add_new_cell_box(request):
     width = float(POST['width'])
 
     # Note: the return for create_new_cell is:
-    #results = {'success':True, 'new_cell_json':new_cell_json, 'cells_json':cells_json, 'new_cell_type_json': new_cell_type_json, 'celltypes_json': all_cell_types_json, 'celltypes': celltypes_in_region}
+    # results = {'success':True, 'new_cell_json':new_cell_json, 'cells_json':cells_json, 'new_cell_type_json': new_cell_type_json, 'celltypes_json': all_cell_types_json, 'celltypes': celltypes_in_region}
     results = create_new_cell(rid, left, top, width, height, request.user)
 
     return JsonResponse(results)
@@ -571,7 +571,7 @@ def toggle_region_complete_class(request):
         value = True
     else:
         value = False
-    #print('toggle_region_complete_seg', POST['value'], value)
+    # print('toggle_region_complete_seg', POST['value'], value)
     success = Region.objects.filter(rid=rid).update(all_wc_classified=value)
     results = {'success': (success == 1)}
     return JsonResponse(results)
@@ -585,7 +585,7 @@ def toggle_region_complete_seg(request):
         value = True
     else:
         value = False
-    #print('toggle_region_complete_seg', POST['value'], value)
+    # print('toggle_region_complete_seg', POST['value'], value)
     success = Region.objects.filter(rid=rid).update(all_wc_located=value)
     results = {'success': (success == 1)}
     return JsonResponse(results)
@@ -783,8 +783,8 @@ def getCellTypeName(cellType):
 def update_cell_class(request):
     #	user = request.user
     POST = request.POST
-    #cell = Cell.objects.get(cid=POST['cid'])
-    #cell.cell_type = POST['cell_label']
+    # cell = Cell.objects.get(cid=POST['cid'])
+    # cell.cell_type = POST['cell_label']
     # cell.save()
     cellType = update_cellType_helper(
         request.user, Cell.objects.get(cid=POST['cid']), POST['cell_label'])
@@ -863,7 +863,7 @@ def label_region_fabric(request, region_id):
     slide = region.slide
     cells = region.cell_set.all()
     if (cells.count() == 0):
-        #cells = "none"
+        # cells = "none"
         cells_json = "none"
     else:
         cells_json = serializers.serialize("json", region.cell_set.all())
@@ -871,7 +871,7 @@ def label_region_fabric(request, region_id):
     celltypes_in_region = getAllCellTypesUserRegionJSON(request.user, region)
     context = {'region': region, 'cells': cells, 'dx_options': Diagnosis.objects.all(
     ), 'cells_json': cells_json, 'slide': slide, 'celltypes_json': celltypes_in_region}
-    #print('label_region_fabric context', context)
+    # print('label_region_fabric context', context)
     return render(request, 'labeller/label_region_fabric.html', context)
 
 
@@ -1071,7 +1071,7 @@ def dropzone_image_w_projectID(request, project_id):
         print(request.FILES)
         print(request.FILES.getlist('file'))
         i = 0
-        #proj = request.POST.get('project')
+        # proj = request.POST.get('project')
         # project_id = Project.name
         project = Project.objects.get(id=project_id)
         cell_list = []
@@ -1107,6 +1107,19 @@ def dropzone_image_w_projectID(request, project_id):
         # return HttpResponse()
 
     return HttpResponse()
+
+
+@login_required
+def all_cells_for_diagnosis(request, diagnosis_id):
+    diagnosis = Diagnosis.objects.get(id=diagnosis_id)
+    slides = Slide.objects.filter(diagnoses=diagnosis)
+    cells = Cell.objects.filter(region__slide__in=slides.all())
+    cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+    cells_json = serializers.serialize("json", cells)
+    celltypes_json = serializers.serialize("json", cellTypes)
+    context = {'diagnosis': diagnosis, 'cells': cells,
+               'cells_json': cells_json, 'celltypes_json': celltypes_json}
+    return render(request, 'labeller/all_cells_for_diagnosis.html', context)
 
 
 @login_required
