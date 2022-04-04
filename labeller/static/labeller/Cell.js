@@ -103,14 +103,19 @@ class Cell {
 		var cell_link = '/cell_redirect/'+this.pk+'/';
 		var div = '<div class="cell_list_item '+this.getHTMLClasses()+'" id="celllistCID_' + this.cid+'">';
 		// div = div +	'<img class="center cellImage '+this.cid+'" src="'+this.image_url+'">';
-		div = div +	'<a href="'+cell_link+'" target="_blank">';
-		div = div + '<img class="center cellImage '+this.cid+'" src="'+this.image_url+'"></a>';
-		div = div + '<p class="center cell_box_text" id="cellId_'+ this.cid+'">Cell ID: '+ this.cid +'</p>';
+		div = div + '<img class="center cellImage '+this.cid+'" src="'+this.image_url+'">';
+		div = div + '<p class="center cell_box_text" id="cellId_'+ this.cid+'">Cell ID: '+ this.cid;
+
+		div = div +	'<a href="'+cell_link+'" target="_blank"><i class="bi-arrow-right-circle-fill btn btn-primary"></i></a></p>';
+
+
 		div = div + '<p class="center cell_box_text cell_type cellClass_'+this.cid;
 		div = div + '">'+this.getCellTypeName()+'</p></div>';
 
 		return div;
 	}
+
+	
 
 	//*** Under construction ***
 	// This function is used in label_slide_overlay.html and label_slide_overlay2.html 
