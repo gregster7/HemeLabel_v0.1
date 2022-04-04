@@ -146,7 +146,7 @@ img {
   width: 10px;
   height: 10px;
   display: inline-block;
-  z-index: 75;
+  z-index: 55;
   /* box-sizing is needed for it to play well with bootstrap */
   box-sizing: content-box;
 }
@@ -228,15 +228,28 @@ img {
 
 #current_cell_popout {
   position: fixed;
-  right: 5%;
-  top: 78px;
-
-  margin: 10px;
-  z-index: 75;
-
+  /* right: 5%; */
+  top: 146px;
+  left: 90rem;
+  /* margin: 10px; */
+  z-index: 999;
   /* width: 200px; */
   border: 1px solid purple;
   /* padding: 15px; */
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 20px;
+  padding-left: 20px;
+  align-content: center;
+  background-color: #f2f2f2ff;
+}
+
+#current_cell_popout:hover:active {
+  position: absolute;
+  top: 146px;
+  left: 90rem;
+  z-index: 999;
+  border: 1px solid purple;
   padding-top: 5px;
   padding-bottom: 5px;
   padding-right: 20px;
