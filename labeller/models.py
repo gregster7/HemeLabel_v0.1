@@ -9,6 +9,17 @@ from django.contrib.auth.models import User
 User._meta.get_field('email')._unique = True
 
 
+class Collaborator(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    isBlind = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.user + ' (isBlind = '+self.isBlind+') '
+
+    class Meta:
+        verbose_name_plural = 'Collaborators'
+
+
 class Diagnosis(models.Model):
     name = models.CharField(max_length=64, blank=True, null=True)
     abbreviation = models.CharField(max_length=8, blank=True, null=True)
@@ -64,9 +75,11 @@ class Slide (models.Model):
     svs_path = models.FileField(
         upload_to="slides", max_length=300, blank=True, null=True)
 
-    # To rename to 'diagnoses'
     diagnoses = models.ManyToManyField(
         'Diagnosis', related_name='slides_with_diagnosis', blank=True)
+
+    collaborators = models.ManyToManyField(
+        'Collaborator', related_name='slides_with_collaborators', blank=True)
 
     # Store filename as name
     name = models.CharField(max_length=200, blank=True, null=True)
