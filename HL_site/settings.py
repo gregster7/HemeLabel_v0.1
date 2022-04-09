@@ -30,7 +30,7 @@ SECRET_KEY = 'aly)kp%_f@9sl(!8dy-q3ncc#dc1&)af-uq)^iu&y8#%r$8a%f'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'HemeLabel-env2.eba-cmvsgfuc.us-west-2.elasticbeanstalk.com', '127.0.0.1']
+    'HL4-env.eba-zcamwast.us-west-2.elasticbeanstalk.com', '127.0.0.1']
 
 
 # Application definition
