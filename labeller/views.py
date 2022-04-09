@@ -23,7 +23,6 @@ from django.core.files import File
 from django.core.files.images import ImageFile
 
 import pandas as pd
-# import openpyxl
 import csv
 
 
