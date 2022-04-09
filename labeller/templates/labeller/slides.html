@@ -77,7 +77,7 @@
 <!-- Slide Uploader (Dropzone) -->
 <div class="container-fluid justify-content-center dropzone_box">
 
-  <h3 style="border-bottom: 0px">Slide Uploader</h3>
+  <h3 style="border-bottom: 0px">Slide Uploader </h3>
 
   <!-- <div id="slide_dz_div"> -->
   <form action="dropzone_slide" id="my-slide-dropzone" method="POST" enctype="multipart/form-data" class="dropzone js-reference-dropzone">
@@ -93,24 +93,34 @@
 <script src="{% static 'labeller/Diagnosis.js' %}"></script>
 <!-- Slides -->
 {% for slide in slides %}
-<div class="container-fluid slide_box" style="padding-right: 5px  !important; padding-left: 5px !important;">
-  <div class="container-fluid my-3 pt-2 pb-3 mx-0">
-    <!-- Slide Info -->
-    {% include "labeller/partials/slide_diagnoses.html" %}
+  {% if user.is_authenticated %}
+  {% if user.id == slide.created_by.id %}
 
-      <!-- Cell Summary -->
-    <div class="flex-row" id='slide_cellSummary_sid_{{slide.sid}}'></div>
-    <script>
-        var cellSummary = new CellSummary('sid', {{slide.sid}});
-        $('#slide_cellSummary_sid_{{slide.sid}}').append(cellSummary.getNewULForSlide());
-        cellSummary.addInfoButtonOnClick();
-        $('#bigtable_sid_{{slide.sid}}').hide()
-    </script>
-  </div>
-</div>
+
+    <div class="container-fluid slide_box" style="padding-right: 5px  !important; padding-left: 5px !important;">
+      <div class="container-fluid my-3 pt-2 pb-3 mx-0">
+        <!-- Slide Info -->
+        {% include "labeller/partials/slide_diagnoses.html" %}
+
+          <!-- Cell Summary -->
+        <div class="flex-row" id='slide_cellSummary_sid_{{slide.sid}}'></div>
+        <script>
+            var cellSummary = new CellSummary('sid', {{slide.sid}});
+            $('#slide_cellSummary_sid_{{slide.sid}}').append(cellSummary.getNewULForSlide());
+            cellSummary.addInfoButtonOnClick();
+            $('#bigtable_sid_{{slide.sid}}').hide()
+        </script>
+      </div>
+    </div>
+
+  {% endif %}
+  {% endif %}
+
 
 {% empty %}
-  <p id="no_slide">No Slides</p>
+  <div class="container-fluid justify-content-center">
+    <h3 style="border-bottom: 0px">No Slides</h3>
+  </div>  
 {% endfor %}
 
 

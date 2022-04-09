@@ -177,6 +177,9 @@ urlpatterns = [
 
     #***********************************************************************************#
 
+        # CUSTOM ERROR PAGES
+    path('403/', views.error_403, name='403_forbidden'),
+
 ]
 
 # Show all cells

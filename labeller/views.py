@@ -1,3 +1,4 @@
+from distutils.log import error
 from HL_site.settings import DATA_EXPORT_ROOT
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
@@ -256,7 +257,11 @@ def export_cell_data(request):
 @login_required
 def regions(request):
     """Show all regions."""
-    regions = Region.objects.order_by('rid')
+    # regions = Region.objects.order_by('rid')
+    user = request.user
+    if user.is_authenticated:
+        regions = Region.objects.filter(created_by=request.user)
+
     regions_json = serializers.serialize("json", regions)
 
     print('regions_json', regions_json)
@@ -278,7 +283,17 @@ def get_cell_feature_form(request):
 @login_required
 def slides(request):
     """Show all regions."""
-    slides = Slide.objects.order_by('sid')
+    # print(request.user.username)
+    
+
+    # if request.user.is_authenticated:
+    #     if request.user == Slide.objects.filter(created_by=request.user):
+    #         slides = Slide.objects.order_by('sid')
+    #     else:
+    #         return error_403(request)
+
+
+    slides = Slide.objects.filter(created_by=request.user).order_by('sid')
     slides_json = serializers.serialize("json", slides)
     if (len(slides) > 0):
         slides_json = serializers.serialize("json", slides)
@@ -338,7 +353,15 @@ def label_slide_bootstrap(request, slide_id):
 @login_required
 def label_slide(request, slide_id):
     print('label_slide', request, slide_id)
-    slide = Slide.objects.get(sid=slide_id)
+
+    if request.user.is_authenticated:
+        if request.user == Slide.objects.get(sid=slide_id).created_by:
+            slide = Slide.objects.get(sid=slide_id)
+        else:
+            return error_403(request)
+
+
+    # slide = Slide.objects.get(sid=slide_id)
 
     diagnoses = slide.diagnoses
     #	print('diagnoses', diagnoses)
@@ -859,6 +882,13 @@ def label_region_fabric(request, region_id):
     # 	update_cellType_helper(request.user, cell, cell.cell_type)
 
     """label cells on a region"""
+    print("THIS IS THE  SPINALTAP")
+    if request.user.is_authenticated:
+        if request.user == Region.objects.get(rid=region_id).created_by:
+            region = Region.objects.get(rid=region_id)
+        else:
+            return error_403(request)
+            
     region = Region.objects.get(rid=region_id)
     slide = region.slide
     cells = region.cell_set.all()
@@ -1183,6 +1213,11 @@ def label_cells_in_project(request, project_id):
     print(context)
 
     return render(request, 'labeller/label_cells_in_project.html', context)
+
+
+# CUSTOM ERROR PAGES - WILL NEED SOME WORK. IE NOT SURE WHAT ERROR CODES TO USE, ETC....
+def error_403(request):
+    return render(request, 'errormsgs/error_403.html')    
 
 # def update_cell_class(request):
 # 	results = {'success':False}
