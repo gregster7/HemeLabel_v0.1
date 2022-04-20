@@ -106,6 +106,11 @@ urlpatterns = [
     ########################################################################################################
     ############################################ AJAX FUNCTIONS ############################################
 
+#***************************** ADD NOTES ***************************#
+        # path('add_note_to_slide/', views.add_note_to_slide, name='add_note_to_slide'),
+        # path('slides/add_note_to_slide/', views.CreateSlideNoteView.as_view(), name="add_note_to_slide"),
+        # re_path(r'^add_note_to_slide/', views.CreateSlideNoteView.as_view(), name='add_note_to_slide'),
+
     #************************* SLIDE POSTS *************************#
     re_path(r'^add_diagnosis_to_slide/',
             views.add_diagnosis_to_slide, name='add_diagnosis_to_slide'),

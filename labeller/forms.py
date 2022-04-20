@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from labeller.models import CellFeature
 
-from .models import Project, Region, Cell
+from .models import Project, Region, Cell, Slide
 
 class RegionForm(forms.ModelForm):
 	class Meta:
@@ -64,3 +64,4 @@ class DiagnosisForm(forms.Form):
             "placeholder": "Dx"
         })
     )
+

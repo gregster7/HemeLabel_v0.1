@@ -22,7 +22,8 @@
         
         {% if forloop.first %}
         <div class="" id="dx_title_{{slide.pk}}">
-          <b>Diagnoses:</b></div>
+          <b>Diagnoses:</b>
+        </div>
         {% endif %}
         <div class=" diagnosis_div_slide_{{slide.pk}}" id='diagnosis_div_{{slide.pk}}_{{dx.pk}}'>
           {{dx.name}} ({{dx.abbreviation}}) 
@@ -59,7 +60,13 @@
   <!-- Row 2 -->
   <div class="row">
       <div class="col-xl-12">
-        <div class="px-2"><b>Notes</b>: {{slide.userNotes}}</div>
+        <div class="px-2">
+
+          <b>Notes</b>: {{slide.notes}} | {{slide.sid}} || {{slides|length}}
+
+          
+          
+        </div>
       </div>
     </div>
 
@@ -90,4 +97,5 @@
     }
     
   });
+
 </script>

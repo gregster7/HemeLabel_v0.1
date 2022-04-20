@@ -96,7 +96,7 @@
 
       <script>
         console.log("{{ project.name }}");
-        $('#projects').append(getULForProject("{{project.name}}", {{project.id}}))
+        $('#projects').append(getULForProject("{{project.name}} | {{project.created_by}}", {{project.id}}))
       </script>
 
       {% empty %}

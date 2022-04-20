@@ -20,7 +20,11 @@
 		ul += '<ul id="region_' +rid+ '_link_list" class="region_link_list">';
 		ul += '<li id="region_' +rid+ '_link" clas="region_link">';
 		ul += '<a href="' +region_path+ '">';
-		ul += '<img class="region_thumb" src="' +img_path+ '"></a></li></ul></div>';
+		ul += '<img class="region_thumb" src="' +img_path+ '"></a></li>';
+
+		ul += '<li><button id="delete_region_button_'+this.rid+'" class="delete_region_button rid=' +this.rid+' ">Delete</button>';
+
+		ul += '</ul></div>';
 
 		return ul;
 	};
@@ -61,7 +65,8 @@
 					img_path = '/' + img_path;
 				}
 				console.log(img_path);
-				$('#regions_list').append(getULForRegion(id, rid, img_path));			
+				$('#regions_list').append(getULForRegion(id, rid, img_path));
+	
 			};
 			
 		};
