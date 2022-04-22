@@ -795,19 +795,16 @@ def update_cell_class(request):
 
 
 @login_required
-def update_cell_class_in_project(request):
-    POST = request.POST
-    # cell = Cell.objects.get(cid=POST['cid'])
-    # cell.cell_type = POST['cell_label']
-    # cell.save()
-    update_cellType_helper(request.user, Cell.objects.get(
-        cid=POST['cid']), POST['cell_label'])
-
-    results = {'success': True,
-               'cells_json': get_all_cells_json_project(cell.project)}
-    return JsonResponse(results)
-
-
+# def update_cell_class_in_project(request):
+#     POST = request.POST
+#     # cell = Cell.objects.get(cid=POST['cid'])
+#     # cell.cell_type = POST['cell_label']
+#     # cell.save()
+#     update_cellType_helper(request.user, Cell.objects.get(
+#         cid=POST['cid']), POST['cell_label'])
+#     results = {'success': True,
+#                'cells_json': get_all_cells_json_project(cell.project)}
+#     return JsonResponse(results)
 @login_required
 def data_export(request):
     regions = Region.objects.all()
@@ -909,14 +906,39 @@ def register(request):
     return render(request, 'labeller/register.html', {'form': form})
 
 
+def calculate_slide_diagnosis_counts(slides, diagnoses):
+    diagnosis_counts = {}
+    for diagnosis in diagnoses:
+        diagnosis_counts[diagnosis.name] = 0
+
+    print(diagnosis_counts)
+
+    slides = Slide.objects.all()
+    for slide in slides:
+        for diagnosis in slide.diagnoses.all():
+            diagnosis_counts[diagnosis.name] += 1
+
+    print(diagnosis_counts)
+    return diagnosis_counts
+
 # Diagnoses page view
+
+
 @login_required
 def diagnoses(request):
     """Show all projects"""
     # user_projects = Project.objects.filter(user=request.user.get_username()).order_by('id')
     # context = {'user_projects': user_projects}
     diagnoses = Diagnosis.objects.all()
-    context = {'diagnoses': diagnoses}
+
+    diagnosis_counts = calculate_slide_diagnosis_counts(
+        Slide.objects.all(), diagnoses)
+    serializers.serialize
+
+    context = {'diagnoses': diagnoses,
+               'diagnosis_counts_json': json.dumps(diagnosis_counts),
+               #    'diagnosis_counts': diagnosis_counts
+               }
 
     return render(request, 'labeller/diagnoses.html', context)
 
@@ -1094,7 +1116,8 @@ def dropzone_image_w_projectID(request, project_id):
             print(cells_json)
             cell = Cell.objects.create(created_by=request.user, image=image, cid=cid,
                                        name=name, project=project, project_id=project_id, cell_type=cell_type)
-            new_cell_type = CellType.objects.create(cell=new_cell, user=user)
+            new_cell_type = CellType.objects.create(
+                cell=cell, user=request.user)
             cell.save()
             update_cellType_helper(request.user, cell, cell_type)
             cell_list.append(cell)
