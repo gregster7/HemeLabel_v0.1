@@ -1,13 +1,11 @@
 {% extends 'labeller/base2.html' %} {% load static %} 
-
 {% block title %}Diagnoses{% endblock %} 
 
 {% block content %}
-
 <script>
-var ref = '{{diagnosis_counts_json}}'.replace(/&quot;/ig,'"')
-var diagnosis_counts = $.parseJSON(ref)
-console.log(diagnosis_counts)
+  var ref = "{{diagnosis_counts_json}}".replace(/&quot;/gi, '"');
+  var diagnosis_counts = $.parseJSON(ref);
+  // console.log(diagnosis_counts);
 </script>
 
 <div class="container-fluid">
@@ -15,10 +13,21 @@ console.log(diagnosis_counts)
 
   {% for diagnosis in diagnoses %}
   <div class="d-flex flex-row">
-    <p class="p-2"> {{diagnosis.name}} ({{diagnosis.abbreviation}}) 
+    <p class="p-2">
+      {{diagnosis.name}} ({{diagnosis.abbreviation}})
       <span id="dx_count_{{diagnosis.abbreviation}}"></span>
       <script>
-        $("#dx_count_{{diagnosis.abbreviation}}").html('(n = '+diagnosis_counts['{{diagnosis.name}}']+')'); 
+        $("#dx_count_{{diagnosis.abbreviation}}").html('(n='+diagnosis_counts['{{diagnosis.name}}'] +')')
+
+// AJAX way to do it - not currently in use/needed
+        {% comment %} $.get("/get_number_of_slides_with_diagnosis_name/",
+          {'diagnosis_name':'{{diagnosis.name}}'},
+          function(json){
+            console.log('get_number_of_slides_with_diagnosis_name callback');
+            if(json['success'] == true) {
+                $("#dx_count_{{diagnosis.abbreviation}}").html('(n='+json['diagnosis_count'] +')')
+            }
+          }); {% endcomment %}
       </script>
     </p>
     <a href="/diagnosis/{{diagnosis.pk}}/" class="btn btn-primary p-2"
