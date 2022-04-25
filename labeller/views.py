@@ -11,6 +11,7 @@ import os
 from datetime import datetime
 from django.db import models
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 
@@ -293,7 +294,6 @@ def slides(request):
     #         slides = Slide.objects.order_by('sid')
     #     else:
     #         return error_403(request)
-    form = SlideNoteForm
     slides = Slide.objects.filter(created_by=request.user).order_by('sid')
     slides_json = serializers.serialize("json", slides)
     if (len(slides) > 0):
@@ -302,7 +302,7 @@ def slides(request):
         slides_json = 'none'
 
     context = {'slides': slides, 'slides_json': slides_json,
-               'dx_options': Diagnosis.objects.all(), 'form': form}
+               'dx_options': Diagnosis.objects.all()}
     return render(request, 'labeller/slides.html', context)
 
 
@@ -659,7 +659,49 @@ def remove_diagnosis_from_slide(request):
         return JsonResponse({'success': False})
 
 # Function to add Notes to Slide + Region
+@login_required
+@csrf_exempt
+def add_note_to_slide(request):
+    id = request.POST.get('slide_sid')
+    print(id)
+    type = request.POST.get('type')
+    print(type)
+    value = request.POST.get('value')
+    print(value)
+    slide = Slide.objects.get(sid=id)
+    print(slide)
+    slide.notes = value
 
+    slide.save()
+
+    return JsonResponse({'success': "slide note updated"})
+
+
+
+
+
+
+# @login_required
+# def add_note_to_slide(request):
+#     try:
+#         POST = request.POST
+#         print('CANNONBALL RUN!')
+#         # print(POST)
+#         note = Slide.objects.get(id=POST['slide.sid']).value()
+#         # print(note)
+#         slide = Slide.objects.get(id=POST['slide.sid'])
+#         slide.notes.add(note)
+#         slide.save()
+#         # print(slide, slide.notes)
+#         # print('success')
+#         return JsonResponse({'success': True})
+
+#     except Exception as e:
+#         # print(e)
+#         print('fail')
+
+#         return JsonResponse({'success': False})
+        
 
 # @login_required
 # def add_new_cell(request):

@@ -19,6 +19,8 @@ from django.urls import path, include, re_path
 from . import views
 urlpatterns = [
 
+        path('add_note_to_slide', views.add_note_to_slide, name='add_note_to_slide'),
+
     ############################################################################################
     ################################ URLS THAT SERVE HTML PAGES ################################
 
@@ -110,7 +112,8 @@ urlpatterns = [
         # path('add_note_to_slide/', views.add_note_to_slide, name='add_note_to_slide'),
         # path('slides/add_note_to_slide/', views.CreateSlideNoteView.as_view(), name="add_note_to_slide"),
         # re_path(r'^add_note_to_slide/', views.CreateSlideNoteView.as_view(), name='add_note_to_slide'),
-
+        # path('slides/get_slide_notes/', views.get_slide_notes, name='get_slide_notes'),
+    re_path(r'^add_note_to_slide/', views.add_note_to_slide, name='add_note_to_slide'),
     #************************* SLIDE POSTS *************************#
     re_path(r'^add_diagnosis_to_slide/',
             views.add_diagnosis_to_slide, name='add_diagnosis_to_slide'),

@@ -61,10 +61,56 @@
   <div class="row">
       <div class="col-xl-12">
         <div class="px-2">
+          <div>
 
-          <b>Notes</b>: {{slide.notes}} | {{slide.sid}} || {{slides|length}}
+          {% if slide.notes %}
+            <p>
+              <b>Notes:</b> 
+            </p>
 
-          
+            <div id="edit_slide_note_{{slide.sid}}" class="editnote px-2" data-id="{{ slide.sid }}" data-type="notes">
+              <p>{{ slide.notes }}</p>
+            </div>
+            <!-- <p><i style="font-size: small; color:#777;">click note to edit</i></p> -->
+            <!-- <button id="save_note_slide_{{slide.sid}}" type="submit" style="font-size: 1rem; padding: .2rem .5rem .1rem .5rem" class="btn btn-slide-info">
+              Save Note
+            </button> -->
+
+          <!-- <button id="delete_note_{{slide.pk}}" class="{{slide.pk}} btn p-0">
+              <i class="bi-trash"></i>
+            </button>
+            <script>
+              $('#delete_note_{{slide.pk}}').on('click', Diagnosis.removeNoteFromSlideClickHandler);
+            </script> -->
+
+          {% else %}
+
+            <p><b>Notes:</b></p>
+            
+            <div id="edit_slide_note_{{slide.sid}}" class="editnote px-2" data-id="{{ slide.sid }}" data-type="notes">
+              None
+            </div>
+            <!-- <p>
+              <i style="font-size: small; color:#777;">click note to edit</i>
+            </p> -->
+
+          {% endif %}
+            </div>
+
+            <!-- <div>
+              <form id="slide_note_form_{{slide.sid}}" class="note_form">
+                <input type="text" name="slide_note_pk_{{slide.sid}}" id="slide_note_pk_{{slide.sid}}" placeholder="Type note here..." class="mb-2" style="font-size: .9rem">
+                <input type="submit" value="Add Note" style="font-size:1rem; padding: .2rem 0.5rem 0.1rem .5rem !important;" class="bn btn-slide=info">                
+              </form>
+            </div> -->
+
+         
+          <!-- <b>Notes</b>: {{slide.notes}} | {{slide.sid}} || {{slides|length}} -->
+
+          <!-- NOTES FORM TAKE 2 -->
+
+          <!-- END NOTES FORM TAKE 2 -->
+                
           
         </div>
       </div>
@@ -97,5 +143,85 @@
     }
     
   });
+
+  // $('#save_note_slide_{{slide.sid}}').on("click", function() {
+
+  // })
+
+  $(document).ready(function() {
+
+    $('#edit_slide_note_{{slide.sid}}').on("dblclick", function() {
+      var value = $(this).text().trim();
+      console.log(value);
+      var data_type = $(this).data("type");
+      console.log(data_type)
+      var input_type = "text";
+      var input = "<input type='"+input_type+"' id='edit_slide_note_{{slide.sid}}' class='input-data form-control' value='"+value+"'>";
+      console.log(input)
+      $(this).html(input);
+      $(this).removeClass("editnote");
+    });
+
+    $(document).on("blur", ".input-data", function() {
+      var value = $(this).val();
+      console.log(value);
+      var div = $(this).parent("div");
+      div.html(value);
+      div.addClass("editnote");
+      var type = div.data("type");
+      console.log('type = ' +type);
+      var span = $(this).parent("span");
+      $(this).remove();
+      div.html(value);
+
+      saveSlideNote(div.data("id"), value, type);
+    });
+
+    $(document).on("keypress", ".input-data", function(e) {
+      var key = e.which;
+      if(key == 13) {
+        var value = $(this).val();
+        console.log(value);
+        var div = $(this).parent("div");
+        console.log('this is div:' +div.html(value))
+        div.html(value);
+        div.addClass("editnote");
+        var type = div.data("type");
+        console.log(type);
+
+        saveSlideNote(div.data("id"), value, type);
+      }
+    });
+
+    function saveSlideNote(sid, value, type) {
+      console.log(sid);
+      console.log(value);
+      console.log(type);
+
+      $.post("/add_note_to_slide/", {'slide_sid': sid, 'value': value, 'type': type})
+      .done(function(response) {
+        console.log(response);
+      })
+      .fail(function(response) {
+        console.log("error!!");
+      });
+
+    }
+
+  });
+
+  // $("#slide_note_form_{{slide.sid}}").submit(function(e) {
+  //   e.preventDefault();
+  //   slide_note = $('#slide_note_pk_{{slide.sid}}').val();
+  //   var sid = {{slide.sid}};
+  //   console.log("slide.sid" + sid)
+  //   slide_sid = sid;
+  //   console.log(slide_note);
+  //   console.log(slide_sid);
+
+  //   console.log('adding note:' + slide_note);
+  //   Diagnosis.addNoteToSlideAJAX(slide_sid, slide_note);
+
+  // });
 
 </script>

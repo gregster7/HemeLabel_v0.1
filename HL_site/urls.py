@@ -21,6 +21,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
+    # (r'^inplaceeditform/', include('inplaceeditform.urls')),
+
     re_path(r'', include(('labeller.urls', 'labeller'), namespace='labeller')),
     re_path(r'', include(('export.urls', 'export'), namespace='export')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

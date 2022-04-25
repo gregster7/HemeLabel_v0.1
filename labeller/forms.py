@@ -64,4 +64,3 @@ class DiagnosisForm(forms.Form):
             "placeholder": "Dx"
         })
     )
-
