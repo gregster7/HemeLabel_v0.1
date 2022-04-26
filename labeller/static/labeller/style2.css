@@ -131,11 +131,12 @@ th {
   /* text-decoration: underline; */
   /* text-align: center; */
 }
+.btn,
 .btn-primary {
   color: black !important ;
-  background-color: white !important ;
+  background-color: transparent !important ;
   /* border: 1px solid #6648b1 !important; */
-  border: 1px solid white !important;
+  border: none !important;
   /* border: 1px solid #6648b1; */
 }
 

@@ -510,7 +510,7 @@ Image height is 665px
   padding: 0px 15px 0px 15px;
 }
 
-.btn-primary {
+.btn, .btn-primary {
   color: black !important ;
   background-color: transparent !important ;
   /* border: 1px solid #6648b1 !important; */

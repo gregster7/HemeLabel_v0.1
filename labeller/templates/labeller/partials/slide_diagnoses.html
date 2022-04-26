@@ -34,10 +34,32 @@
         </div>
         {% empty %}
           <div class=" dx_title" id="dx_title_{{slide.pk}}">
-            <b>Diagnosis:</b> None
+            <p><b>Diagnoses:</b></p>
+            <p>None</p>
           </div>			
         {% endfor %}
       </div>
+
+      <!-- Tissue Type -->
+      <div class="mt-2">
+        <div class="" id="slide_info_row_{{ slide.pk }}">
+
+          <div class="" id="dx_title_{{ slide.pk }}">
+            <b>Tissue Type:</b>
+          </div>
+          {% if slide.tissue %}
+          <div class="slide_tissue_type">
+            <p>{{ slide.tissue }}</p>
+          </div>
+          {% else %}
+          <div class="slide_tissue_type">
+            <p>None</p>
+          </div>
+          {% endif %}
+
+        </div>
+      </div>
+
     </div>  
 
     <!-- Column 3 -->
@@ -53,6 +75,25 @@
         <input type="submit" value="Add Diagnosis" style='font-size:1rem; padding: .2rem 0.5rem 0.1rem .5rem !important;' class="btn btn-slide-info ">
           <!-- <span class="px-1"></span> -->
       </form> 
+
+      <!-- Tissue Type -->
+      <div class="mt-2">
+        <form id="tissue_type_slide_{{slide.sid}}" class="dx-form">
+          <select name="tissue_type_options_slide_{{slide.sid}}" id="tt_options_slide_{{slide.sid}}" placeholder="No Tissue Type" class="mb-2" style="font-size: .9rem;">
+            <option value="none" selected></option>
+            <option value="Bone Marrow Aspirate">Bone Marrow Aspirate</option>
+            <option value="Peripheral Blood">Peripheral Blood</option>
+            <option value="Bone Marrow Biopsy">Bone Marrow Biopsy</option>
+            <option value="Bone Marrow IHC or Special Strain">Bone Marrow IHC or Special Strain</option>
+            <option value="Touch Prep">Touch Prep</option>
+            <option value="Bone Marrow Clot">Bone Marrow Clot</option>
+            <option value="Body Fluid">Body Fluid</option>
+            <option value="Test Type">Test Type 1</option>
+          </select>
+          <input type="submit" value="Select Tissue Type" style="font-size: 1rem; padding: .2rem 0.5rem 0.1rem .5rem !important;" class="btn btn-slide-info">
+        </form>
+      </div>
+      
     </div>
     
   </div> <!-- Close Row -->
@@ -116,22 +157,6 @@
       </div>
   </div>
 
-  <!-- Row 3 (testing Tissue Type feature -- will move later) -->
-  <!-- <div class="row">
-    <div class="col-xl-12">
-      <div class="px-2">
-
-        <form id="tissue_type_slide_{{slide.sid}}" class="dx-form">
-          <select name="tissue_type_options_slide_{{slide.sid}}" id="tt_options_slide_{{slide.sid}}" placeholder="No Tissue Type" class="mb-2" style="font-size: .9rem;">
-            <option value="none" selected></option>
-            <option value="Test Type">Test Type 1</option>
-          </select>
-          <input type="submit" value="Add Tissue Type" style="font-size: 1rem; padding: .2rem 0.5rem 0.1rem .5rem !important;" class="btn btn-slide-infor">
-        </form>
-
-      </div>
-    </div>
-  </div> -->
 
 </div> <!-- Close container-fluid -->
 

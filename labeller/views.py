@@ -295,6 +295,8 @@ def slides(request):
     #     else:
     #         return error_403(request)
     slides = Slide.objects.filter(created_by=request.user).order_by('sid')
+    # tissue_type_list = Slide.objects.filter(created_by=request.user).tissue_type
+
     slides_json = serializers.serialize("json", slides)
     if (len(slides) > 0):
         slides_json = serializers.serialize("json", slides)
