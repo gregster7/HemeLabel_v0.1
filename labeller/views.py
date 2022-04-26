@@ -537,14 +537,19 @@ def get_all_cells_generic_helper(request, id_type, id_val):
         slides = Slide.objects.filter(diagnoses=diagnosis)
         cells = Cell.objects.filter(region__slide__in=slides)
         cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+        print('diagnosis', diagnosis)
+        print('slides', slides)
+        print('cells', cells)
+        print('cellTypes', cellTypes)
     else:
         results = {'success': False}
-        return JsonResponse(results)
+        return results
 
     results = {'success': True, 'cells_json': serializers.serialize(
         "json", cells), 'celltypes_json': serializers.serialize("json", cellTypes)}
+    print('results', results)
     # print('get all cells generic results', results['cells_json'])
-    return JsonResponse(results)
+    return results
 
 # Used by CellCounter.js
 
