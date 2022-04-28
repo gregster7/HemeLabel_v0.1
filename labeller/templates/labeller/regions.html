@@ -1,5 +1,4 @@
-{% extends "labeller/base.html" %}
-
+{% extends "labeller/base2.html" %}
 
 {% block content %}
 
@@ -14,15 +13,16 @@
 		region_path = '/label_region_fabric/'+rid+'/';
 		var ul = '<div class="regions_list_div">';
 		ul += '<ul id="region_list_' +rid+ '" class="regions_list">';
-		ul += '<li id="region_' +id+ '" class="region_id">ID: ' +id+ '</li>';
-		ul += '<li id="region_' +rid+ '" class="region_rid">RID: ' +rid+ '</li>';
+		ul += '<li id="region_' +id+ '" class="region_id"><b>ID: </b>' +id+ '</li>';
+		ul += '<li id="region_' +rid+ '" class="region_rid"><b>RID: </b>' +rid+ '</li>';
+		ul += '<li><button id="delete_region_button_'+this.rid+'" class="btn btn-slide-info delete_region_button rid=' +this.rid+' ">Delete</button></li>';
 		ul += '</ul>';
 		ul += '<ul id="region_' +rid+ '_link_list" class="region_link_list">';
-		ul += '<li id="region_' +rid+ '_link" clas="region_link">';
+		ul += '<li id="region_' +rid+ '_link" clas="region_link mb-2" style="margin-bottom: 1rem;">';
 		ul += '<a href="' +region_path+ '">';
 		ul += '<img class="region_thumb" src="' +img_path+ '"></a></li>';
 
-		ul += '<li><button id="delete_region_button_'+this.rid+'" class="delete_region_button rid=' +this.rid+' ">Delete</button>';
+
 
 		ul += '</ul></div>';
 

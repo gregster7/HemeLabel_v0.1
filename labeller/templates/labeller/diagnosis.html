@@ -17,21 +17,26 @@
 <h2>Diagnosis: {{diagnosis.name}}</h2>
 
 <!-- Cell Summary -->
-<div class="container-fluid justify-content-center slide_box">
-  <div class="container-fluid m-2 py-4">
+<div class="container-fluid justify-content-center slide_box mt-3 mb-3 p-4">
+  <div class="container-fluid m-2">
     {% include "labeller/partials/cell_summary2.html" %}
     <script>$('#slide_info_diagnosis_pk_{{diagnosis.pk}}').text('Open cell summary for all slides with {{diagnosis.name}}')</script>
   </div>
+
+  <div class="container-fluid ml-4">
+    Go to Full Cell Reclassification Lists (may load slowly)<a href="/all_cells_for_diagnosis/{{diagnosis.pk}}/" class="btn btn-primary p-1"><i class="bi-arrow-right-circle-fill"></i></a> 
+    <script src="{% static 'labeller/Diagnosis.js' %}"></script>
+  </div>
+
 </div>
 
-Go to Full Cell Reclassification Lists (may load slowly)<a href="/all_cells_for_diagnosis/{{diagnosis.pk}}/" class="btn btn-primary p-1"><i class="bi-arrow-right-circle-fill"></i></a> 
-<script src="{% static 'labeller/Diagnosis.js' %}"></script>
+
 
 <!-- Slides -->
 <h2>Slides ({{slides|length}})</h2>
 
-{% for slide in slides %}
 <div class="container-fluid slide_box" style="padding-right: 5px  !important; padding-left: 5px !important;">
+{% for slide in slides %}
   <div class="container-fluid my-3 pt-2 pb-3 mx-0">
     <!-- Slide Info -->
     {% include "labeller/partials/slide_diagnoses.html" %}

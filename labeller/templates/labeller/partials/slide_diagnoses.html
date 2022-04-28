@@ -17,7 +17,7 @@
 
     <!-- Column 2 -->
     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 text-right">
-      <div class="" id="slide_info_row_{{slide.pk}}">
+      <div class="align-content-end" id="slide_info_row_{{slide.pk}}">
       {% for dx in slide.diagnoses.all %}
         
         {% if forloop.first %}
@@ -42,14 +42,23 @@
 
       <!-- Tissue Type -->
       <div class="mt-2">
-        <div class="" id="slide_info_row_{{ slide.pk }}">
+        <div class="" id="slide_info_row_{{ slide.sid }}">
 
-          <div class="" id="dx_title_{{ slide.pk }}">
+          <div class="" id="tt_title_{{ slide.sid }}">
             <b>Tissue Type:</b>
           </div>
           {% if slide.tissue %}
-          <div class="slide_tissue_type">
-            <p>{{ slide.tissue }}</p>
+          <div id="slide_tissue_{{slide.sid}}" class="slide_tissue_type_{{slide.sid}}">
+
+            <p id="tissue_display_slide_{{slide.sid}}">
+              {{ slide.get_tissue_display }}
+              <button id="delete_tissue_{{slide.sid}}" class="{{slide.sid}} btn p-0"><i class="bi-trash"></i></button>
+            </p>
+              
+            <script>
+              // ADD SCRIPT TO DELETE TISSUE HERE
+            </script>
+
           </div>
           {% else %}
           <div class="slide_tissue_type">
@@ -72,25 +81,25 @@
           <option value="{{slide.pk}}_{{dx_option.pk}}_{{dx_option}}" id="dx_option_pk_{{dx_option.pk}}">{{dx_option}}</option>
           {% endfor %}
         </select>
-        <input type="submit" value="Add Diagnosis" style='font-size:1rem; padding: .2rem 0.5rem 0.1rem .5rem !important;' class="btn btn-slide-info ">
+        <input type="submit" value="Add Diagnosis" class="btn btn-secondary">
           <!-- <span class="px-1"></span> -->
       </form> 
 
       <!-- Tissue Type -->
-      <div class="mt-2">
-        <form id="tissue_type_slide_{{slide.sid}}" class="dx-form">
-          <select name="tissue_type_options_slide_{{slide.sid}}" id="tt_options_slide_{{slide.sid}}" placeholder="No Tissue Type" class="mb-2" style="font-size: .9rem;">
-            <option value="none" selected></option>
-            <option value="Bone Marrow Aspirate">Bone Marrow Aspirate</option>
-            <option value="Peripheral Blood">Peripheral Blood</option>
-            <option value="Bone Marrow Biopsy">Bone Marrow Biopsy</option>
-            <option value="Bone Marrow IHC or Special Strain">Bone Marrow IHC or Special Strain</option>
-            <option value="Touch Prep">Touch Prep</option>
-            <option value="Bone Marrow Clot">Bone Marrow Clot</option>
-            <option value="Body Fluid">Body Fluid</option>
-            <option value="Test Type">Test Type 1</option>
+      <div class="mt-2" data-id="{{ slide.sid }}">
+        <form id="tt_form_slide_{{slide.sid}}" class="dx-form">
+          <select id="tt_options_slide_{{slide.sid}}" data_id="{{slide.sid}}" placeholder="No Tissue Type" class="mb-2" style="font-size: .9rem;">
+            <option id="tt_slide_{{slide.sid}}" value="none"></option>
+            <option id="tt_slide_{{slide.sid}}" data-id="bone_marrow_aspirate" value="a">Bone Marrow Aspirate</option>
+            <option id="tt_slide_{{slide.sid}}" data-id="Peripheral Blood" value="b">Peripheral Blood</option>
+            <option id="tt_slide_{{slide.sid}}" data-id="Bone Marrow Biopsy" value="c">Bone Marrow Biopsy</option>
+            <option id="tt_slide_{{slide.sid}}" data-id="Bone Marrow IHC or Special Strain" value="d">Bone Marrow IHC or Special Strain</option>
+            <option id="tt_slide_{{slide.sid}}" data-id="Touch Prep" value="e">Touch Prep</option>
+            <option id="tt_slide_{{slide.sid}}" data-id="Bone Marrow Clot" value="f">Bone Marrow Clot</option>
+            <option id="tt_slide_{{slide.sid}}" data-id="body_fluid" value="g">Body Fluid</option>
+            <!-- <option id="tt_slide_{{slide.sid}}" value="Test Type">Test Type 1</option> -->
           </select>
-          <input type="submit" value="Select Tissue Type" style="font-size: 1rem; padding: .2rem 0.5rem 0.1rem .5rem !important;" class="btn btn-slide-info">
+          <input type="submit" value="Select Tissue Type" class="btn btn-secondary">
         </form>
       </div>
       
@@ -186,9 +195,56 @@
     
   });
 
-  // $('#save_note_slide_{{slide.sid}}').on("click", function() {
+  // function newSlideTissueDisplay(slide_pk, tissue) {
+  //   newP = 
+  // }
 
-  // })
+  function newTissueDisplay(slide_sid, chosen_tissue_type, tissue) {
+    var newDisplay = `<p id="tissue_display_${slide_sid}" class="slide_tissue_type_${slide_sid}">`;
+    newDisplay += tissue;
+    console.log('tissue ' + tissue);
+    newDisplay += `<button id="delete_tissue_${slide_sid}" class="${slide_sid} btn p-0">`;
+    newDisplay += '<i class="bi-trash"></i></button>';
+    newDisplay += '</p>';
+    return newDisplay;
+  }
+
+  function addTissueToSlideAJAX(slide_sid, chosen_tissue_type, tissue) {
+    $.post("/add_tissue_type_to_slide/", {'slide_sid': slide_sid, 'key': chosen_tissue_type})
+    .done(function(response) {
+      console.log(tissue);
+      console.log(slide_sid);
+      console.log(chosen_tissue_type);
+      console.log('success ' +response);
+      console.log(slide_sid);
+
+      // $('#tissue_display_slide_'+slide_sid).remove();
+      // console.log('p has been hidden!');
+      $('#slide_tissue_'+slide_sid).replaceWith(newTissueDisplay(slide_sid, chosen_tissue_type, tissue));
+    });
+  }
+
+  $("#tt_form_slide_{{slide.sid}}").submit(function(e) {
+    e.preventDefault();
+    chosen_tissue_type = $("#tt_options_slide_{{slide.sid}}").val();
+    console.log(chosen_tissue_type);
+    console.log('adding tissue_type: ' + chosen_tissue_type);
+    var div = $(this).parent("div");
+    var sid = div.data("id");
+    console.log(sid);
+
+    var sel = document.getElementById('tt_options_slide_{{slide.sid}}');
+    var index = sel.selectedIndex;
+    console.log(index);
+    var tissue = sel.options[sel.selectedIndex].text;
+    // console.log(tissue.text);
+
+
+    addTissueToSlideAJAX(sid, chosen_tissue_type, tissue);
+
+
+
+  });
 
   $(document).ready(function() {
 
@@ -252,18 +308,5 @@
 
   });
 
-  // $("#slide_note_form_{{slide.sid}}").submit(function(e) {
-  //   e.preventDefault();
-  //   slide_note = $('#slide_note_pk_{{slide.sid}}').val();
-  //   var sid = {{slide.sid}};
-  //   console.log("slide.sid" + sid)
-  //   slide_sid = sid;
-  //   console.log(slide_note);
-  //   console.log(slide_sid);
-
-  //   console.log('adding note:' + slide_note);
-  //   Diagnosis.addNoteToSlideAJAX(slide_sid, slide_note);
-
-  // });
 
 </script>

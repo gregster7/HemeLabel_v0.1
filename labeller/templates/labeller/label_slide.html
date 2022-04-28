@@ -1,4 +1,4 @@
-{% extends "labeller/base.html" %}
+{% extends "labeller/base2.html" %}
 {% load static %}
 
 {% block title %}Label Slide{% endblock %}
@@ -9,11 +9,17 @@
 <script src="{% static 'labeller/Region.js' %}"></script>
 
 <!-- <h3 id="slide_banner">Slide</h3> -->
+<h2>Region Selector</h2>
+<div class="container-fluid">
 {% include "labeller/partials/slide_viewer.html" %}
+</div>
 
 <script src="{% static 'labeller/Diagnosis.js' %}"></script>
-{% include "labeller/partials/slide_diagnoses.html" %}
-{% include "labeller/partials/cell_summary.html" %}
+<div class="container-fluid slide_box pb-3">
+	{% include "labeller/partials/slide_diagnoses.html" %}
+
+	{% include "labeller/partials/cell_summary2.html" %}
+</div>
 <span class="p-2"></span>
 
 <!-- Regions -->

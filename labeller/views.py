@@ -1,5 +1,6 @@
 from distutils.log import error
 from pdb import post_mortem
+from urllib import request
 from HL_site.settings import DATA_EXPORT_ROOT
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
@@ -294,9 +295,9 @@ def slides(request):
     #         slides = Slide.objects.order_by('sid')
     #     else:
     #         return error_403(request)
+    tissues = Slide.TISSUE_CHOICES
+    print(tissues)
     slides = Slide.objects.filter(created_by=request.user).order_by('sid')
-    # tissue_type_list = Slide.objects.filter(created_by=request.user).tissue_type
-
     slides_json = serializers.serialize("json", slides)
     if (len(slides) > 0):
         slides_json = serializers.serialize("json", slides)
@@ -678,6 +679,25 @@ def add_note_to_slide(request):
 
     return JsonResponse({'success': "slide note updated"})
 
+@login_required
+@csrf_exempt
+def add_tissue_type_to_slide(request):
+    id = request.POST.get('slide_sid')
+    print(id)
+    key = request.POST.get('key')
+    print(key)
+    slide = Slide.objects.get(sid=id)
+    print(slide)
+
+    slide.tissue = key
+
+    print(slide.tissue)
+    
+    slide.save()
+
+    return JsonResponse({'success': "slide tissue updated"})
+
+
 
 
 
@@ -724,8 +744,10 @@ def delete_region(request):
     rid = request.POST['rid']
 
     if user.is_authenticated:
-        if user.id == Region.objects.filter(rid=rid).created_by:
-            region = Region.objects.filter(rid=rid).delete
+        if user.id == Region.objects.filter(rid=rid, created_by=user):
+            print(Region.objects.filter(rid=rid, created_by=user))
+            region = Region.objects.filter(rid=rid, created_by=user)
+            region.delete()
             
     print('deleting region %s' % rid)
     # region = Region.objects.filter(rid=rid).delete()

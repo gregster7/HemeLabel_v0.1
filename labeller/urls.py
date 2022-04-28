@@ -20,6 +20,7 @@ from . import views
 urlpatterns = [
 
         path('add_note_to_slide', views.add_note_to_slide, name='add_note_to_slide'),
+        path('add_tissue_type_to_slide/', views.add_tissue_type_to_slide, name='add_tissue_type_to_slide'),
 
     ############################################################################################
     ################################ URLS THAT SERVE HTML PAGES ################################

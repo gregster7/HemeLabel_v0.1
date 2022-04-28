@@ -34,7 +34,7 @@ class Slide {
 	
 		  if ($this.hasClass("clicked_once")) {
 			$this.removeClass("clicked_once");
-			$this.removeClass('slide_info_down');
+			// $this.removeClass('slide_info_down');
 			$('#bigtable_' +sid).slideUp().removeClass("bigtable_box");
 			$('#slide_list_' +sid).addClass('slide_list_box');
 			$('#cell_total_'+sid).fadeOut();
@@ -49,7 +49,7 @@ class Slide {
 			  
 			  var cells_json_reformat = $.parseJSON(json['cells_json'].replace(/&quot;/ig,'"'));
 			  $this.addClass("clicked_once");
-			  $this.addClass('slide_info_down');
+			//   $this.addClass('slide_info_down');
 			  $('#slide_list_' +sid).removeClass("slide_list_box");
 			  $('#bigtable_' +sid).slideDown().addClass("bigtable_box");
 			  $('#cell_total_'+sid).html('Total: ' + cells_json_reformat.length).fadeIn();

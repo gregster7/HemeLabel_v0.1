@@ -11,14 +11,15 @@ class Region {
 	}
 
 	createRegionDiv() {
-		var new_div = '<div class="region_summary_div" id="'+this.getRegionDivID()+'">'
+		var new_div = '<div class="region_summary_div mb-3" id="'+this.getRegionDivID()+'">'
 		
-		new_div += '<ul class="region_summary_ul"><li class="region_summary_li">RID: '
-		new_div += '<a href="' +this.getRegionPageURL()+ '">' +this.rid+ '</a>';
-		new_div += '<li><button id="delete_region_button_'+this.rid+'" class="delete_region_button rid=' +this.rid+' ">Delete</button></li>'
+		new_div += '<ul class="region_summary_ul"><li class="region_summary_li"><b>RID: </b>'
+		new_div += '<a href="' +this.getRegionPageURL()+ '" class="btn basic-link-btn">' +this.rid+ '</a>';
+		new_div += '<li><button id="delete_region_button_'+this.rid+'" class="btn delete_region_button rid=' +this.rid+' ">Delete</button></li>'
 		new_div += '</ul>';
 		
 		new_div += '<img class="region_thumb" src="' + this.imgURL + '" id="'+this.getImageTagID()+'"></div>';
+		new_div += '<hr>';
 		
 		return new_div;
 	}

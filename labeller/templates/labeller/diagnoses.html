@@ -5,13 +5,16 @@
 
 {% block content %}
 
+<h2>Diagnoses ({{diagnoses|length}})</h2>
+
   <div class="container-fluid">
-    <div class="text-center p-4"> <h2>Diagnoses ({{diagnoses|length}})</h2></div>
     
       {% for diagnosis in diagnoses %}
       <div class="d-flex flex-row">
-        <p class="p-2">{{diagnosis}}</p>
-        <a href="/diagnosis/{{diagnosis.pk}}/" class="btn btn-primary p-2"><i class="bi-arrow-right-circle-fill"></i></a>  
+        <p class="px-2">{{diagnosis}}</p>
+        <a href="/diagnosis/{{diagnosis.pk}}/" class="btn btn-primary p-1">
+          <i class="bi-arrow-right-circle-fill"></i>
+        </a>  
         
       </div>
       <hr>
