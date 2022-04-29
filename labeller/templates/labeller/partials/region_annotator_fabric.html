@@ -1,5 +1,5 @@
 
-<div id="{{region.rid}}" class="region_container " style="width:{{region.floor_width}}px; display:flex; flex-direction: column;">
+<div id="{{region.rid}}" class="region_container container-fluid p-0" style="width:{{region.floor_width}}px; display:flex; flex-direction: column;">
 	<div id="region_container_fabric" style="height:{{region.floor_height}}px; width:{{region.floor_width}}px">
 		<div id='region_canvas_container' style="position:relative">
 		<!-- <canvas id="region_canvas_original" style="position:absolute"></canvas> -->
@@ -18,11 +18,11 @@
 	<button id="toggle_annotation_mode">Toggle annotation mode (Escape Key)</button> -->
 <!-- 	<button id="toggle_circles_button">Toggle annotation mode (,)</button>
  --><!-- 	<button id="toggle_squares_button">Toggle squares (.)</button> -->
-
- <div class="row justify-content-start slide_list_box " >
-	<div class="col p-2 justify-content-between">
-		<div class=" d-flex flex-nowrap">
-			<div><span class="dot_legend" style="background-color: yellow; border: solid 5px yellow;"></div> <div class="ml-5 pl-15 dot_legend_text">  Current Cell</div>
+<div class="container-fluid">
+	<div class="d-flex row">
+	<div class="col p-2 justify-content-start">
+		<div class="d-flex flex-nowrap">
+			<div><span class="dot_legend" style="background-color: yellow; border: solid 5px yellow;"></div> <div class="pl-2 dot_legend_text">  Current Cell</div>
 		</div>
 		<div class="d-flex flex-nowrap">
 			<div><span class="dot_legend" style="background-color: red; border: solid 5px red;"></div> <div class="pl-2 dot_legend_text">  Unlabelled Cell</div>
@@ -30,7 +30,7 @@
 		<div class="d-flex flex-nowrap">
 			<div><span class="dot_legend" style="background-color: cyan; border: solid 5px cyan;"></div> <div class="pl-2 dot_legend_text">  Labelled Cell</div>
 		</div>
-	 </div>
+		</div>
 	<div class="col p-2 justify-content-around"  >
 		<button id="delete_cell_button" class="btn p-0" ><i class="bi-trash"></i> Delete cell (\)</button><br>
 		<button id="toggle_annotation_mode" class="btn p-0"><i class="bi-circle-square"></i> Toggle annotation mode (Esc)</button>
@@ -48,6 +48,7 @@
 	</div>
 	<div class="col p-2 justify-content-left" >
 		{% include "labeller/partials/image_control_bars.html" %}
+	</div>
 	</div>
 </div>
 
@@ -198,6 +199,7 @@ class RegionLabellerFabric {
 
 	static setupNormalCanvas (){
 		$('#region_canvas_container').addClass('hidden')
+		// $('#region_canvas_container').hide();
 		// var canvas = new fabric.Canvas('fabric_canvas');
 		
 		// var canvas = new fabric.Canvas('region_canvas_original');
@@ -482,14 +484,23 @@ class RegionLabellerFabric {
 				RegionLabellerFabric.toggleDots();
 				toggleStatus = true;
 				$('#fabric_canvas').removeClass('hidden');
+				// $('#fabric_canvas').hide();
+
 				$('.canvas-container').removeClass('hidden');
+				// $('.canvas-container').show();
+
 				$('#region_canvas_container').addClass('hidden');
+				// $('#region_canvas_container').hide();
+
 			}
 		}
 		else {
 			$('#fabric_canvas').addClass('hidden');
+			// $('#fabric_canvas').hide();
 			$('.canvas-container').addClass('hidden');
+			// $('.convas-container').hide();
 			$('#region_canvas_container').removeClass('hidden');
+			// $('#region_canvas_container').show();
 		};
 	}
 
@@ -499,8 +510,12 @@ class RegionLabellerFabric {
 		//console.log('hiding', $('#fabric_canvas'));
 		if($('#fabric_canvas').hasClass('hidden')){
 			$('#fabric_canvas').removeClass('hidden');
+			// $('#fabric_canvas').show();
+
 		}
 		else {$('#fabric_canvas').addClass('hidden')};
+		// else {$('#fabric_canvas').hide()};
+
 	}
 
 	static convertTextToBool(text){

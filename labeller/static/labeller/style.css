@@ -392,9 +392,9 @@ Image height is 665px
   margin-bottom: 10px;
 }
 
-.slide_list_box {
+/* .slide_list_box {
   box-shadow: 5px 5px 5px rgba(102, 51, 153, 0.08);
-}
+} */
 
 #slides {
   list-style-type: none;
