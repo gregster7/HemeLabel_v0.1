@@ -29,7 +29,8 @@ SECRET_KEY = 'aly)kp%_f@9sl(!8dy-q3ncc#dc1&)af-uq)^iu&y8#%r$8a%f'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'HL4-env.eba-zcamwast.us-west-2.elasticbeanstalk.com', '127.0.0.1', 'hemepath.ai', 'www.hemepath.ai']
 
 
 # Application definition

@@ -52,6 +52,8 @@ urlpatterns = [
     re_path(r'^all_cells_for_diagnosis/(?P<diagnosis_id>\d+)/',
             views.all_cells_for_diagnosis, name='all_cells_for_diagnosis'),
 
+    re_path(r'^all_cells_for_diagnosis2/(?P<diagnosis_id>\d+)/',
+            views.all_cells_for_diagnosis2, name='all_cells_for_diagnosis2'),
 
     re_path(r'^cell_redirect/(?P<cell_pk>\d+)/',
             views.cell_redirect, name='cell_redirect'),
@@ -108,6 +110,8 @@ urlpatterns = [
 
     ########################################################################################################
     ############################################ AJAX FUNCTIONS ############################################
+    re_path(r'^generic_ajax_get/', views.generic_ajax_get,
+            name='generic_ajax_get'),
 
 #***************************** ADD NOTES ***************************#
         # path('add_note_to_slide/', views.add_note_to_slide, name='add_note_to_slide'),
@@ -121,6 +125,9 @@ urlpatterns = [
     # Called remove and not delete because diagnosis is not deleted. It is just removed as a ManyToMany relation from slide
     re_path(r'^remove_diagnosis_from_slide/',
             views.remove_diagnosis_from_slide, name='remove_diagnosis_from_slide'),
+
+    re_path(r'^get_number_of_slides_with_diagnosis_name/',
+            views.get_number_of_slides_with_diagnosis_name, name='get_number_of_slides_with_diagnosis_name'),
 
     #************************* REGION POSTS *************************#
     re_path(r'^add_new_region/', views.add_new_region,

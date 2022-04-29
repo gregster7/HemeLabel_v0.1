@@ -205,7 +205,7 @@ class Cell {
 	}
 
 	static LoadCellsFromJson (cells_json, celltypes_json){
-		console.log("Entering LoadCellsFromJson", celltypes_json);
+		//console.log("Entering LoadCellsFromJson", celltypes_json);
 		if (cells_json == "" ) {
 			console.log("LoadCellsFromJson - no cells");
 			return [];
@@ -362,7 +362,7 @@ class Cell {
 		if (cell_type == 'U1' || cell_type == 'U2' || cell_type == 'U3' || cell_type == 'U4'){
 			return 'misc';
 		}
-		if (cell_type.substring(0,1) == 'PL'){
+		if (cell_type.substring(0,2) == 'PL'){
 			return 'megakaryocytic';
 		}
 		if (cell_type == 'UL'){

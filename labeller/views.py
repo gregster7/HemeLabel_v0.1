@@ -28,7 +28,6 @@ from django.core.files import File
 from django.core.files.images import ImageFile
 
 import pandas as pd
-# import openpyxl
 import csv
 
 
@@ -444,12 +443,119 @@ def change_cell_location_helper(cid, left, top, width, height):
         return results
 
 
-# Used by slide_summary.html
 @login_required
+def generic_ajax_get(request):
+    GET = request.GET
+    # print(GET)
+    if (GET['id_type'] == 'diagnosis_pk'):
+        # print('generic_ajax_get')
+        diagnosis = Diagnosis.objects.get(id=GET['id_val'])
+        slides = Slide.objects.filter(diagnoses=diagnosis)
+        if (GET['query_type'] == 'count'):
+            cells = Cell.objects.filter(region__slide__in=slides)
+            count = CellType.objects.filter(
+                user=request.user, cell__in=cells, cell_type=GET['class_label_abb']).count()
+            # print(count)
+            results = {'success': True, 'count': count,
+                       'class_label_name': GET['class_label_name']}
+            return JsonResponse(results)
+        elif(GET['query_type'] == 'get_cells_interval'):
+            # cells = Cell.objects.filter(region__slide__in=slides)
+            # cell_types = CellType.objects.filter(
+            #     user=request.user, cell__in=cells, cell_type=GET['class_label_abb']).order_by('id')[int(GET['start']):int(GET['finish'])]
+            cell_types = CellType.objects.filter(
+                user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb']).order_by('id')[int(GET['start']):int(GET['finish'])]
+            new_cells = Cell.objects.filter(celltype__in=cell_types)
+
+            # for ct in cell_types:
+            #     print(str(ct))
+
+            # for cell in new_cells:
+            #     print(cell)
+            # print('counts')
+            # print('cell_types: ' + str(cell_types.count()))
+            # print('new_cells: ' + str(new_cells.count()))
+            # print('class_label_name', GET['class_label_name'])
+
+            results = {'success': True, 'cell_types_json': serializers.serialize("json", cell_types),
+                       'cells_json': serializers.serialize("json", new_cells),
+                       'class_label_name': GET['class_label_name'],
+                       'start': GET['start'], 'finish': GET['finish'],
+                       'class_label_abb': GET['class_label_abb']}
+            return JsonResponse(results)
+
+        elif(GET['query_type'] == 'all_cells_single_type'):
+            cell_types = CellType.objects.filter(
+                user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb']).order_by('id')
+            print('cell_types', cell_types)
+            new_cells = Cell.objects.filter(celltype__in=cell_types)
+            print('new_cells', new_cells)
+            results = {'success': True, 'cell_types_json': serializers.serialize("json", cell_types),
+                       'cells_json': serializers.serialize("json", new_cells),
+                       #    'class_label_name': GET['class_label_name'],
+                       'class_label_abb': GET['class_label_abb']}
+            return JsonResponse(results)
+
+        elif(GET['query_type'] == 'more_cells_single_type'):
+            print('more_cells_single_type')
+            print(GET['old_finish'])
+            print(GET['num_new_cells'])
+            old_finish = int(GET['old_finish'])
+            new_finish = old_finish+int(GET['num_new_cells'])
+            # if (new_finish > CellType.objects.filter(
+            #     user=request.user, cell__in=cells, cell_type=GET['class_label_abb']).count()){
+
+            # }
+            cell_types = CellType.objects.filter(
+                user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb']).order_by('id')[old_finish:new_finish]
+            new_cells = Cell.objects.filter(celltype__in=cell_types)
+            results = {'success': True, 'cell_types_json': serializers.serialize("json", cell_types),
+                       'cells_json': serializers.serialize("json", new_cells),
+                       #    'class_label_name': GET['class_label_name'],
+                       'class_label_abb': GET['class_label_abb'],
+                       'new_finish': new_finish}
+            return JsonResponse(results)
+
+        # elif(GET['query_type'] == 'get_cell'):
+        #     cells = Cell.objects.filter(region__slide__in=slides)
+        #     cell_types = CellType.objects.filter(
+        #         user=request.user, cell__in=cells, cell_type=GET['class_label_abb']).order_by('id')[int(GET['start']):int(GET['finish'])]
+        #     results = {'success': True, 'cell_types': serializers.serialize("json", cell_types),
+        #                'class_label_name': GET['class_label_name']}
+        #     return JsonResponse(results)
+
+        # results = get_all_cells_generic_helper(
+        #     request, 'diagnosis_pk', GET['query_parent_id'])
+        # print(results)
+    # project_id = GET['project_id']
+    # print(project_id)
+    # project = Project.objects.get(id=project_id)
+    # cells_json = serializers.serialize("json", project.cell_set.all())
+    results = {'success': True}
+    # results = {'success': True, 'cells_json': cells_json,
+    #            'celltypes_json': getAllCellTypesUserJSON(request.user)}
+    return JsonResponse(results)
+
+# Used by slide_summary.html
+
+
+@ login_required
 def get_all_cells_generic(request):
     GET = request.GET
     id_type = GET['id_type']
     id_val = GET['id_val']
+    print(id_type, id_val)
+    results = get_all_cells_generic_helper(request, id_type, id_val)
+    return JsonResponse(results)
+
+# Used by slide_summary.html
+
+
+@ login_required
+def get_all_cells_generic_helper(request, id_type, id_val):
+    # GET = request.GET
+    # id_type = GET['id_type']
+    # id_val = GET['id_val']
     print(id_type, id_val)
     if (id_type == 'sid'):
         cells = Cell.objects.filter(region__slide__sid=id_val)
@@ -470,19 +576,24 @@ def get_all_cells_generic(request):
         slides = Slide.objects.filter(diagnoses=diagnosis, created_by=request.user)
         cells = Cell.objects.filter(region__slide__in=slides)
         cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+        print('diagnosis', diagnosis)
+        print('slides', slides)
+        print('cells', cells)
+        print('cellTypes', cellTypes)
     else:
         results = {'success': False}
-        return JsonResponse(results)
+        return results
 
     results = {'success': True, 'cells_json': serializers.serialize(
         "json", cells), 'celltypes_json': serializers.serialize("json", cellTypes)}
+    print('results', results)
     # print('get all cells generic results', results['cells_json'])
-    return JsonResponse(results)
+    return results
 
 # Used by CellCounter.js
 
 
-@login_required
+@ login_required
 def get_all_cells_in_region(request):
     #	print("get_all_cells_in_region", request)
     GET = request.GET
@@ -498,7 +609,7 @@ def get_all_cells_in_region(request):
 # Used by slides.html
 
 
-@login_required
+@ login_required
 def get_all_cells_in_slide(request):
     print('get_all_cells_in_slide(request)', request)
     GET = request.GET
@@ -515,7 +626,7 @@ def get_all_cells_in_slide(request):
 # Currently only used by returnObjectToOlDCoordinates(canvas, obj) in Cell.js, which is why celltype is not sent
 
 
-@login_required
+@ login_required
 def get_cell_json(request):
     GET = request.GET
     cid = GET['cid']
@@ -584,7 +695,7 @@ def create_new_cell(rid, left, top, width, height, user):
         return results
 
 
-@login_required
+@ login_required
 def add_new_cell_box(request):
     POST = request.POST
     rid = int(POST['rid'])
@@ -602,7 +713,7 @@ def add_new_cell_box(request):
     return JsonResponse(results)
 
 
-@login_required
+@ login_required
 def toggle_region_complete_class(request):
     POST = request.POST
     rid = int(POST['rid'])
@@ -616,7 +727,7 @@ def toggle_region_complete_class(request):
     return JsonResponse(results)
 
 
-@login_required
+@ login_required
 def toggle_region_complete_seg(request):
     POST = request.POST
     rid = int(POST['rid'])
@@ -630,7 +741,7 @@ def toggle_region_complete_seg(request):
     return JsonResponse(results)
 
 
-@login_required
+@ login_required
 def add_diagnosis_to_slide(request):
     try:
         POST = request.POST
@@ -737,7 +848,7 @@ def add_tissue_type_to_slide(request):
 # 	return JsonResponse(create_new_cell(rid, left, top, box_dim, box_dim, request.user))
 
 
-@login_required
+@ login_required
 def delete_region(request):
 
     user = request.user
@@ -757,7 +868,7 @@ def delete_region(request):
 # Needs updating with celltypes
 
 
-@login_required
+@ login_required
 def delete_cell(request):
     POST = request.POST
     cid = POST['cid']
@@ -768,7 +879,7 @@ def delete_cell(request):
     return JsonResponse(results)
 
 
-@login_required
+@ login_required
 def add_new_region(request):
     POST = request.POST
     sid = POST['sid']
@@ -891,7 +1002,7 @@ def getCellTypeName(cellType):
     return getCellTypeNameFromStringCode(cellType.cell_type)
 
 
-@login_required
+@ login_required
 def update_cell_class(request):
     #	user = request.user
     POST = request.POST
@@ -907,21 +1018,18 @@ def update_cell_class(request):
     return JsonResponse(results)
 
 
-@login_required
-def update_cell_class_in_project(request):
-    POST = request.POST
-    # cell = Cell.objects.get(cid=POST['cid'])
-    # cell.cell_type = POST['cell_label']
-    # cell.save()
-    update_cellType_helper(request.user, Cell.objects.get(
-        cid=POST['cid']), POST['cell_label'])
-
-    results = {'success': True,
-               'cells_json': get_all_cells_json_project(cell.project)}
-    return JsonResponse(results)
-
-
-@login_required
+@ login_required
+# def update_cell_class_in_project(request):
+#     POST = request.POST
+#     # cell = Cell.objects.get(cid=POST['cid'])
+#     # cell.cell_type = POST['cell_label']
+#     # cell.save()
+#     update_cellType_helper(request.user, Cell.objects.get(
+#         cid=POST['cid']), POST['cell_label'])
+#     results = {'success': True,
+#                'cells_json': get_all_cells_json_project(cell.project)}
+#     return JsonResponse(results)
+@ login_required
 def data_export(request):
     regions = Region.objects.all()
     regions_json = serializers.serialize("json", Region.objects.all())
@@ -933,7 +1041,7 @@ def data_export(request):
     return render(request, 'labeller/data_export.html', context)
 
 
-@login_required
+@ login_required
 def stats(request):
     regions = Region.objects.all()
     regions_json = serializers.serialize("json", Region.objects.all())
@@ -945,7 +1053,7 @@ def stats(request):
     return render(request, 'labeller/stats.html', context)
 
 
-@login_required
+@ login_required
 def cell_redirect(request, cell_pk):
     cell = Cell.objects.get(id=cell_pk)
     # return label_region_fabric(request, cell.region.rid)
@@ -953,7 +1061,7 @@ def cell_redirect(request, cell_pk):
     return HttpResponseRedirect('/label_region_fabric/'+str(cell.region.rid)+'/')
 
 
-@login_required
+@ login_required
 def label_region_fabric(request, region_id):
     print('Entering label_region_fabric', request.user)
     if (request.user.username == 'admin'):
@@ -994,7 +1102,7 @@ def label_region_fabric(request, region_id):
     return render(request, 'labeller/label_region_fabric.html', context)
 
 
-@login_required
+@ login_required
 def get_all_cells_in_project(request):
     GET = request.GET
     project_id = GET['project_id']
@@ -1029,20 +1137,60 @@ def register(request):
     return render(request, 'labeller/register.html', {'form': form})
 
 
+# Not currenlty in use
+@ login_required
+def get_number_of_slides_with_diagnosis_name(request):
+    GET = request.GET
+    diagnosis_name = GET['diagnosis_name']
+    print(diagnosis_name)
+
+    diagnosis_count = 0
+    for slide in Slide.objects.all():
+        for diagnosis in slide.diagnoses.all():
+            if diagnosis.name == diagnosis_name:
+                diagnosis_count += 1
+
+    results = {'success': True, 'diagnosis_count': diagnosis_count}
+    return JsonResponse(results)
+
+
+def calculate_slide_diagnosis_counts(slides, diagnoses):
+    diagnosis_counts = {}
+    for diagnosis in diagnoses:
+        diagnosis_counts[diagnosis.name] = 0
+
+    slides = Slide.objects.all()
+    for slide in slides:
+        for diagnosis in slide.diagnoses.all():
+            diagnosis_counts[diagnosis.name] += 1
+
+    print(diagnosis_counts)
+    return diagnosis_counts
+
 # Diagnoses page view
-@login_required
+
+
+@ login_required
 def diagnoses(request):
     """Show all projects"""
     # user_projects = Project.objects.filter(user=request.user.get_username()).order_by('id')
     # context = {'user_projects': user_projects}
     diagnoses = Diagnosis.objects.all()
-    context = {'diagnoses': diagnoses}
+
+    diagnosis_counts = calculate_slide_diagnosis_counts(
+        Slide.objects.all(), diagnoses)
+    serializers.serialize
+
+    context = {'diagnoses': diagnoses,
+               'diagnosis_counts_json': json.dumps(diagnosis_counts),
+               #    'diagnosis_counts': diagnosis_counts
+               }
 
     return render(request, 'labeller/diagnoses.html', context)
 
 
 # Projects page view
-@login_required
+@ login_required
 def projects(request):
     """Show all projects"""
     # user_projects = Project.objects.filter(user=request.user.get_username()).order_by('id')
@@ -1059,7 +1207,7 @@ def projects(request):
     # return Project.objects.filter(user)
 
 
-@login_required
+@ login_required
 def create_project(request):
     if request.method == 'POST':
         if request.POST.get('project') != None:
@@ -1079,7 +1227,7 @@ def create_project(request):
 
 
 # Needs updating with celltypes
-@login_required
+@ login_required
 def export_project_data(request):
     GET = request.GET
     project_id = GET['project_id']
@@ -1126,7 +1274,7 @@ def generate_cell_image_with_vips(region, cid, left, top, width, height):
 # Upload handler for dzi WSIs and also Excel files relating to them
 
 
-@login_required
+@ login_required
 def dropzone_slide(request):
     print('entering dropzone_slide')
     if request.method == "POST":
@@ -1182,7 +1330,7 @@ def dropzone_slide(request):
     return
 
 
-@login_required
+@ login_required
 def dropzone_image_w_projectID(request, project_id):
     print("entering dropzone_image_w_projectID")
     if request.method == "POST":
@@ -1214,7 +1362,8 @@ def dropzone_image_w_projectID(request, project_id):
             print(cells_json)
             cell = Cell.objects.create(created_by=request.user, image=image, cid=cid,
                                        name=name, project=project, project_id=project_id, cell_type=cell_type)
-            new_cell_type = CellType.objects.create(cell=new_cell, user=user)
+            new_cell_type = CellType.objects.create(
+                cell=cell, user=request.user)
             cell.save()
             update_cellType_helper(request.user, cell, cell_type)
             cell_list.append(cell)
@@ -1228,7 +1377,7 @@ def dropzone_image_w_projectID(request, project_id):
     return HttpResponse()
 
 
-@login_required
+@ login_required
 def all_cells_for_diagnosis(request, diagnosis_id):
     diagnosis = Diagnosis.objects.get(id=diagnosis_id)
 
@@ -1251,7 +1400,22 @@ def all_cells_for_diagnosis(request, diagnosis_id):
     return render(request, 'labeller/all_cells_for_diagnosis.html', context)
 
 
-@login_required
+@ login_required
+def all_cells_for_diagnosis2(request, diagnosis_id):
+    diagnosis = Diagnosis.objects.get(id=diagnosis_id)
+    # slides = Slide.objects.filter(diagnoses=diagnosis)
+    # cells = Cell.objects.filter(region__slide__in=slides.all())
+    # cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+    # cells_json = serializers.serialize("json", cells)
+    # celltypes_json = serializers.serialize("json", cellTypes)
+    context = {'diagnosis': diagnosis}
+    # context = {'diagnosis': diagnosis, 'cells': cells,
+    #            'cells_json': cells_json, 'celltypes_json': celltypes_json}
+
+    return render(request, 'labeller/all_cells_for_diagnosis2.html', context)
+
+
+@ login_required
 def diagnosis(request, diagnosis_id):
     diagnosis = Diagnosis.objects.get(id=diagnosis_id)
 
@@ -1281,7 +1445,7 @@ def diagnosis(request, diagnosis_id):
     return render(request, 'labeller/diagnosis.html', context)
 
 
-@login_required
+@ login_required
 def project(request, project_id):
     project = Project.objects.get(id=project_id)
     # slides = Slide.objects.filter(project_with_slides=project)
@@ -1299,7 +1463,7 @@ def project(request, project_id):
 # Not currently in use - may require fixing
 
 
-@login_required
+@ login_required
 def label_cells_in_project(request, project_id):
     """label cells in a given project"""
     print(project_id)
