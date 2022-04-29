@@ -76,4 +76,35 @@ class Diagnosis {
 		});
 	}
 
-}	
+
+	// ******************** Add Notes *******************
+
+	static getSlideNoteDiv(slide_sid, note_text) {
+		var noteDiv = `<div class="p-2 note_div_slide_${slide_sid}" id="note_div_${slide_sid}">`;
+		noteDiv += note_text;
+		noteDiv += '<button id="delete_note_'+slide_sid+'" class="'+slide_sid+' ' +'btn p-0">';
+		noteDiv += '<i class="bi-trash"></i></button></div>';
+		return noteDiv;
+	}
+
+	static addNoteToSlideAJAX(slide_sid, slide_note) {
+		console.log('entering ADDNOTETOSLIDEAJAX');
+		$.post("/add_note_to_slide/", {'slide_sid': slide_sid}, function(json) {
+
+			if(json['success'] == true) {
+
+				$('#slide_notes_row_'+slide_sid).append(Diagnosis.getSlideNoteDiv(slide_sid, slide_note));
+				// Aboce ID Does note exist. Also - because there can only be 1 note per slide - this makes even LESS sense....
+				
+				$('#delete_note_'+slide_sid).on('click', Diagnosis.removeNoteFromSlideClickHandler);
+			};
+		});
+	};
+
+	// static removeNoteFromSlideClickHandler(e) {
+	// 	var classes_as_array = this.classList.value.split(' ');
+	// 	var slide_pk = classes_as_array[0];
+	// 	Diagnosis.removeNoteFromSlideClickHandler(slide_pk);
+	// };
+
+}

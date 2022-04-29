@@ -1,4 +1,4 @@
-{% extends "labeller/base.html" %}
+{% extends "labeller/base2.html" %}
 {% load static %}
 
 {% block title %}Label Region{% endblock %}
@@ -7,22 +7,28 @@
 <script src="{% static 'labeller/Cell.js' %}"></script>
 <script src="{% static 'labeller/CellCounter.js' %}"></script>
 
+<h2>Select & Label Cells</h2>
+
 {% include "labeller/partials/help_display.html" %}
+
 <div id="current_cell_popout" >
 	<h3 id='current_cell_title'>Current Cell</h2>
 </div>
 
-<div class="mb-5">
+<div class="mb-5 mt-3">
 {% include "labeller/partials/region_annotator_fabric.html" %}
 
-{% include "labeller/partials/cell_summary.html" %}
+
 <!-- <div id="test_keyboard">Last Key Pressed: </div>  -->
 
 <div id="region_info_headline"></div>
 
 <script src="{% static 'labeller/Diagnosis.js' %}"></script>
-{% include "labeller/partials/slide_diagnoses.html" %}
 
+<div class="container-fluid slide_box pb-3">
+{% include "labeller/partials/slide_diagnoses.html" %}
+{% include "labeller/partials/cell_summary2.html" %}
+</div>
 
 <div class="mb-5"></div>
 {% include "labeller/partials/main_lineages_horizontal.html" %}
@@ -51,14 +57,14 @@
 		width = width.substr(0, width.indexOf('.'));
 		height = height.substr(0, height.indexOf('.'));
 
-		var ul = '<ul class="py-3 justify-content-center  slide_list slide_list_box">';
-		ul = ul + '<li ><b>Region information</b></li>';
-		ul = ul + '<li class="slide_id">ID: '+ id +'</li>';
-		ul = ul + '<li class="slide_sid">RID: '+ rid +'</li>';
-		ul = ul + '<li> x: ' +x+ '</li>';
-		ul = ul + '<li> y: ' +y+ '</li>';
-		ul = ul + '<li> width: ' +width+ '</li>';
-		ul = ul + '<li> height: ' +height+ '</li>';
+		var ul = '<ul class="py-3 justify-content-center region-info">';
+		ul = ul + '<li class="region-info-header"><b>Region Information:</b></li>';
+		ul = ul + '<li class="slide_id pl-2"> <b>ID: </b>'+ id +'</li>';
+		ul = ul + '<li class="slide_sid pl-2"> <b>RID: </b>'+ rid +'</li>';
+		ul = ul + '<li class="pl-2"> <b>x: </b>' +x+ '</li>';
+		ul = ul + '<li class="pl-2"> <b>y: </b>' +y+ '</li>';
+		ul = ul + '<li class="pl-2"> <b>width: </b>' +width+ '</li>';
+		ul = ul + '<li class="pl-2"> <b>height: </b>' +height+ '</li>';
 		ul = ul + '</ul>'
 		return ul;
 	};

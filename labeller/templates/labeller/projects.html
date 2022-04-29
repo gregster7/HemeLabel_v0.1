@@ -1,4 +1,4 @@
-{% extends 'labeller/base.html' %}
+{% extends 'labeller/base2.html' %}
 {% load static %}
 
 {% block title %}Projects{% endblock %}
@@ -84,7 +84,7 @@
     <form action='/create_project' method="POST" class="new_project">
       {% csrf_token %}
       New Project: <input type="text" name="project" required />
-      <button id="create_project_button">Create</button>
+      <button id="create_project_button" class="btn upload-btn">Create</button>
     </form>
   </p>
 
@@ -96,7 +96,7 @@
 
       <script>
         console.log("{{ project.name }}");
-        $('#projects').append(getULForProject("{{project.name}}", {{project.id}}))
+        $('#projects').append(getULForProject("{{project.name}} | {{project.created_by}}", {{project.id}}))
       </script>
 
       {% empty %}

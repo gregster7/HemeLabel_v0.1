@@ -1,7 +1,10 @@
+from distutils.log import error
+from pdb import post_mortem
+from urllib import request
 from HL_site.settings import DATA_EXPORT_ROOT
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.core import serializers
 from django.http import JsonResponse
 import json
@@ -9,10 +12,12 @@ import os
 from datetime import datetime
 from django.db import models
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 from django.contrib.auth import login, authenticate
 
 from django.contrib.auth.models import User
+from django.views.generic import CreateView
 
 from .models import Region, Cell, Slide, Project, CellType, Diagnosis
 from .forms import UserForm, CellFeatureForm
@@ -255,7 +260,11 @@ def export_cell_data(request):
 @login_required
 def regions(request):
     """Show all regions."""
-    regions = Region.objects.order_by('rid')
+    # regions = Region.objects.order_by('rid')
+    user = request.user
+    if user.is_authenticated:
+        regions = Region.objects.filter(created_by=request.user).order_by('-date_added')
+
     regions_json = serializers.serialize("json", regions)
 
     print('regions_json', regions_json)
@@ -277,7 +286,17 @@ def get_cell_feature_form(request):
 @login_required
 def slides(request):
     """Show all regions."""
-    slides = Slide.objects.order_by('sid')
+    # print(request.user.username)
+    
+
+    # if request.user.is_authenticated:
+    #     if request.user == Slide.objects.filter(created_by=request.user):
+    #         slides = Slide.objects.order_by('sid')
+    #     else:
+    #         return error_403(request)
+    tissues = Slide.TISSUE_CHOICES
+    print(tissues)
+    slides = Slide.objects.filter(created_by=request.user).order_by('sid')
     slides_json = serializers.serialize("json", slides)
     if (len(slides) > 0):
         slides_json = serializers.serialize("json", slides)
@@ -337,20 +356,40 @@ def label_slide_bootstrap(request, slide_id):
 @login_required
 def label_slide(request, slide_id):
     print('label_slide', request, slide_id)
-    slide = Slide.objects.get(sid=slide_id)
 
-    diagnoses = slide.diagnoses
+    if request.user.is_authenticated:
+        if request.user == Slide.objects.get(sid=slide_id).created_by:
+            slide = Slide.objects.get(sid=slide_id)
+            # slide = Slide.objects.filter(create_by=request.user)
+            # regions = Region.objects.filter(created_by=request.user)
+            regions = slide.region_set.all()
+
+            diagnoses = slide.diagnoses
+
+            cells = Cell.objects.filter(created_by=request.user, region__slide=slide)
+            cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+
+            cells_json = serializers.serialize("json", cells)
+            celltypes_json = serializers.serialize("json", cellTypes)
+
+        else:
+            return error_403(request)
+
+
+    # slide = Slide.objects.get(sid=slide_id)
+
+    # diagnoses = slide.diagnoses
     #	print('diagnoses', diagnoses)
     # regions = slide.region_set.all()
 
-    cells = Cell.objects.filter(region__slide=slide)
-    cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+    # cells = Cell.objects.filter(region__slide=slide)
+    # cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
     # print(cells)
 
-    cells_json = serializers.serialize("json", cells)
-    celltypes_json = serializers.serialize("json", cellTypes)
+    # cells_json = serializers.serialize("json", cells)
+    # celltypes_json = serializers.serialize("json", cellTypes)
 
-    context = {'slide': slide, 'dx_options': Diagnosis.objects.all(
+    context = {'slide': slide, 'regions': regions, 'dx_options': Diagnosis.objects.all(
     ), 'cells': cells, 'cells_json': cells_json, 'celltypes_json': celltypes_json}
     return render(request, 'labeller/label_slide.html', context)
 
@@ -534,7 +573,7 @@ def get_all_cells_generic_helper(request, id_type, id_val):
         cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
     elif (id_type == 'diagnosis_pk'):
         diagnosis = Diagnosis.objects.get(id=id_val)
-        slides = Slide.objects.filter(diagnoses=diagnosis)
+        slides = Slide.objects.filter(diagnoses=diagnosis, created_by=request.user)
         cells = Cell.objects.filter(region__slide__in=slides)
         cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
         print('diagnosis', diagnosis)
@@ -733,6 +772,70 @@ def remove_diagnosis_from_slide(request):
         print(e)
         return JsonResponse({'success': False})
 
+# Function to add Notes to Slide + Region
+@login_required
+@csrf_exempt
+def add_note_to_slide(request):
+    id = request.POST.get('slide_sid')
+    print(id)
+    type = request.POST.get('type')
+    print(type)
+    value = request.POST.get('value')
+    print(value)
+    slide = Slide.objects.get(sid=id)
+    print(slide)
+    slide.notes = value
+
+    slide.save()
+
+    return JsonResponse({'success': "slide note updated"})
+
+@login_required
+@csrf_exempt
+def add_tissue_type_to_slide(request):
+    id = request.POST.get('slide_sid')
+    print(id)
+    key = request.POST.get('key')
+    print(key)
+    slide = Slide.objects.get(sid=id)
+    print(slide)
+
+    slide.tissue = key
+
+    print(slide.tissue)
+    
+    slide.save()
+
+    return JsonResponse({'success': "slide tissue updated"})
+
+
+
+
+
+
+
+# @login_required
+# def add_note_to_slide(request):
+#     try:
+#         POST = request.POST
+#         print('CANNONBALL RUN!')
+#         # print(POST)
+#         note = Slide.objects.get(id=POST['slide.sid']).value()
+#         # print(note)
+#         slide = Slide.objects.get(id=POST['slide.sid'])
+#         slide.notes.add(note)
+#         slide.save()
+#         # print(slide, slide.notes)
+#         # print('success')
+#         return JsonResponse({'success': True})
+
+#     except Exception as e:
+#         # print(e)
+#         print('fail')
+
+#         return JsonResponse({'success': False})
+        
+
 # @login_required
 # def add_new_cell(request):
 # 	POST = request.POST
@@ -747,9 +850,18 @@ def remove_diagnosis_from_slide(request):
 
 @ login_required
 def delete_region(request):
+
+    user = request.user
     rid = request.POST['rid']
+
+    if user.is_authenticated:
+        if user.id == Region.objects.filter(rid=rid, created_by=user):
+            print(Region.objects.filter(rid=rid, created_by=user))
+            region = Region.objects.filter(rid=rid, created_by=user)
+            region.delete()
+            
     print('deleting region %s' % rid)
-    region = Region.objects.filter(rid=rid).delete()
+    # region = Region.objects.filter(rid=rid).delete()
     results = {'success': True}
     return JsonResponse(results)
 
@@ -967,6 +1079,13 @@ def label_region_fabric(request, region_id):
     # 	update_cellType_helper(request.user, cell, cell.cell_type)
 
     """label cells on a region"""
+    print("THIS IS THE  SPINALTAP")
+    if request.user.is_authenticated:
+        if request.user == Region.objects.get(rid=region_id).created_by:
+            region = Region.objects.get(rid=region_id)
+        else:
+            return error_403(request)
+            
     region = Region.objects.get(rid=region_id)
     slide = region.slide
     cells = region.cell_set.all()
@@ -1077,7 +1196,7 @@ def projects(request):
     # user_projects = Project.objects.filter(user=request.user.get_username()).order_by('id')
     # context = {'user_projects': user_projects}
 
-    projects = Project.objects.order_by('id')
+    projects = Project.objects.filter(created_by=request.user).order_by('id')
     context = {'projects': projects}
     print(Project.id)
 
@@ -1261,11 +1380,21 @@ def dropzone_image_w_projectID(request, project_id):
 @ login_required
 def all_cells_for_diagnosis(request, diagnosis_id):
     diagnosis = Diagnosis.objects.get(id=diagnosis_id)
-    slides = Slide.objects.filter(diagnoses=diagnosis)
-    cells = Cell.objects.filter(region__slide__in=slides.all())
-    cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
-    cells_json = serializers.serialize("json", cells)
-    celltypes_json = serializers.serialize("json", cellTypes)
+
+    user = request.user
+    if user.is_authenticated:
+        slides = Slide.objects.filter(diagnoses=diagnosis, created_by=user)
+        cells = Cell.objects.filter(region__slide__in=slides.all())
+        cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+        cells_json = serializers.serialize("json", cells)
+        celltypes_json = serializers.serialize("json", cellTypes)
+
+
+    # slides = Slide.objects.filter(diagnoses=diagnosis)
+    # cells = Cell.objects.filter(region__slide__in=slides.all())
+    # cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+    # cells_json = serializers.serialize("json", cells)
+    # celltypes_json = serializers.serialize("json", cellTypes)
     context = {'diagnosis': diagnosis, 'cells': cells,
                'cells_json': cells_json, 'celltypes_json': celltypes_json}
     return render(request, 'labeller/all_cells_for_diagnosis.html', context)
@@ -1291,7 +1420,14 @@ def diagnosis(request, diagnosis_id):
     diagnosis = Diagnosis.objects.get(id=diagnosis_id)
 
     # https://www.sankalpjonna.com/learn-django/the-right-way-to-use-a-manytomanyfield-in-django
-    slides = Slide.objects.filter(diagnoses=diagnosis)
+    # slides = Slide.objects.filter(diagnoses=diagnosis)
+
+    user = request.user
+    if user.is_authenticated:
+        slides = Slide.objects.filter(diagnoses=diagnosis, created_by=user)
+        # diagnosis = diagnosis.slides_with_diagnosis.all()
+        print(diagnosis)
+
     # for slide in slides:
     # 	print(slide, Cell.objects.filter(region__slide=slide))
     # print(slides)
@@ -1347,6 +1483,11 @@ def label_cells_in_project(request, project_id):
     print(context)
 
     return render(request, 'labeller/label_cells_in_project.html', context)
+
+
+# CUSTOM ERROR PAGES - WILL NEED SOME WORK. IE NOT SURE WHAT ERROR CODES TO USE, ETC....
+def error_403(request):
+    return render(request, 'errormsgs/error_403.html')    
 
 # def update_cell_class(request):
 # 	results = {'success':False}

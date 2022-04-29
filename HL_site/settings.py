@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # My apps
     'labeller',
     'export',
+    # 'inplaceeditform',
 
     'django.contrib.admin',
     'django.contrib.auth',

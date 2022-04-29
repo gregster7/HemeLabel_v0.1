@@ -124,6 +124,7 @@ class Slide (models.Model):
 
     def __str__(self):
         """Return a string representation of the model."""
+        # return str(self.name)
 
         dx_str = ""
         for dx in self.diagnoses.all():

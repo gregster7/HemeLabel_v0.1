@@ -19,6 +19,9 @@ from django.urls import path, include, re_path
 from . import views
 urlpatterns = [
 
+        path('add_note_to_slide', views.add_note_to_slide, name='add_note_to_slide'),
+        path('add_tissue_type_to_slide/', views.add_tissue_type_to_slide, name='add_tissue_type_to_slide'),
+
     ############################################################################################
     ################################ URLS THAT SERVE HTML PAGES ################################
 
@@ -110,6 +113,12 @@ urlpatterns = [
     re_path(r'^generic_ajax_get/', views.generic_ajax_get,
             name='generic_ajax_get'),
 
+#***************************** ADD NOTES ***************************#
+        # path('add_note_to_slide/', views.add_note_to_slide, name='add_note_to_slide'),
+        # path('slides/add_note_to_slide/', views.CreateSlideNoteView.as_view(), name="add_note_to_slide"),
+        # re_path(r'^add_note_to_slide/', views.CreateSlideNoteView.as_view(), name='add_note_to_slide'),
+        # path('slides/get_slide_notes/', views.get_slide_notes, name='get_slide_notes'),
+    re_path(r'^add_note_to_slide/', views.add_note_to_slide, name='add_note_to_slide'),
     #************************* SLIDE POSTS *************************#
     re_path(r'^add_diagnosis_to_slide/',
             views.add_diagnosis_to_slide, name='add_diagnosis_to_slide'),
@@ -183,6 +192,9 @@ urlpatterns = [
             name='dropzone_slide_upload'),
 
     #***********************************************************************************#
+
+        # CUSTOM ERROR PAGES
+    path('403/', views.error_403, name='403_forbidden'),
 
 ]
 

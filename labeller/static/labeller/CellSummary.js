@@ -78,7 +78,7 @@ class CellSummary {
     getNewULForSlide(){
       var div = '<div class="container-fluid">\
               <div class="d-flex flex-row align-middle">\
-                <button type="button" id="slide_info_'+this.id_type+'_'+this.id_val+'" class="slide_info p-2 btn btn-slide-info">Open Cell Summary</button>\
+                <button type="button" id="slide_info_'+this.id_type+'_'+this.id_val+'" class="btn btn-secondary">Open Cell Summary</button>\
                 <div id="cell_total_'+this.id_type+'_'+this.id_val+'" class="cell_total p-2"></div>\
               </div>\
               <div id="bigtable_' +this.id_type+'_'+this.id_val+ '" class="bigtable p-2">' +this.createBigTable()+
@@ -96,7 +96,7 @@ class CellSummary {
       //ul = ul + '<li class="cell_table_id">'+this.id_type+': '+ this.id_val +'</li>';
       // ul = ul + '<li class="label_btn"><a class="slide_label_btn" href= "'+ slide_path+'">Label</a></li>';
       // ul = ul + '<li class="slide_name" id="slide_name_' +sid+ '">Name: ' +slide_name+ '</li>';
-      ul = ul + '<li><button type="button" id="slide_info_'+this.id_type+'_'+this.id_val+'" class="slide_info">Labelling Summary</li>';
+      ul = ul + '<li><button type="button" id="slide_info_'+this.id_type+'_'+this.id_val+'" class="slide_info btn btn-secondary">Labelling Summary</li>';
       ul = ul + '<li id="cell_total_'+this.id_type+'_'+this.id_val+'" class="cell_total"></li></ul>';
       ul = ul + '<div id="bigtable_' +this.id_type+'_'+this.id_val+ '" class="bigtable">' +this.createBigTable()+ '</div>';
    
@@ -128,7 +128,7 @@ class CellSummary {
 
         if ($this.hasClass("clicked_once")) {
           $this.removeClass("clicked_once");
-          $this.removeClass('slide_info_down');
+          // $this.removeClass('slide_info_down');
           $('#bigtable_' +id_type+'_'+id_val).slideUp().removeClass("bigtable_box");
           $('#slide_list_' +id_type+'_'+id_val).addClass('slide_list_box');
           $('#cell_total_'+id_type+'_'+id_val).fadeOut();
@@ -148,7 +148,7 @@ class CellSummary {
               //console.log(cells_json_reformat);
 
               $this.addClass("clicked_once");
-              $this.addClass('slide_info_down');
+              // $this.addClass('slide_info_down');
               $('#slide_list_' +id_type+'_'+id_val).removeClass("slide_list_box");
               $('#bigtable_' +id_type+'_'+id_val).slideDown().addClass("bigtable_box");
               $('#cell_total_'+id_type+'_'+id_val).html('Total: ' + cells_json_reformat.length).fadeIn();
@@ -180,6 +180,13 @@ class CellSummary {
         };
       });
     }
+
+// ************************* Slide Notes **********************************
+
+
+
+
+
   }
 
 

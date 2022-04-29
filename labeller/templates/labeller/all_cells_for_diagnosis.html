@@ -17,8 +17,8 @@
 <h2>All Cells for Diagnosis: {{diagnosis.name}}</h2>
 
 <!-- Cell Summary -->
-<div class="container-fluid justify-content-center slide_box">
-  <div class="container-fluid m-2 py-4">
+<div class="container-fluid justify-content-center slide_box mt-3 mb-3">
+  <div class="container-fluid p-4">
     {% include "labeller/partials/cell_summary2.html" %}
     <script>$('#slide_info_diagnosis_pk_{{diagnosis.pk}}').text('Open cell summary for all slides with {{diagnosis.name}}')</script>
   </div>
