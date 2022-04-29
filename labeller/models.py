@@ -241,9 +241,9 @@ class Cell(models.Model):
     center_x_slide = models.FloatField(default=-1)
     center_y_slide = models.FloatField(default=-1)
 
-    def getCellFeatureForm(self):
-        cellFeatureForm = CellFeatureForm(instance=self)
-        return cellFeatureForm
+    # def getCellFeatureForm(self):
+    #     cellFeatureForm = CellFeatureForm(instance=self)
+    #     return cellFeatureForm
 
     def GetCenter_x_slide(self):
         "return center_x relative to slide instead of region"
