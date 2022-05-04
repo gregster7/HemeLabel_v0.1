@@ -21,6 +21,7 @@ urlpatterns = [
 
         path('add_note_to_slide', views.add_note_to_slide, name='add_note_to_slide'),
         path('add_tissue_type_to_slide/', views.add_tissue_type_to_slide, name='add_tissue_type_to_slide'),
+        path('add_blind_collab_to_slide/', views.add_blind_collab_to_slide, name='add_blind_collab_to_slide'),
 
     ############################################################################################
     ################################ URLS THAT SERVE HTML PAGES ################################
@@ -185,6 +186,10 @@ urlpatterns = [
     #re_path(r'^label_cell_fabric/(?P<project_id>\d+)/dropzone_image', views.dropzone_image_w_projectID, name='dropzone_image_w_projectID'),
     re_path(r'^label_cells_in_project/(?P<project_id>\d+)/dropzone_image',
             views.dropzone_image_w_projectID, name='dropzone_image_w_projectID'),
+
+        # re_path(r'^project/(?P<project_id>\d+)/project_dropzone_slide', views.project_dropzone_slide, name='project_dropzone_slide'),
+
+        re_path(r'^project_dropzone_slide/(?P<project_id>\d+)/', views.project_dropzone_slide, name='project_dropzone_slide'),
 
     # Handles dropzone uploaded slides or slide spreadsheets
     #re_path(r'^label_cells_in_project/dropzone_slide', views.dropzone_slide, name='dropzone_slide_upload'),

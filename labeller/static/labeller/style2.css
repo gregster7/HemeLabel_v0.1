@@ -452,19 +452,22 @@ figure {
 /* ADDED TO CONVERT REMAINING PAGES TO BASE2.HTML */
 
 /* REGIONS.HTML STYLES */
-.regions_list_div {
+.regions_list_div,
+.projects_list_div {
   border-bottom: 1px solid #663399ff;
   padding: 5px;
 }
 
-.regions_list {
+.regions_list,
+.project_list {
   list-style-type: none;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
 }
 
-.regions_list li {
+.regions_list li
+.project_list li {
   padding-left: 10px;
 }
 

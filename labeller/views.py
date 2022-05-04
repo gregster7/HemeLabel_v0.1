@@ -1,6 +1,9 @@
 from distutils.log import error
+from nis import match
 from pdb import post_mortem
+import re
 from urllib import request
+from wsgiref.util import request_uri
 from HL_site.settings import DATA_EXPORT_ROOT
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
@@ -19,7 +22,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.views.generic import CreateView
 
-from .models import Region, Cell, Slide, Project, CellType, Diagnosis
+from .models import Collaborator, Region, Cell, Slide, Project, CellType, Diagnosis
 from .forms import UserForm, CellFeatureForm
 
 from django.conf import settings
@@ -294,8 +297,9 @@ def slides(request):
     #         slides = Slide.objects.order_by('sid')
     #     else:
     #         return error_403(request)
+    # users = User.objects.all()
     tissues = Slide.TISSUE_CHOICES
-    print(tissues)
+    # print(tissues)
     slides = Slide.objects.filter(created_by=request.user).order_by('sid')
     slides_json = serializers.serialize("json", slides)
     if (len(slides) > 0):
@@ -808,6 +812,31 @@ def add_tissue_type_to_slide(request):
 
     return JsonResponse({'success': "slide tissue updated"})
 
+# ADD COLLABORATORS TO SLIDE
+@login_required
+def add_blind_collab_to_slide(request):
+    try:
+        POST = request.POST
+        print(POST)
+        collab_user = User.objects.get(id=POST['collaborator_pk'])
+
+        collaborator = models.Collaborator(user=collab_user)
+        collaborator.save()
+        print('collaborator:', collaborator)
+
+        slide = Slide.objects.get(id=POST['slide_pk'])
+        slide.collaborators.add(collaborator)
+        slide.save()
+        print(slide, slide.collaborators)
+        print('success')
+
+        # collaborator = Collaborator.objects.create()
+
+        return JsonResponse({'success': True})
+    
+    except Exception as e:
+        print(e)
+        return JsonResponse({'success': False})
 
 
 
@@ -1121,6 +1150,9 @@ def register(request):
         form = UserForm(request.POST)
         if form.is_valid():
             new_user = form.save()
+            # collaborator = models.Collaborator(user=new_user)
+            # collaborator.save()
+
             messages.info(
                 request, "Thank you for registering. You are now logged in.")
             new_user = authenticate(
@@ -1154,12 +1186,12 @@ def get_number_of_slides_with_diagnosis_name(request):
     return JsonResponse(results)
 
 
-def calculate_slide_diagnosis_counts(slides, diagnoses):
+def calculate_slide_diagnosis_counts(request, slides, diagnoses):
     diagnosis_counts = {}
     for diagnosis in diagnoses:
         diagnosis_counts[diagnosis.name] = 0
 
-    slides = Slide.objects.all()
+    slides = Slide.objects.filter(created_by=request.user)
     for slide in slides:
         for diagnosis in slide.diagnoses.all():
             diagnosis_counts[diagnosis.name] += 1
@@ -1176,9 +1208,10 @@ def diagnoses(request):
     # user_projects = Project.objects.filter(user=request.user.get_username()).order_by('id')
     # context = {'user_projects': user_projects}
     diagnoses = Diagnosis.objects.all()
+    slides = Slide.objects.filter(created_by=request.user)
 
-    diagnosis_counts = calculate_slide_diagnosis_counts(
-        Slide.objects.all(), diagnoses)
+    diagnosis_counts = calculate_slide_diagnosis_counts(request,
+        slides, diagnoses)
     serializers.serialize
 
     context = {'diagnoses': diagnoses,
@@ -1216,14 +1249,19 @@ def create_project(request):
                 name=proj, created_by=request.user)
             print(proj)
             print(project)
+            # project_id = project.id
+            # print(project_id)
 
         else:
             return render(request, 'labeller/projects.html')
 
             # context = {'project': project}
 
-    # return HttpResponseRedirect(reverse('labeller:label_cells_in_project'))
-    return render(request, 'labeller/label_cells_in_project.html')
+    return render(request, 'labeller/project.html')
+
+    # return HttpResponseRedirect('project/'+str(project_id)+'/')
+
+
 
 
 # Needs updating with celltypes
@@ -1277,6 +1315,8 @@ def generate_cell_image_with_vips(region, cid, left, top, width, height):
 @ login_required
 def dropzone_slide(request):
     print('entering dropzone_slide')
+    # url = request.META['HTTP_REFERER']
+    # print(url)
     if request.method == "POST":
         i = 0
 
@@ -1293,6 +1333,7 @@ def dropzone_slide(request):
                 print(i)
                 name = image.name
                 image.name = str(sid) + '.svs'
+                # project = request.
                 slide = Slide.objects.create(created_by=request.user, sid=sid, date_added=str(
                     datetime.now()), name=name, svs_path=image)
 
@@ -1327,6 +1368,54 @@ def dropzone_slide(request):
         # create_slide_pyramid_with_vips(sid)
     # If .xlsx
         # Do something else to be written
+    return
+
+@login_required
+def project_dropzone_slide(request, project_id):
+    print("entering project_dropzone_slide")
+    if request.method == "POST":
+        i = 0
+        slide_list = []
+
+        # project_id = request.GET.get('project_id')
+        print('project_id = ', project_id)
+        project = Project.objects.get(id=project_id)
+        print('project = ', project)
+
+        for image in request.FILES.getlist('file'):
+            print(image)
+            extension = image.name[-4:]
+            print(extension)
+
+            if extension == ".svs":
+                sid = create_new_cid()+str(i)
+                i += 1
+                print(i)
+                name = image.name
+                image.name = str(sid) + '.svs'
+                # project = request.
+                slide = Slide.objects.create(created_by=request.user, sid=sid, date_added=str(
+                    datetime.now()), name=name, svs_path=image)
+
+                if (name[:4] == 'nlbx'):
+                    print('normal slide')
+                    diagnosis = Diagnosis.objects.get(id=1)
+                    print(diagnosis)
+                    slide.diagnoses.add(diagnosis)
+
+                print(slide)
+                slide.dzi_path = create_slide_pyramid_with_vips(sid)
+                slide.save()
+
+                project.slides.add(slide)
+                project.save()
+
+                slide_list.append(slide)
+        slides_json = serializers.serialize("json", slide_list)
+        print(slides_json)
+        results = {'success': True, 'slides_json': slides_json}
+        return JsonResponse(results)
+
     return
 
 
@@ -1452,12 +1541,13 @@ def project(request, project_id):
     cells = Cell.objects.filter(region__slide__in=project.slides.all())
     regions = Region.objects.filter(slide__in=project.slides.all())
     cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+    slides = project.slides.all()
 
     cells_json = serializers.serialize("json", cells)
     celltypes_json = serializers.serialize("json", cellTypes)
 
-    context = {'project': project, 'regions': regions, 'cells': cells,
-               'cells_json': cells_json, 'celltypes_json': celltypes_json}
+    context = {'project': project, 'regions': regions, 'cells': cells, 'slides': slides,
+        'cells_json': cells_json, 'celltypes_json': celltypes_json, 'dx_options': Diagnosis.objects.all()}
     return render(request, 'labeller/project.html', context)
 
 # Not currently in use - may require fixing

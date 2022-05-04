@@ -60,8 +60,9 @@
 
           for (var i=0; i<slides.length; i++) {
             console.log(slides[i]);
-            console.log(slide.fields.name);
             var slide = slides[i];
+
+            console.log(slide.fields.name);
             $('#slides').append(getULForSlide(slide.pk, slide.fields.sid, slide.fields.name));
             $('#bigtable_'+slide.fields.sid).hide();
             infoButtonOnClick(slide.fields.sid);
@@ -80,7 +81,7 @@
   <h3 style="border-bottom: 0px">Slide Uploader </h3>
 
   <!-- <div id="slide_dz_div"> -->
-  <form action="dropzone_slide" id="my-slide-dropzone" method="POST" enctype="multipart/form-data" class="dropzone js-reference-dropzone">
+  <form action="dropzone_slide_upload" id="my-slide-dropzone" method="POST" enctype="multipart/form-data" class="dropzone js-reference-dropzone">
     {% csrf_token %}
   </form>
     <!-- <hr style="width: 50%;"> -->
@@ -108,7 +109,7 @@
             <div class="px-2" id='slide_cellSummary_sid_{{slide.sid}}'></div>
           </div>
         </div>
-        
+
         <script>
             var cellSummary = new CellSummary('sid', {{slide.sid}});
             $('#slide_cellSummary_sid_{{slide.sid}}').append(cellSummary.getNewULForSlide());
@@ -135,7 +136,46 @@
 
 <script>
 
-  
+function collaboratorsDisplay(slide_pk, collaborator_pk, collaborator) {
+  var collabDisplay = `<p id="collab_display_${slide_pk}" class="slide_collab_${slide_pk}">`;
+  collabDisplay += collaborator;
+  console.log('collaborator ' + collaborator);
+  collabDisplay += `<button id="delete_collab_${slide_pk}" class="${slide_pk} btn p-0">`;
+  collabDisplay += `<i class="bi-trash"></i></button>`;
+  collabDisplay += `</p>`;
+  return collabDisplay;
+}
+
+function addBlindCollabToSlideAJAX(slide_pk, collaborator_pk, collaborator) {
+  console.log('you are now about to enter... addBlindCollabTOSlideAJAX')
+  $.post("/add_blind_collab_to_slide/", {'slide_pk': slide_pk, 'collaborator_pk': collaborator_pk, 'collaborator': collaborator})
+  .done(function(response) {
+    console.log(collaborator);
+    console.log(collaborator_pk);
+    console.log(slide_pk);
+
+    console.log('success ' + response);
+
+    $('#slide_collaborators_'+slide_pk).append(collaboratorsDisplay(slide_pk, collaborator_pk, collaborator));
+  });
+}
+
+$("#blind_collab_form_slide_{{slide.pk}}").submit(function(e) {
+  e.preventDefault();
+  var collaborator_pk = $("#blind_collab_form_slide_{{slide.pk}}").val();
+  console.log("adding colaborator: " + collaborator_pk);
+  var div = $(this).parent("div");
+  var slide_pk = div.data("id");
+  conosle.log(pk);
+
+  var sel = document.getElementById('blind_collab_form_slide_{{slide.pk}}');
+  var index = sel.selectedIndex;
+  console.log(index);
+  var collaborator = sel.options[sel.selectedIndex].text;
+  console.log(collaborator);
+
+  addBlindCollabToSlideAJAX(slide_pk, collaborator_pk, collaborator);
+});
 
 </script>
 {% endblock content %}

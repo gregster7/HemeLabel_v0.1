@@ -12,7 +12,7 @@
   <div class="text-center p-4"><h2>Diagnoses ({{diagnoses|length}})</h2></div>
 
   {% for diagnosis in diagnoses %}
-  <div class="d-flex flex-row">
+  <div class="d-flex flex-row align-items-center">
     <p class="p-2">
       {{diagnosis.name}} ({{diagnosis.abbreviation}})
       <span id="dx_count_{{diagnosis.abbreviation}}"></span>

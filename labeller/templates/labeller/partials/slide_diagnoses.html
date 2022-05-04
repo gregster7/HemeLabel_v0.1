@@ -81,7 +81,7 @@
           <option value="{{slide.pk}}_{{dx_option.pk}}_{{dx_option}}" id="dx_option_pk_{{dx_option.pk}}">{{dx_option}}</option>
           {% endfor %}
         </select>
-        <input type="submit" value="Add Diagnosis" class="btn btn-secondary">
+        <input type="submit" value="Add Diagnosis" style='font-size:1rem; padding: .2rem 0.5rem 0.1rem .5rem !important;' class="btn btn-secondary">
           <!-- <span class="px-1"></span> -->
       </form> 
 
@@ -89,7 +89,7 @@
       <div class="mt-2" data-id="{{ slide.sid }}">
         <form id="tt_form_slide_{{slide.sid}}" class="dx-form">
           <select id="tt_options_slide_{{slide.sid}}" data_id="{{slide.sid}}" placeholder="No Tissue Type" class="mb-2" style="font-size: .9rem;">
-            <option id="tt_slide_{{slide.sid}}" value="none"></option>
+            <option id="tt_slide_{{slide.sid}}" value=""></option>
             <option id="tt_slide_{{slide.sid}}" data-id="bone_marrow_aspirate" value="a">Bone Marrow Aspirate</option>
             <option id="tt_slide_{{slide.sid}}" data-id="Peripheral Blood" value="b">Peripheral Blood</option>
             <option id="tt_slide_{{slide.sid}}" data-id="Bone Marrow Biopsy" value="c">Bone Marrow Biopsy</option>

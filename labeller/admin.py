@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from labeller.models import Patient, Slide, Region, Cell, Project, CellType, CellFeature, Diagnosis
+from labeller.models import Collaborator, Patient, Slide, Region, Cell, Project, CellType, CellFeature, Diagnosis
 
 admin.site.register(Patient)
 
@@ -47,3 +47,10 @@ class DiagnosisAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'abbreviation')
 
 admin.site.register(Diagnosis, DiagnosisAdmin)
+
+class CollaboratorAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'isBlind')
+    list_filter = ('isBlind',)
+    search_fields = ('user',)
+
+admin.site.register(Collaborator, CollaboratorAdmin)
