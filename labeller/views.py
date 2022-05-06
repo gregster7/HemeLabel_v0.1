@@ -300,7 +300,7 @@ def slides(request):
     # users = User.objects.all()
     tissues = Slide.TISSUE_CHOICES
     # print(tissues)
-    slides = Slide.objects.filter(created_by=request.user).order_by('sid')
+    slides = Slide.objects.filter(created_by=request.user).order_by('-sid')
     slides_json = serializers.serialize("json", slides)
     if (len(slides) > 0):
         slides_json = serializers.serialize("json", slides)
@@ -812,6 +812,27 @@ def add_tissue_type_to_slide(request):
 
     return JsonResponse({'success': "slide tissue updated"})
 
+@login_required
+def add_user_to_project(request):
+    try:
+        POST = request.POST
+        user = User.objects.get(id=POST['user_id'])
+        print(user)
+        project = Project.objects.get(id=POST['project_id'])
+        print(project)
+
+        project.users.add(user)
+        project.save()
+        print(project, project.users)
+        print("user ", user, " successfully added to project ", project)
+        return JsonResponse({'success': True})
+
+    except Exception as e:
+        print(e)
+        return JsonResponse({'success': False})
+
+
+
 # ADD COLLABORATORS TO SLIDE
 @login_required
 def add_blind_collab_to_slide(request):
@@ -1249,6 +1270,9 @@ def create_project(request):
                 name=proj, created_by=request.user)
             print(proj)
             print(project)
+            project_id = project.id
+            print(project_id)
+            context = {'project_id': project_id}
             # project_id = project.id
             # print(project_id)
 
@@ -1257,9 +1281,9 @@ def create_project(request):
 
             # context = {'project': project}
 
-    return render(request, 'labeller/project.html')
+    # return render(request, 'labeller/project.html', context)
 
-    # return HttpResponseRedirect('project/'+str(project_id)+'/')
+    return HttpResponseRedirect('project/'+str(project_id)+'/')
 
 
 
@@ -1542,12 +1566,13 @@ def project(request, project_id):
     regions = Region.objects.filter(slide__in=project.slides.all())
     cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
     slides = project.slides.all()
+    # user_list = User.objects.all()
 
     cells_json = serializers.serialize("json", cells)
     celltypes_json = serializers.serialize("json", cellTypes)
 
     context = {'project': project, 'regions': regions, 'cells': cells, 'slides': slides,
-        'cells_json': cells_json, 'celltypes_json': celltypes_json, 'dx_options': Diagnosis.objects.all()}
+        'cells_json': cells_json, 'celltypes_json': celltypes_json, 'dx_options': Diagnosis.objects.all(), 'user_list': User.objects.all()}
     return render(request, 'labeller/project.html', context)
 
 # Not currently in use - may require fixing

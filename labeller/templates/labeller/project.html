@@ -61,9 +61,11 @@ Dropzone.options.mySlideDropzone = {
             console.log(slides[i]);
             var slide = slides[i];
             console.log(slide.fields.name);
-            $('#slides').append(getULForSlide(slide.pk, slide.fields.sid, slide.fields.name));
-            $('#bigtable_'+slide.fields.sid).hide();
-            infoButtonOnClick(slide.fields.sid);
+
+            // $('#project_slide_list').append(addNewSlideToList(slide.pk, slide.fields.sid, slide.fields.name));
+            // $('#slides').append(getULForSlide(slide.pk, slide.fields.sid, slide.fields.name));
+            // $('#bigtable_'+slide.fields.sid).hide();
+            // infoButtonOnClick(slide.fields.sid);
           }
         }
         else {
@@ -95,38 +97,26 @@ Dropzone.options.mySlideDropzone = {
 </div>
 
 <!-- Slide Section -->
-<h2>Slides ({{ slides|length }})</h2>
+<div class="slide_header">
+  <h2>Slides ({{ slides|length }}) <i id="slide_collapse" class="bi-caret-down" style="float: right;"></i></h2>
+</div>
 
-  {% for slide in slides %}
-
-  <div class="container-fluid slide_box" style="padding-right: 5px !important; padding-left: 5px !important">
-    <div class="container-fluid my-3 pt-2 pb-3 mx-0">
-
-      <!-- Slide Info -->
-      {% include "labeller/partials/slide_diagnoses.html" %}
-
-      <!-- Cell Summary -->
-      <div class="flex-row" id="slide_cellSummary_sid_{{slide.sid}}"></div>
-      <!-- <script>
-        var cellSummary = new CellSummary('sid', {{slide.sid}});
-        $('#slide_cellSummary_sid_{{slide.sid}}').append(cellSummary.getNewULForSlide());
-        cellSummary.addInfoButtonOnClick();
-        $('#bigtable_sid_{{slide.sid}}').hide()
-    </script> -->
-    </div>
-  </div>
-
-  {% empty %}
-  <div class="container-fluid justify-content-center">
-    <h3 style="border-bottom: 0px;">No Slides</h3>
-  </div>
-  {% endfor %}
+<div id="project_slides_wrapper">
 
   <!-- Upload Slides -->
-  <div id="dropzone-wrapper">
+  <!-- <h3 id="show_dropzone" style="border-bottom: none !important;">Add Slides</h3> -->
+  <div class="d-flex justify-content-center">
+    <button class="d-flex justify-content-center btn btn-secondary" id="show_dropzone" style="border-bottom: none !important;">
+      Add Slides
+    </button>
+  </div>
+
+
+  <div id="dropzone_wrapper">
     <div class="container-fluid justify-content-center dropzone_box">
 
       <h3 style="border-bottom: 0px">Upload Slides</h3>
+
 
       <form action="{% url 'labeller:project_dropzone_slide' project.id %}" id="my-slide-dropzone" method="POST" enctype="multipart/form-data" class="dropzone js-reference-dropzone">
         {% csrf_token %}
@@ -138,39 +128,282 @@ Dropzone.options.mySlideDropzone = {
     </div>
   </div>
 
+  {% for slide in slides %}
+  <div id="project_slide_list">
 
+    <div class="container-fluid slide_box" style="padding-right: 5px !important; padding-left: 5px !important">
+      <div class="container-fluid my-3 pt-2 pb-3 mx-0">
+
+        <!-- Slide Info -->
+        {% include "labeller/partials/slide_diagnoses.html" %}
+
+        <!-- Cell Summary -->
+        <div class="flex-row" id="slide_cellSummary_sid_{{slide.sid}}"></div>
+        <!-- <script>
+          var cellSummary = new CellSummary('sid', {{slide.sid}});
+          $('#slide_cellSummary_sid_{{slide.sid}}').append(cellSummary.getNewULForSlide());
+          cellSummary.addInfoButtonOnClick();
+          $('#bigtable_sid_{{slide.sid}}').hide()
+      </script> -->
+      </div>
+    </div>
+
+  </div>
+
+  {% empty %}
+  <div class="container-fluid justify-content-center">
+    <h3 style="border-bottom: 0px;">No Slides</h3>
+  </div>
+  {% endfor %}
+
+</div>
 
 <!-- User Section -->
-<h2>Users ({{project.users.all|length}})</h2>
-{% for user in project.users.all %}
-  {{user}}
-{% empty %}
-<p id="no_users">No Users</p>
-{% endfor %}
+<div class="user_header">
+  <h2>Users ({{project.users.all|length}}) <i id="user_collapse" class="bi-caret-down" style="float: right;"></i></h2>
+</div>
+
+<div id="project_users_wrapper">
+
+  <!-- ADD USERS -->
+  <div class="d-flex justify-content-center">
+    <button id="add_users_button" class="btn btn-secondary">
+      Add Users
+    </button>
+  </div>
+
+  <div id="add_users_wrapper">
+    <div class="container-fluid align-content-center justify-content-center dropzone_box">
+      <h3 style="border-bottom: 0px">Add Users</h3>
+
+      <div data-id="{{ project.id }}" class="container-fluid d-flex justify-content-center dropzone_box">
+        <form id="add_user_to_project_{{project.id}}" clas="dx-form">
+          <select id="user_options_project_{{project.id}}" data-id="{{project.id}}" class="mb-2" style="font-size: .943m">
+            <option value=""></option>
+
+            {% for user in user_list %}
+              <option id="add_user_project_{{project.id}}" value="{{user.id}}">
+                {{ user.username }}
+              </option>
+            {% endfor %}
+
+          </select>
+
+          <input type="submit" value="Add User" class="btn btn-primary">
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid slide_box pt-3 mt-2" style="padding-right: 5px !important; padding-left: 5px !important">
+
+    <div class="container-fluid">
+      <b>Project Creator: </b>{{ project.created_by }}
+      <hr>
+    </div>
+
+    {% for user in project.users.all %}
+    {% if user != project.created_by %}
+
+      <div class="container-fluid">
+
+      {% if user == forloop.last %}
+        {{ user }}
+      {% else %}
+        {{ user }}
+        <hr>
+      {% endif %}
+
+    {% endif %}      
+
+      </div>
+
+    {% empty %}
+      No Users
+    {% endfor %}
+    
+  </div>
+</div>
+
 
 <!-- Region Section -->
-<h2>Regions ({{regions|length}})</h2>
-{% for slide in project.slides.all %}
-  {% for region in slide.region_set.all %}
-    {{region}}
-  {% endfor %}
-{% empty %}
-<p id="no_users">No Regions</p>
-{% endfor %}
+<div class="region_header">
+  <h2>Regions ({{regions|length}}) <i id="region_collapse" class="bi-caret-down" style="float: right;"></i></h2>
+</div>
+
+<div id="project_regions_wrapper" clas="mb-3">
+
+  <div class="container-fluid slide_box mb-3">
+
+    {% for region in regions %}
+    <div class="regions_list_div" clas="mb-3">
+
+      <ul id="region_list_{{region.rid}}" class="regions_list">
+        <li id="region_{{region.id}}" class="region_id"><b>ID: </b>{{ region.id }}</li>
+        <li id="region_{{region.rid}}" class="region_rid"><b>RID: </b>{{ region.rid }}</li>
+        <li><button id="delete_region_button_{{region.rid}}" class="btn btn-slide-info delete_region_button rid={{region.rid}}">Delete</button></li>
+      </ul>
+
+      <ul id="region_{{region.rid}}_link_list" class="region_link_list">
+        <li id="region_{{region.rid}}_link" calss="region_link mb-2" style="margin-bottom: 1rem;">
+        <a href="{% url 'labeller:label_region_fabric' region.rid %}">
+          <img src="{{region.image}}" clas="region_thumb" alt="">
+        </a></li>
+      </ul>
+
+    </div>
+    {% endfor %}
+
+  </div>
+
+</div>
+
 
 <!-- Cell Section -->
-<H2>Cells ({{cells|length}})</H2>
-<div class="mb-5"></div>
-{% include "labeller/partials/main_lineages_horizontal.html" %}
+<h2>Cells ({{cells|length}}) <i id="cell_collapse" class="bi-caret-down" style="float: right;"></i></h2>
+<div id="project_cells_wrapper">
+  <div class="mb-5"></div>
+    {% include "labeller/partials/main_lineages_horizontal.html" %}
+  </div>
 </div>
 
 <script>
+
+  function slideCollapse() {
+    $('#slide_collapse').on("click", function() {
+      var $this = $(this);
+
+      if ($this.hasClass("clicked_once")) {
+        $this.removeClass("clicked_once");
+        $('#project_slides_wrapper').slideUp();
+      } else {
+        $this.addClass("clicked_once");
+        $('#project_slides_wrapper').slideDown();
+      }
+    });
+  }
+
+  function showDropzoneOnClick() {
+    $('#show_dropzone').on('click', function() {
+      var $this = $(this);
+
+      if ($this.hasClass("clicked_once")) {
+        $this.removeClass("clicked_once");
+        // $this.removeClass("bi-caret-down");
+        // $this.addClass("bi-caret-down-fill");
+        $('#dropzone_wrapper').slideUp();
+      
+      } else {
+        $this.addClass("clicked_once");
+        $('#dropzone_wrapper').slideDown();
+      };
+    });
+  };
+
+  function userCollapse() {
+    $('#user_collapse').on("click", function() {
+      var $this = $(this);
+
+      if ($this.hasClass("clicked_once")) {
+        $this.removeClass("clicked_once");
+        $('#project_users_wrapper').slideUp();
+      } else {
+        $this.addClass("clicked_once");
+        $('#project_users_wrapper').slideDown();
+      }
+    });
+  }
+
+  function showAddUserFormOnClick() {
+    $('#add_users_button').on("click", function() {
+      var $this = $(this);
+
+      if ($this.hasClass("clicked_once")) {
+        $this.removeClass("clicked_once");
+        $('#add_users_wrapper').slideUp();
+      } else {
+        $this.addClass("clicked_once");
+        $('#add_users_wrapper').slideDown();
+      }
+    });
+  }
+
+  function addUserToProjectAJAX(project_id, user_id, username) {
+    $.post("/add_user_to_project/", {'project_id': project_id, 'user_id': user_id})
+    .done(function(response) {
+      console.log(project_id);
+      console.log(user_id);
+      console.log(username);
+      console.log('success ' + response);
+      // then use jquery to add new use to screen
+    });
+  }
+
+  $('#add_user_to_project_{{project.id}}').submit(function(e) {
+    e.preventDefault();
+    user_id = $('#user_options_project_{{project.id}}').val();
+    console.log('adding user: ' + user_id);
+    var div = $(this).parent("div");
+    var project_id = div.data("id");
+    console.log('pid: ' + project_id);
+
+    var sel = document.getElementById('user_options_project_{{project.id}}');
+    var index = sel.selectedIndex;
+    console.log(index);
+    var username = sel.options[sel.selectedIndex].text
+    console.log('user = ' + username);
+
+    addUserToProjectAJAX(project_id, user_id, username);
+  });
+
+  function regionCollapse() {
+    $('#region_collapse').on('click', function() {
+      var $this = $(this);
+
+      if($this.hasClass("clicked_once")) {
+        $this.removeClass("clicked_once");
+        $('#project_regions_wrapper').slideUp();
+      } else {
+        $this.addClass("clicked_once");
+        $('#project_regions_wrapper').slideDown();
+      }
+    });
+  }
+
+  function cellCollapse() {
+    $('#cell_collapse').on("click", function() {
+      var $this = $(this);
+
+      if ($this.hasClass("clicked_once")) {
+        $this.removeClass("clicked_once");
+        $('#project_cells_wrapper').slideUp();
+      } else {
+        $this.addClass("clicked_once");
+        $('#project_cells_wrapper').slideDown();
+      }
+    });
+  }
 
   $(document).ready(function() {
     console.log('project/{{project.id}}: ready');
     var project_id = '{{project.id}}';
     console.log('project_id = ' + project_id);
-    // $('#dropzone-wrapper').hide();
+
+    $('#project_slides_wrapper').hide();
+    slideCollapse();
+    $('#dropzone_wrapper').hide();
+    showDropzoneOnClick();
+
+    $('#project_users_wrapper').hide();
+    userCollapse();
+    $('#add_users_wrapper').hide();
+    showAddUserFormOnClick();
+
+    $('#project_regions_wrapper').hide();
+    regionCollapse();
+
+    $('#project_cells_wrapper').hide();
+    cellCollapse();
   });
   
 </script>

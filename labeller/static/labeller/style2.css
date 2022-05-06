@@ -36,7 +36,7 @@ h2 {
 
 h3 {
   /* background-color: rgb(224, 224, 224); */
-  border-bottom: 1px solid purple;
+  /* border-bottom: 1px solid purple; */
   padding: 5px;
   color: #663399ff;
   text-align: center;
@@ -466,9 +466,9 @@ figure {
   align-items: center;
 }
 
-.regions_list li
+.regions_list li,
 .project_list li {
-  padding-left: 10px;
+  padding-left: 10px !important;
 }
 
 .region_link_list {
