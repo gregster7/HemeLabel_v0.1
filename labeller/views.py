@@ -69,7 +69,7 @@ def generate_cell_image_with_vips(region, cid, left, top, width, height):
     # os.system(command)
 
 
-def export_all_cell_annotations_user(request):
+def export_all_cell_annotations_summary_user(request):
     if (request.user.username != 'admin'):
         print('user access denied in export_all_cell_annotations_user')
         return JsonResponse({'success': False})
@@ -263,7 +263,8 @@ def regions(request):
     # regions = Region.objects.order_by('rid')
     user = request.user
     if user.is_authenticated:
-        regions = Region.objects.filter(created_by=request.user).order_by('-date_added')
+        regions = Region.objects.filter(
+            created_by=request.user).order_by('-date_added')
 
     regions_json = serializers.serialize("json", regions)
 
@@ -287,7 +288,6 @@ def get_cell_feature_form(request):
 def slides(request):
     """Show all regions."""
     # print(request.user.username)
-    
 
     # if request.user.is_authenticated:
     #     if request.user == Slide.objects.filter(created_by=request.user):
@@ -366,15 +366,16 @@ def label_slide(request, slide_id):
 
             diagnoses = slide.diagnoses
 
-            cells = Cell.objects.filter(created_by=request.user, region__slide=slide)
-            cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+            cells = Cell.objects.filter(
+                created_by=request.user, region__slide=slide)
+            cellTypes = CellType.objects.filter(
+                user=request.user, cell__in=cells)
 
             cells_json = serializers.serialize("json", cells)
             celltypes_json = serializers.serialize("json", cellTypes)
 
         else:
             return error_403(request)
-
 
     # slide = Slide.objects.get(sid=slide_id)
 
@@ -463,6 +464,8 @@ def generic_ajax_get(request):
             # cells = Cell.objects.filter(region__slide__in=slides)
             # cell_types = CellType.objects.filter(
             #     user=request.user, cell__in=cells, cell_type=GET['class_label_abb']).order_by('id')[int(GET['start']):int(GET['finish'])]
+            count = cell_types = CellType.objects.filter(
+                user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb']).count()
             cell_types = CellType.objects.filter(
                 user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb']).order_by('id')[int(GET['start']):int(GET['finish'])]
             new_cells = Cell.objects.filter(celltype__in=cell_types)
@@ -481,6 +484,7 @@ def generic_ajax_get(request):
                        'cells_json': serializers.serialize("json", new_cells),
                        'class_label_name': GET['class_label_name'],
                        'start': GET['start'], 'finish': GET['finish'],
+                       'count': count,
                        'class_label_abb': GET['class_label_abb']}
             return JsonResponse(results)
 
@@ -492,6 +496,7 @@ def generic_ajax_get(request):
             print('new_cells', new_cells)
             results = {'success': True, 'cell_types_json': serializers.serialize("json", cell_types),
                        'cells_json': serializers.serialize("json", new_cells),
+                       'count': new_cells.count(),
                        #    'class_label_name': GET['class_label_name'],
                        'class_label_abb': GET['class_label_abb']}
             return JsonResponse(results)
@@ -573,7 +578,8 @@ def get_all_cells_generic_helper(request, id_type, id_val):
         cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
     elif (id_type == 'diagnosis_pk'):
         diagnosis = Diagnosis.objects.get(id=id_val)
-        slides = Slide.objects.filter(diagnoses=diagnosis, created_by=request.user)
+        slides = Slide.objects.filter(
+            diagnoses=diagnosis, created_by=request.user)
         cells = Cell.objects.filter(region__slide__in=slides)
         cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
         print('diagnosis', diagnosis)
@@ -773,6 +779,8 @@ def remove_diagnosis_from_slide(request):
         return JsonResponse({'success': False})
 
 # Function to add Notes to Slide + Region
+
+
 @login_required
 @csrf_exempt
 def add_note_to_slide(request):
@@ -790,6 +798,7 @@ def add_note_to_slide(request):
 
     return JsonResponse({'success': "slide note updated"})
 
+
 @login_required
 @csrf_exempt
 def add_tissue_type_to_slide(request):
@@ -803,15 +812,10 @@ def add_tissue_type_to_slide(request):
     slide.tissue = key
 
     print(slide.tissue)
-    
+
     slide.save()
 
     return JsonResponse({'success': "slide tissue updated"})
-
-
-
-
-
 
 
 # @login_required
@@ -834,7 +838,7 @@ def add_tissue_type_to_slide(request):
 #         print('fail')
 
 #         return JsonResponse({'success': False})
-        
+
 
 # @login_required
 # def add_new_cell(request):
@@ -859,7 +863,7 @@ def delete_region(request):
             print(Region.objects.filter(rid=rid, created_by=user))
             region = Region.objects.filter(rid=rid, created_by=user)
             region.delete()
-            
+
     print('deleting region %s' % rid)
     # region = Region.objects.filter(rid=rid).delete()
     results = {'success': True}
@@ -963,8 +967,10 @@ def getCellTypeNameFromStringCode(cell_type_code):
         "M5": "Band neutrophil",
         "M6": "Segmented netrophil",
 
-        "E1": "Immature Eosinophil",
-        "E2": "Mature Eosinophil",
+        "E1": "Eosinophil myelocyte",
+        "E2": "Eosinophil metamyelocyte",
+        "E3": "Eosinophil band",
+        "E4": "Eosinophil seg",
         "B1": "Mast Cell",
         "B2": "Basophil",
         "MO1": "Monoblast",
@@ -1085,7 +1091,7 @@ def label_region_fabric(request, region_id):
             region = Region.objects.get(rid=region_id)
         else:
             return error_403(request)
-            
+
     region = Region.objects.get(rid=region_id)
     slide = region.slide
     cells = region.cell_set.all()
@@ -1389,7 +1395,6 @@ def all_cells_for_diagnosis(request, diagnosis_id):
         cells_json = serializers.serialize("json", cells)
         celltypes_json = serializers.serialize("json", cellTypes)
 
-
     # slides = Slide.objects.filter(diagnoses=diagnosis)
     # cells = Cell.objects.filter(region__slide__in=slides.all())
     # cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
@@ -1413,6 +1418,27 @@ def all_cells_for_diagnosis2(request, diagnosis_id):
     #            'cells_json': cells_json, 'celltypes_json': celltypes_json}
 
     return render(request, 'labeller/all_cells_for_diagnosis2.html', context)
+
+
+# @ login_required
+# @ login_required
+# def diagnosis_tissue(request, tissue_id, diagnosis_id):
+#     user = request.user
+#     print("tissue id: " + tissue_id)
+#     if user.is_authenticated:
+#         diagnosis = Diagnosis.objects.get(id=diagnosis_id)
+#         slides = Slide.objects.filter(diagnoses=diagnosis, created_by=user)
+#         for slide in slides:
+#             print(slide.tissue, slide.getTissueString())
+#         # diagnosis = diagnosis.slides_with_diagnosis.all()
+#         print(diagnosis)
+
+#         context = {'diagnosis': diagnosis, 'slides': slides,
+#                    'dx_options': Diagnosis.objects.all()}
+
+#         return render(request, 'labeller/diagnosis.html', context)
+#     else:
+#         return render(request, 'labeller/index.html')
 
 
 @ login_required
@@ -1487,7 +1513,40 @@ def label_cells_in_project(request, project_id):
 
 # CUSTOM ERROR PAGES - WILL NEED SOME WORK. IE NOT SURE WHAT ERROR CODES TO USE, ETC....
 def error_403(request):
-    return render(request, 'errormsgs/error_403.html')    
+    return render(request, 'errormsgs/error_403.html')
+
+
+# def test(request):
+#     # create_slide_div(1)
+#     # context = {'html_code': create_slide_div(1)}
+#     #
+#     return render(request, 'labeller/test.html')
+
+
+# def test_ajax(request):
+#     context = {'success': True, 'html_code': create_slide_div(1)}
+#     context = {'success': True}
+#     print(context)
+#     return JsonResponse({'success': True, 'html_code': str(create_slide_div(1))})
+
+
+# def create_slide_div(slide_pk):
+#     slide = Slide.objects.get(id=slide_pk)
+#     print(slide)
+#     html = '\
+#         <div class="container-fluid slide_box" style="padding-right: 5px  !important; padding-left: 5px !important;">\
+#             <div class="container-fluid my-3 pt-2 pb-3 mx-0">\
+#                 <!-- Slide Info -->\
+#                 <!-- Cell Summary -->\
+#                 <div class="bigtable-box container-fluid">\
+#                     <div class="row">\
+#                         <div class="px-2" id="slide_cellSummary_sid_'+str(slide.sid)+'></div>\
+#                     </div>\
+#                 </div>\
+#          </div>\
+#         </div>'
+#     print(html)
+#     return html
 
 # def update_cell_class(request):
 # 	results = {'success':False}

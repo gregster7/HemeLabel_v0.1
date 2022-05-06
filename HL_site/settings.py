@@ -86,12 +86,24 @@ WSGI_APPLICATION = 'HL_site.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+if 'RDS_DB_NAME' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': os.environ['aagnhz9r7e6gdv'],
+            'USER': os.environ['MASTER'],
+            'PASSWORD': os.environ['jAc0bGr3g1!3jAc0bGr3g1!3'],
+            'HOST': os.environ['aagnhz9r7e6gdv.c1msap7y0mhk.us-west-2.rds.amazonaws.com'],
+            'PORT': os.environ['5432'],
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation

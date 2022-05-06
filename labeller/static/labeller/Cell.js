@@ -176,6 +176,12 @@ class Cell {
 	// }
 
 	static UpdateHorizontalCellCounts(){
+		var pathname = window.location.pathname.split('/')
+	    var context = {}
+    	if (pathname[1] == 'all_cells_for_diagnosis2'){
+			return;
+		}
+
 		for (var key in Cell.classLabelDict) { 
 			var cell_type_length = $('#'+key+'_cells_inline').children().length;
 
@@ -297,8 +303,11 @@ class Cell {
 			"M5": "Band neutrophil",
 			"M6": "Segmented netrophil",
 
-			"E1": "Immature Eosinophil",
-			"E2": "Mature Eosinophil",
+			"E1": "Eosinophil myelocyte",
+			"E2": "Eosinophil metamyelocyte",
+			"E3": "Eosinophil band",
+			"E4": "Eosinophil seg",
+
 			"B1": "Mast Cell",
 			"B2": "Basophil",
 			"MO1": "Monoblast",
@@ -415,6 +424,8 @@ class Cell {
 
 	//If the lineage has changed, we need to remove the cell from the current cell list and move to the correct one.
 	static updateCellListsAfterLabelChange (new_label) {
+
+
     console.log("entering updateCellListsAfterLabelChange", new_label);
 		
 		var old_cell = $('.highlight').first();
@@ -471,6 +482,7 @@ class Cell {
 	}
 
 	// 
+// https://www.freecodecamp.org/news/javascript-keycode-list-keypress-event-key-codes/
 
 	  static addCellLabelKeyboardEventListeners(){
 	  	console.log("Entering addCellLabelKeyboardEventListeners")
@@ -495,8 +507,10 @@ class Cell {
 
 					case "KeyQ": Cell.labelCurrentCell('E1'); break;
 					case "KeyW": Cell.labelCurrentCell('E2'); break;
-					case "KeyE": Cell.labelCurrentCell('B1'); break;
-					case "KeyR": Cell.labelCurrentCell('B2'); break;
+					case "KeyE": Cell.labelCurrentCell('E3'); break;
+					case "KeyR": Cell.labelCurrentCell('E4'); break;
+					case "KeyU": Cell.labelCurrentCell('B1'); break;
+					case "KeyI": Cell.labelCurrentCell('B2'); break;
 					case "KeyT": Cell.labelCurrentCell('MO1'); break;
 					case "KeyY": Cell.labelCurrentCell('MO2'); break;
 
@@ -518,7 +532,7 @@ class Cell {
 					case "Digit9": Cell.labelCurrentCell('U3'); break;
 					case "Digit0": Cell.labelCurrentCell('U4'); break;
 
-					case "KeyU": Cell.labelCurrentCell('UL'); break;
+					case "Subtract": Cell.labelCurrentCell('UL'); break;
 					case "KeyM": Cell.labelCurrentCell('PL1'); break;
 					case "Comma": Cell.labelCurrentCell('PL2'); break;
 					case "Period": Cell.labelCurrentCell('PL3'); break;
