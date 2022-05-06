@@ -207,6 +207,7 @@ class Project(models.Model):
 
 # Each Cell Classification has one classification, one reviewer and one associated NewCell object.
 class CellType(models.Model):
+    date_created = models.DateTimeField(auto_now_add=True)
     cell_type = models.CharField(max_length=50, default='UL')
     cell = models.ForeignKey('Cell', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

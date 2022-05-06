@@ -59,6 +59,8 @@ urlpatterns = [
 
     re_path(r'^all_cells_for_diagnosis2/(?P<diagnosis_id>\d+)/',
             views.all_cells_for_diagnosis2, name='all_cells_for_diagnosis2'),
+    re_path(r'^all_cells_for_diagnosis2_collab/(?P<diagnosis_id>\d+)/',
+            views.all_cells_for_diagnosis2_collab, name='all_cells_for_diagnosis2_collab'),
 
     re_path(r'^cell_redirect/(?P<cell_pk>\d+)/',
             views.cell_redirect, name='cell_redirect'),

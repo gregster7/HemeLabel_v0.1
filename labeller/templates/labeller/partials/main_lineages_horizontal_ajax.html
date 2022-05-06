@@ -14,9 +14,10 @@
     lineage_abb = $(e).data('lineage_abb')
     var pathname = window.location.pathname.split('/')
     var context = {}
-    if (pathname[1] == 'all_cells_for_diagnosis2'){
+    if (pathname[1].includes('all_cells_for_diagnosis2') ){
       context = {
         'id_type': 'diagnosis_pk',
+        'requesting_page': pathname[1],     
         'id_val': pathname[2],
         'query_type': 'all_cells_single_type',      
         // 'class_label_name': lineage_name,
@@ -51,12 +52,14 @@
     lineage_abb = $(e).data('lineage_abb')
       var pathname = window.location.pathname.split('/')
       var context = {}
-      if (pathname[1] == 'all_cells_for_diagnosis2'){
+      if (pathname[1].includes('all_cells_for_diagnosis2') ){
+
         old_finish = $('#h2_'+lineage_abb).data('finish');
         console.log(old_finish)
         num_new_cells = GLOBAL_LOAD_MORE_CELL_LOAD;
         context = {
           'id_type': 'diagnosis_pk',
+          'requesting_page': pathname[1],     
           'id_val': pathname[2],
           'query_type': 'more_cells_single_type',
           'old_finish': old_finish,
@@ -93,8 +96,7 @@
     var pathname = window.location.pathname.split('/')
     // console.log(window.location.pathname.split('/'), )
     var context = {}
-    
-    
+        
     var header ='<h3 id="h2_' + lineage_abb +'">'+lineage_name+'</h3>';
     // console.log(temp_div)
     var cells_inline = '<div id="'+lineage_abb + '_cells_inline" class="inline_cells"></div>'
@@ -104,10 +106,11 @@
     $("#"+lineage_abb + '_cells_inline').data('lineage_abb', lineage_abb)
 
     // console.log(context)
-    if (pathname[1] == 'all_cells_for_diagnosis2'){
+    if (pathname[1].includes('all_cells_for_diagnosis2') ){
       context = {
        'id_type': 'diagnosis_pk',
-       'id_val': pathname[2],
+       'requesting_page': pathname[1],     
+        'id_val': pathname[2],
        'query_type': 'count',      
       //  'query_children_model': 'cell',
        'class_label_name': lineage_name,
@@ -189,14 +192,15 @@
 
   function populateIndividualHorizontalCellList(lineage_abb, lineage_name, start, finish){
     var pathname = window.location.pathname.split('/')
-    // console.log(window.location.pathname.split('/'), )
+    // console.log ("MMMMMMMMMMMMMM", window.location.pathname.split('/'))
     var context = {}
 
-    if (pathname[1] == 'all_cells_for_diagnosis2'){
+    if (pathname[1].includes('all_cells_for_diagnosis2') ){
       context = {
        'id_type': 'diagnosis_pk',
+       'requesting_page': pathname[1],     
        'id_val': pathname[2],
-       'query_type': 'get_cells_interval',      
+       'query_type': 'get_cells_interval', 
       //  'query_children_model': 'cell',
        'class_label_name': lineage_name,
        'class_label_abb': lineage_abb,

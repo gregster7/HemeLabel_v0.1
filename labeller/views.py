@@ -461,25 +461,18 @@ def generic_ajax_get(request):
                        'class_label_name': GET['class_label_name']}
             return JsonResponse(results)
         elif(GET['query_type'] == 'get_cells_interval'):
-            # cells = Cell.objects.filter(region__slide__in=slides)
-            # cell_types = CellType.objects.filter(
-            #     user=request.user, cell__in=cells, cell_type=GET['class_label_abb']).order_by('id')[int(GET['start']):int(GET['finish'])]
             count = cell_types = CellType.objects.filter(
                 user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb']).count()
-            cell_types = CellType.objects.filter(
-                user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb']).order_by('id')[int(GET['start']):int(GET['finish'])]
+
+            if (GET['requesting_page'] == 'all_cells_for_diagnosis2_collab'):
+                cell_types = CellType.objects.filter(
+                    cell__region__slide__in=slides, cell_type=GET['class_label_abb']).order_by('id')[int(GET['start']):int(GET['finish'])]
+
+            elif (GET['requesting_page'] == 'all_cells_for_diagnosis2'):
+                cell_types = CellType.objects.filter(
+                    user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb']).order_by('id')[int(GET['start']):int(GET['finish'])]
+
             new_cells = Cell.objects.filter(celltype__in=cell_types)
-
-            # for ct in cell_types:
-            #     print(str(ct))
-
-            # for cell in new_cells:
-            #     print(cell)
-            # print('counts')
-            # print('cell_types: ' + str(cell_types.count()))
-            # print('new_cells: ' + str(new_cells.count()))
-            # print('class_label_name', GET['class_label_name'])
-
             results = {'success': True, 'cell_types_json': serializers.serialize("json", cell_types),
                        'cells_json': serializers.serialize("json", new_cells),
                        'class_label_name': GET['class_label_name'],
@@ -502,17 +495,16 @@ def generic_ajax_get(request):
             return JsonResponse(results)
 
         elif(GET['query_type'] == 'more_cells_single_type'):
-            print('more_cells_single_type')
-            print(GET['old_finish'])
-            print(GET['num_new_cells'])
             old_finish = int(GET['old_finish'])
             new_finish = old_finish+int(GET['num_new_cells'])
-            # if (new_finish > CellType.objects.filter(
-            #     user=request.user, cell__in=cells, cell_type=GET['class_label_abb']).count()){
 
-            # }
-            cell_types = CellType.objects.filter(
-                user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb']).order_by('id')[old_finish:new_finish]
+            if (GET['requesting_page'] == 'all_cells_for_diagnosis2_collab'):
+                cell_types = CellType.objects.filter(
+                    cell__region__slide__in=slides, cell_type=GET['class_label_abb']).order_by('id')[old_finish:new_finish]
+
+            if (GET['requesting_page'] == 'all_cells_for_diagnosis2_collab'):
+                cell_types = CellType.objects.filter(
+                    user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb']).order_by('id')[old_finish:new_finish]
             new_cells = Cell.objects.filter(celltype__in=cell_types)
             results = {'success': True, 'cell_types_json': serializers.serialize("json", cell_types),
                        'cells_json': serializers.serialize("json", new_cells),
@@ -934,7 +926,8 @@ def add_additional_cellType_to_cell(request):
 def update_cellType_helper(user, cell, cell_type):
     try:
         print("changing cellType")
-        cellType = CellType.objects.get(user=user, cell=cell)
+        cellType = CellType.objects.filter(
+            user=user, cell=cell).order_by('-date_created')[0]
         cellType.cell_type = cell_type
         cellType.save()
         print(cellType)
@@ -950,7 +943,8 @@ def update_cellType_helper(user, cell, cell_type):
 def get_cellType_helper(user, cell):
     try:
         print("getting cellType")
-        cellType = CellType.objects.get(user=user, cell=cell)
+        cellType = CellType.objects.filter(
+            user=user, cell=cell).order_by('-date_created')[0]
         print(cellType)
     except CellType.DoesNotExist:
         print("did not exist. creating one")
@@ -1015,6 +1009,10 @@ def update_cell_class(request):
     # cell = Cell.objects.get(cid=POST['cid'])
     # cell.cell_type = POST['cell_label']
     # cell.save()
+    celltype = CellType.objects.create(cell=Cell.objects.get(
+        cid=POST['cid']), cell_type=POST['cell_label'], user=request.user)
+    print(celltype)
+
     cellType = update_cellType_helper(
         request.user, Cell.objects.get(cid=POST['cid']), POST['cell_label'])
 
@@ -1418,6 +1416,13 @@ def all_cells_for_diagnosis2(request, diagnosis_id):
     #            'cells_json': cells_json, 'celltypes_json': celltypes_json}
 
     return render(request, 'labeller/all_cells_for_diagnosis2.html', context)
+
+
+@ login_required
+def all_cells_for_diagnosis2_collab(request, diagnosis_id):
+    diagnosis = Diagnosis.objects.get(id=diagnosis_id)
+    context = {'diagnosis': diagnosis}
+    return render(request, 'labeller/all_cells_for_diagnosis2_collab.html', context)
 
 
 # @ login_required
