@@ -30,7 +30,7 @@ SECRET_KEY = 'aly)kp%_f@9sl(!8dy-q3ncc#dc1&)af-uq)^iu&y8#%r$8a%f'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'HL4-env.eba-zcamwast.us-west-2.elasticbeanstalk.com', '127.0.0.1', 'hemepath.ai', 'www.hemepath.ai']
+    'HL4-env.eba-zcamwast.us-west-2.elasticbeanstalk.com', '127.0.0.1', 'hemepath.ai', 'www.hemepath.ai', '34.233.207.144', '172.31.22.111']
 
 
 # Application definition
