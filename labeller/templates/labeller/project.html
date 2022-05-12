@@ -90,7 +90,7 @@ Dropzone.options.mySlideDropzone = {
 
   <div class="container-fluid ml-4">
     Go to Full Cell Reclassification Lists (may load slowly)
-    <a href="#" class="btn btn-primary p-1">
+    <a href="/all_cells_for_project/{{project.pk}}/" class="btn btn-primary p-1">
       <i class="bi-arrow-right-circle-fill"></i>
     </a>
   </div>
@@ -219,7 +219,7 @@ Dropzone.options.mySlideDropzone = {
       </div>
 
     {% empty %}
-      No Users
+     <p>No Users</p>
     {% endfor %}
     
   </div>

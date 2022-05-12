@@ -1,4 +1,30 @@
 {% load static %}
+
+<script>
+    function removeTissueTypeFromSlideClicker(e) {
+    // creates array of classes for clicked element
+    var clases_as_array = this.classList.value.split(' ');
+    // extracts first (0 index) class of element -- slide_sid
+    var slide_sid = clases_as_array[0];
+    console.log(slide_sid);
+    removeTissueTypeFromSlideAJAX(slide_sid);
+  }
+
+  function removeTissueTypeFromSlideAJAX(slide_sid) {
+    console.log('entering removeTissueTypeFromSlideAJAX');
+    $.post('/remove_tissue_type_from_slide/', {'slide_sid': slide_sid }, function(json) {
+      if(json['success'] == true ) {
+        // $('#tissue_display_slide_' + slide_sid).replaceWith(text('None'));
+
+        // $('#tissue_display_slide_' + slide_sid).remove();
+        $('#tissue_display_slide_' + slide_sid).replaceWith(emptyTissueTypeDisplay(slide_sid));
+        // $('#tissue_display_slide_' + slide_sid).text('None');
+        // emptyTissueTypeDisplay(slide_sid);
+      }
+    });
+  }
+
+</script>
 <!--- Three Column container-fluid -->
 <div class='bigtable_box container-fluid'>
   <div class="row">
@@ -57,12 +83,13 @@
               
             <script>
               // ADD SCRIPT TO DELETE TISSUE HERE
+              $('#delete_tissue_{{slide.sid}}').on('click', removeTissueTypeFromSlideClicker);
             </script>
 
           </div>
           {% else %}
-          <div class="slide_tissue_type">
-            <p>None</p>
+          <div>
+            <p id="no_tissue_slide_{{slide.sid}}">None</p>
           </div>
           {% endif %}
 
@@ -200,12 +227,14 @@
   // }
 
   function newTissueDisplay(slide_sid, chosen_tissue_type, tissue) {
-    var newDisplay = `<p id="tissue_display_${slide_sid}" class="slide_tissue_type_${slide_sid}">`;
+    var newDisplay = `<p id="tissue_display_slide_${slide_sid}">`;
     newDisplay += tissue;
     console.log('tissue ' + tissue);
     newDisplay += `<button id="delete_tissue_${slide_sid}" class="${slide_sid} btn p-0">`;
     newDisplay += '<i class="bi-trash"></i></button>';
     newDisplay += '</p>';
+    // newDisplay += `<script>`;
+    // newDisplay += `$('#delete_tissue_${slide_sid}').on('click', removeTissueTypeFromS`;
     return newDisplay;
   }
 
@@ -220,7 +249,14 @@
 
       // $('#tissue_display_slide_'+slide_sid).remove();
       // console.log('p has been hidden!');
-      $('#slide_tissue_'+slide_sid).replaceWith(newTissueDisplay(slide_sid, chosen_tissue_type, tissue));
+      if ($('#tissue_display_slide_' +slide_sid).length > 0) {
+        console.log('replacing current tissue type');
+        $('#tissue_display_slide_'+slide_sid).replaceWith(newTissueDisplay(slide_sid, chosen_tissue_type, tissue));
+        $('#delete_tissue_'+slide_sid).on('click', removeTissueTypeFromSlideClicker);
+      } else {
+        $('#no_tissue_slide_' + slide_sid).replaceWith(newTissueDisplay(slide_sid, chosen_tissue_type, tissue));
+        $('#delete_tissue_'+slide_sid).on('click', removeTissueTypeFromSlideClicker);
+      }
     });
   }
 
@@ -239,12 +275,37 @@
     var tissue = sel.options[sel.selectedIndex].text;
     // console.log(tissue.text);
 
-
     addTissueToSlideAJAX(sid, chosen_tissue_type, tissue);
 
-
-
   });
+
+  function emptyTissueTypeDisplay(slide_sid) {
+    // var noTissue = `<div>`;
+    var noTissue = `<p id="no_tissue_slide_${slide_sid}">None</p>`;
+    return noTissue;
+
+  }
+
+  // function removeTissueTypeFromSlideClicker(e) {
+  //   // creates array of classes for clicked element
+  //   var clases_as_array = this.classList.value.split(' ');
+  //   // extracts first (0 index) class of element -- slide_sid
+  //   var slide_sid = clases_as_array[0];
+  //   removeTissueTypeFromSlideAJAX(slide_sid);
+  // }
+
+  // function removeTissueTypeFromSlideAJAX(slide_sid) {
+  //   console.log('entering removeTissueTypeFromSlideAJAX');
+  //   $.post('/remove_tissue_type_from_slide/', {'slide_sid': slide_sid }, function(json) {
+  //     if(json['success'] == true ) {
+  //       // $('#tissue_display_slide_' + slide_sid).replaceWith(text('None'));
+
+  //       $('#tissue_display_slide_' + slide_sid).remove();
+  //       // $('#tissue_display_slide_' + slide_sid).text('None');
+  //       emptyTissueTypeDisplay(slide_sid);
+  //     }
+  //   });
+  // }
 
   $(document).ready(function() {
 

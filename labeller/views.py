@@ -14,6 +14,7 @@ import json
 import os
 from datetime import datetime
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
@@ -813,6 +814,20 @@ def add_tissue_type_to_slide(request):
     return JsonResponse({'success': "slide tissue updated"})
 
 @login_required
+def remove_tissue_type_from_slide(request):
+    try:
+        POST = request.POST
+        slide = Slide.objects.get(sid=POST['slide_sid'])
+        print('SLIDE === ', slide)
+        slide.tissue = ''
+        slide.save()
+        return JsonResponse({'success': True})
+
+    except Exception as e:
+        print(e)
+        return JsonResponse({'success': False})
+
+@login_required
 def add_user_to_project(request):
     try:
         POST = request.POST
@@ -1250,8 +1265,11 @@ def projects(request):
     # user_projects = Project.objects.filter(user=request.user.get_username()).order_by('id')
     # context = {'user_projects': user_projects}
 
+    shared_projects = Project.objects.filter(~Q(created_by=request.user), users=request.user)
+    print(shared_projects)
     projects = Project.objects.filter(created_by=request.user).order_by('id')
-    context = {'projects': projects}
+    print(projects)
+    context = {'projects': projects, 'shared_projects': shared_projects }
     print(Project.id)
 
     return render(request, 'labeller/projects.html', context)
@@ -1488,6 +1506,22 @@ def dropzone_image_w_projectID(request, project_id):
         # return HttpResponse()
 
     return HttpResponse()
+
+@login_required
+def get_all_cells_for_project(request, project_id):
+    project = Project.objects.get(id=project_id)
+    users = project.users.all()
+
+    if request.user.is_authenticated:
+        slides = project.slides.all()
+        cells = Cell.objects.filter(region__slide__in=slides.all())
+        cellTypes = CellType.objects.filter(cell__in=cells)
+        print(cellTypes)
+        cells_json = serializers.serialize("json", cells)
+        celltypes_json = serializers.serialize("json", cellTypes)
+
+    context = {'project': project, 'users': users, 'cells': cells, 'cells_json': cells_json, 'cellTypes': cellTypes, 'celltypes_json': celltypes_json}
+    return render(request, 'labeller/all_cells_for_project.html', context)
 
 
 @ login_required

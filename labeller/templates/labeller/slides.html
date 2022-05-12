@@ -3,7 +3,13 @@
 
 
 {% block content %}
-
+<!-- Slide Uploader Splash/Loading Screen -->
+<div id="slide_upload_wrapper" class="slide_upload_wrapper_display">
+  <div class="">
+    <h1 class="" style="opacity: 1 !important">Please wait while the slide is processed.</h1>
+    <h3 style="color: white !important; opacity: 1 !important;">The page will reload when complete</h3>
+  </div>
+</div>
 
 <script src="{% static 'labeller/Cell.js' %}"></script>
 <script src="{% static 'labeller/CellCounter.js' %}"></script>
@@ -17,8 +23,6 @@
 <link rel="stylesheet" href="{% static 'labeller/dropzone-5.7.0/dist/dropzone.css' %}">
 
 <script>
-
-
 
   // My own Dropzone //
   Dropzone.options.mySlideDropzone = {
@@ -39,10 +43,15 @@
       var mySlideDropzone = this;
 
       submitButton.addEventListener("click", function() {
+        $('#slide_upload_wrapper').css("display", "block");
+        console.log('showing splash screen')
+        $('body').css('top', -(document.documentElement.scrollTop) + 'px').addClass('no-scroll');
+        console.log('preventing body from scrolling')
         mySlideDropzone.processQueue();
       });
 
       mySlideDropzone.on("complete", function(file) {
+        window.location.reload();
         mySlideDropzone.removeFile(file);
 
       });
@@ -67,7 +76,7 @@
             console.log('slide fields = ' + slide.fields.sid);
             var slide_sid = slide.fields.sid;
             
-            $('#slide_list').prepend(newSlideDisplay(slide_sid));
+            // $('#slide_list').prepend(newSlideDisplay(slide_sid));
             // $('#bigtable_'+slide.fields.sid).hide();
             // infoButtonOnClick(slide.fields.sid);
           }
@@ -181,6 +190,12 @@ $("#blind_collab_form_slide_{{slide.pk}}").submit(function(e) {
   console.log(collaborator);
 
   addBlindCollabToSlideAJAX(slide_pk, collaborator_pk, collaborator);
+});
+
+$(document).ready(function() {
+  // $('body').css('top', -($('body').scrollTop()) + 'px').addClass('no-scroll');
+  // console.log('added class no-scroll');
+  // $('#slide_upload_wrapper').hide();
 });
 
 </script>

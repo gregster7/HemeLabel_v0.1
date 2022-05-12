@@ -21,8 +21,10 @@ urlpatterns = [
 
         path('add_note_to_slide', views.add_note_to_slide, name='add_note_to_slide'),
         path('add_tissue_type_to_slide/', views.add_tissue_type_to_slide, name='add_tissue_type_to_slide'),
+        path('remove_tissue_type_from_slide/', views.remove_tissue_type_from_slide, name='remove_tissue_type_from_slide'),
         path('add_blind_collab_to_slide/', views.add_blind_collab_to_slide, name='add_blind_collab_to_slide'),
         path('add_user_to_project/', views.add_user_to_project, name='add_user_to_project'),
+        re_path(r'^all_cells_for_project/(?P<project_id>\d+)/', views.get_all_cells_for_project, name='all_cells_for_project'),
 
     ############################################################################################
     ################################ URLS THAT SERVE HTML PAGES ################################
