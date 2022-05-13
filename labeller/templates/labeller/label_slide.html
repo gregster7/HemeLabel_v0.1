@@ -14,6 +14,12 @@
 {% include "labeller/partials/slide_viewer.html" %}
 </div>
 
+<div>
+	{% for user in collaborators %}
+		{{ user }}
+	{% endfor %}
+</div>
+
 <script src="{% static 'labeller/Diagnosis.js' %}"></script>
 <div class="container-fluid slide_box pb-3">
 	{% include "labeller/partials/slide_diagnoses.html" %}

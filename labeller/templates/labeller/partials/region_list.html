@@ -7,14 +7,12 @@
       {% for region in regions %}
 
         {% if user.is_authenticated %}
-        {% if user.id == region.created_by.id %} 
 
           <script>
             region = new Region("{{region.rid}}", "{{region.image.url}}");
             region.prependRegionDivToJQuerySelector("#regions");
           </script>
 
-        {% endif %}
         {% endif %}
 
       {% empty %}

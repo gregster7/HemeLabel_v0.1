@@ -362,17 +362,42 @@ def label_slide_bootstrap(request, slide_id):
 def label_slide(request, slide_id):
     print('label_slide', request, slide_id)
 
+    # project = Project.objects.filter(slides=slide_id).values('name')
+    # project = Project.objects.filter(slides__in=slide_id)
+    project = Project.objects.filter(slides__project_with_slides__in=slide_id).values('name')
+    print('project = ', project)
+
+    shared_projects = Project.objects.get(~Q(created_by=request.user), users=request.user)
+    print('shared projects == ', shared_projects)
+
+    collaborators = shared_projects.users.all()
+    print('collaborators = ', collaborators)
+    print('current user: ', request.user)
+
     if request.user.is_authenticated:
-        if request.user == Slide.objects.get(sid=slide_id).created_by:
+
+        if request.user == Slide.objects.get(sid=slide_id).created_by :
+
+                slide = Slide.objects.get(sid=slide_id)
+                # slide = Slide.objects.filter(create_by=request.user)
+                # regions = Region.objects.filter(created_by=request.user)
+                regions = slide.region_set.all()
+
+                diagnoses = slide.diagnoses
+
+                cells = Cell.objects.filter(created_by=request.user, region__slide=slide)
+                cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+
+                cells_json = serializers.serialize("json", cells)
+                celltypes_json = serializers.serialize("json", cellTypes)
+
+        elif request.user in shared_projects.users.all():
+        # .values('users'):
             slide = Slide.objects.get(sid=slide_id)
-            # slide = Slide.objects.filter(create_by=request.user)
-            # regions = Region.objects.filter(created_by=request.user)
-            regions = slide.region_set.all()
-
+            regions = slide.region_set.all().filter(created_by__in=collaborators)
             diagnoses = slide.diagnoses
-
-            cells = Cell.objects.filter(created_by=request.user, region__slide=slide)
-            cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+            cells = Cell.objects.filter(region__slide=slide, created_by__in=collaborators)
+            cellTypes = CellType.objects.filter(cell__in=cells, user__in=collaborators)
 
             cells_json = serializers.serialize("json", cells)
             celltypes_json = serializers.serialize("json", cellTypes)
@@ -395,7 +420,7 @@ def label_slide(request, slide_id):
     # celltypes_json = serializers.serialize("json", cellTypes)
 
     context = {'slide': slide, 'regions': regions, 'dx_options': Diagnosis.objects.all(
-    ), 'cells': cells, 'cells_json': cells_json, 'celltypes_json': celltypes_json}
+    ), 'cells': cells, 'cells_json': cells_json, 'celltypes_json': celltypes_json, 'collaborators': collaborators}
     return render(request, 'labeller/label_slide.html', context)
 
 
@@ -1148,6 +1173,7 @@ def label_region_fabric(request, region_id):
     if request.user.is_authenticated:
         if request.user == Region.objects.get(rid=region_id).created_by:
             region = Region.objects.get(rid=region_id)
+            print('region: ', region.created_by)
         else:
             return error_403(request)
             
@@ -1266,7 +1292,7 @@ def projects(request):
     # context = {'user_projects': user_projects}
 
     shared_projects = Project.objects.filter(~Q(created_by=request.user), users=request.user)
-    print(shared_projects)
+    print('shared project === ',shared_projects)
     projects = Project.objects.filter(created_by=request.user).order_by('id')
     print(projects)
     context = {'projects': projects, 'shared_projects': shared_projects }
