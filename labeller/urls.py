@@ -167,8 +167,8 @@ urlpatterns = [
 
     re_path(r'^get_cell_json/', views.get_cell_json, name='get_cell_json'),
 
-    re_path(r'^get_all_cells_generic/', views.get_all_cells_generic,
-            name='get_all_cells_generic'),
+    re_path(r'^get_all_cell_counts_generic/', views.get_all_cell_counts_generic,
+            name='get_all_cell_counts_generic'),
 
     re_path(r'^get_all_cells_in_project/',
             views.get_all_cells_in_project, name='get_all_cells_in_project'),

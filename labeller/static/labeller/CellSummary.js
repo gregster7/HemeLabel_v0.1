@@ -113,16 +113,16 @@ class CellSummary {
       return ul;
     }
 
-    static UpdateCountsOnPage(cells_json, celltypes_json, id_val, id_type) {
-      // var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig, '"'));
-      var cells = Cell.LoadCellsFromJson(cells_json, celltypes_json);
-      var counts = CellCounter.countCells(cells);
-      console.log(counts)
+    // static UpdateCountsOnPage(cells_json, celltypes_json, id_val, id_type) {
+    //   // var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig, '"'));
+    //   var cells = Cell.LoadCellsFromJson(cells_json, celltypes_json);
+    //   var counts = CellCounter.countCells(cells);
+    //   console.log(counts)
 
-      for (var key in Cell.classLabelDict) {
-        CellCounter.replaceOldCountWithNewCount(".class_table_td.count_"+key+'.'+id_val+'.'+id_type, counts[key]);
-      };
-    };
+    //   for (var key in Cell.classLabelDict) {
+    //     CellCounter.replaceOldCountWithNewCount(".class_table_td.count_"+key+'.'+id_val+'.'+id_type, counts[key]);
+    //   };
+    // };
     
     addInfoButtonOnClick() {
       var id_type = this.id_type
@@ -145,24 +145,30 @@ class CellSummary {
         } else {
 
 
-          $.get('/get_all_cells_generic/', {'id_type':id_type, 'id_val':id_val}, function(json) {
-              console.log('/get_all_cells_generic/');
+          $.get('/get_all_cell_counts_generic/', {'id_type':id_type, 'id_val':id_val}, function(json) {
+              console.log('/get_all_cell_counts_generic/');
+              
+              var cell_counts = json['cell_counts']
+              console.log('cell counts', json['cell_counts'])
+              // var cell_counts_json = json['cell_counts_json'];
+              // console.log(cell_counts_json)
+              // cells_counts_json = $.parseJSON(cell_counts_json.replace(/&quot;/ig, '"'));
+              // console.log(cell_counts_json)
 
-              var cells_json = json['cells_json'];
-              var celltypes_json = json['celltypes_json']
-              // console.log(cells_json)
-              // console.log(celltypes_json)
-              //console.log(cells_json);
-              var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig, '"'));
-              //console.log(cells_json_reformat);
+
+              // var cells_json = json['cells_json'];
+              // var celltypes_json = json['celltypes_json']
+              // var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig, '"'));
 
               $this.addClass("clicked_once");
-              // $this.addClass('slide_info_down');
               $('#slide_list_' +id_type+'_'+id_val).removeClass("slide_list_box");
               $('#bigtable_' +id_type+'_'+id_val).slideDown().addClass("bigtable_box");
-              $('#cell_total_'+id_type+'_'+id_val).html('Total: ' + cells_json_reformat.length).fadeIn();
-
-              CellSummary.UpdateCountsOnPage(cells_json, celltypes_json, id_val, id_type);
+              $('#cell_total_'+id_type+'_'+id_val).html('Total: ' + json['total']).fadeIn();
+              for (var key in cell_counts) {
+                CellCounter.replaceOldCountWithNewCount(".class_table_td.count_"+key+'.'+id_val+'.'+id_type, cell_counts[key]);
+                console.log(".class_table_td.count_"+key+'.'+id_val+'.'+id_type, cell_counts[key])
+              };
+              // CellSummary.UpdateCountsOnPage(cells_json, celltypes_json, id_val, id_type);
 
           });
 
