@@ -1,4 +1,5 @@
 from distutils.log import error
+from multiprocessing.spawn import old_main_modules
 from pdb import post_mortem
 from urllib import request
 from HL_site.settings import DATA_EXPORT_ROOT
@@ -33,6 +34,41 @@ import csv
 
 def index(request):
     """The home page for labeller"""
+    # cellTypes = CellType.objects.filter(is_most_recent=True)
+    # print('cell_types_most_recent', cellTypes.count())
+
+    # cells = Cell.objects.all()
+    # print('cell_count', Cell.objects.count())
+
+    # celltypes2 = CellType.objects.all()
+    # print('celltypes2', CellType.objects.count())
+
+    # counter = 0
+    # for cell in cells:
+    #     cellTypes = CellType.objects.filter(
+    #         cell=cell, is_most_recent=True).order_by('-id')
+    #     celltype_counter = 0
+    #     for celltype in cellTypes:
+    #         if celltype_counter == 0:
+    #             celltype_counter += 1
+    #         else:
+    #             celltype.is_most_recent = False
+    #     CellType.objects.bulk_update(cellTypes, ['is_most_recent'])
+    #     counter += 1
+    #     if counter % 1000 == 0:
+    #         print('doing...'+str(counter))
+
+    # for cell in cells:
+    #     cell_type = CellType.objects.filter(
+    #         cell=cell).order_by('-id')[0]
+    #     cell_type.is_most_recent = True
+    #     cell_type.save()
+    #     # print(cell_type)
+    #     counter += 1
+    #     if counter % 1000 == 0:
+    #         print('doing...'+str(counter))
+
+    print('done')
     return render(request, 'labeller/index.html')
 
 
@@ -79,7 +115,7 @@ def export_all_cell_annotations_summary_user(request):
     # os.system('mkdir '+export_path)
     export_path = export_path+datetime.now().strftime("%Y%m%d%H%M%S")+'_cellTypes.csv'
 
-    cellTypes = CellType.objects.filter(user=request.user)
+    cellTypes = CellType.objects.filter(user=request.user, is_most_recent=True)
 
     ct_names = cellTypes.values('cell_type').distinct()
     distinct_cell_types = CellType.objects.values_list(
@@ -318,7 +354,7 @@ def getAllCellTypesUserRegionJSON(user, region):
 
 
 def getAllCellTypesUserHelper(user):
-    return CellType.objects.filter(user=user)
+    return CellType.objects.filter(user=user, is_most_recent=True)
 
 
 def getAllCellTypesUserJSON(user):
@@ -327,7 +363,7 @@ def getAllCellTypesUserJSON(user):
 
 
 def getAllCellTypesUserSlideHelper(user, slide):
-    return CellType.objects.filter(cell__region__slide=slide, user=user)
+    return CellType.objects.filter(cell__region__slide=slide, user=user, is_most_recent=True)
 
 
 def getAllCellTypesSlideUserJSON(user, slide):
@@ -369,7 +405,7 @@ def label_slide(request, slide_id):
             cells = Cell.objects.filter(
                 created_by=request.user, region__slide=slide)
             cellTypes = CellType.objects.filter(
-                user=request.user, cell__in=cells)
+                user=request.user, cell__in=cells, is_most_recent=True)
 
             cells_json = serializers.serialize("json", cells)
             celltypes_json = serializers.serialize("json", cellTypes)
@@ -447,7 +483,7 @@ def change_cell_location_helper(cid, left, top, width, height):
 @login_required
 def generic_ajax_get(request):
     GET = request.GET
-    print(GET)
+    # print(GET)
     if (GET['id_type'] == 'diagnosis_pk'):
         # print('generic_ajax_get')
         diagnosis = Diagnosis.objects.get(id=GET['id_val'])
@@ -455,22 +491,22 @@ def generic_ajax_get(request):
         if (GET['query_type'] == 'count'):
             cells = Cell.objects.filter(region__slide__in=slides)
             count = CellType.objects.filter(
-                user=request.user, cell__in=cells, cell_type=GET['class_label_abb']).count()
+                user=request.user, cell__in=cells, cell_type=GET['class_label_abb'], is_most_recent=True).count()
             # print(count)
             results = {'success': True, 'count': count,
                        'class_label_name': GET['class_label_name']}
             return JsonResponse(results)
         elif(GET['query_type'] == 'get_cells_interval'):
             count = cell_types = CellType.objects.filter(
-                user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb']).count()
+                user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb'], is_most_recent=True).count()
 
             if (GET['requesting_page'] == 'all_cells_for_diagnosis2_collab'):
                 cell_types = CellType.objects.filter(
-                    cell__region__slide__in=slides, cell_type=GET['class_label_abb']).order_by('id')[int(GET['start']):int(GET['finish'])]
+                    cell__region__slide__in=slides, cell_type=GET['class_label_abb'], is_most_recent=True).order_by('id')[int(GET['start']):int(GET['finish'])]
 
             elif (GET['requesting_page'] == 'all_cells_for_diagnosis2'):
                 cell_types = CellType.objects.filter(
-                    user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb']).order_by('id')[int(GET['start']):int(GET['finish'])]
+                    user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb'], is_most_recent=True).order_by('id')[int(GET['start']):int(GET['finish'])]
 
             new_cells = Cell.objects.filter(celltype__in=cell_types)
             results = {'success': True, 'cell_types_json': serializers.serialize("json", cell_types),
@@ -483,10 +519,10 @@ def generic_ajax_get(request):
 
         elif(GET['query_type'] == 'all_cells_single_type'):
             cell_types = CellType.objects.filter(
-                user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb']).order_by('id')
-            print('cell_types', cell_types)
+                user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb'], is_most_recent=True).order_by('id')
+            # print('cell_types', cell_types)
             new_cells = Cell.objects.filter(celltype__in=cell_types)
-            print('new_cells', new_cells)
+            # print('new_cells', new_cells)
             results = {'success': True, 'cell_types_json': serializers.serialize("json", cell_types),
                        'cells_json': serializers.serialize("json", new_cells),
                        'count': new_cells.count(),
@@ -500,11 +536,11 @@ def generic_ajax_get(request):
 
             if (GET['requesting_page'] == 'all_cells_for_diagnosis2_collab'):
                 cell_types = CellType.objects.filter(
-                    cell__region__slide__in=slides, cell_type=GET['class_label_abb']).order_by('id')[old_finish:new_finish]
+                    cell__region__slide__in=slides, cell_type=GET['class_label_abb'], is_most_recent=True).order_by('id')[old_finish:new_finish]
 
             if (GET['requesting_page'] == 'all_cells_for_diagnosis2'):
                 cell_types = CellType.objects.filter(
-                    user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb']).order_by('id')[old_finish:new_finish]
+                    user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb'], is_most_recent=True).order_by('id')[old_finish:new_finish]
             new_cells = Cell.objects.filter(celltype__in=cell_types)
             results = {'success': True, 'cell_types_json': serializers.serialize("json", cell_types),
                        'cells_json': serializers.serialize("json", new_cells),
@@ -548,19 +584,19 @@ def get_all_cell_counts_generic(request):
         if (id_type == 'sid'):
             slide = Slide.objects.get(sid=id_val)
             cell_counts[key] = CellType.objects.filter(cell_type=key,
-                                                       user=request.user, cell__region__slide=slide).count()
+                                                       user=request.user, cell__region__slide=slide, is_most_recent=True).count()
         elif (id_type == 'rid'):
             region = Region.objects.get(rid=id_val)
             cell_counts[key] = CellType.objects.filter(cell_type=key,
-                                                       user=request.user, cell__region=region).count()
+                                                       user=request.user, cell__region=region, is_most_recent=True).count()
         elif (id_type == 'project_pk'):
             project = Project.objects.get(id=id_val)
             cell_counts[key] = CellType.objects.filter(cell_type=key,
-                                                       user=request.user, cell__region__slide__project=project).count()
+                                                       user=request.user, cell__region__slide__project=project, is_most_recent=True).count()
         elif (id_type == 'diagnosis_pk'):
             diagnosis = Diagnosis.objects.get(id=id_val)
             cell_counts[key] = CellType.objects.filter(cell_type=key,
-                                                       user=request.user, cell__region__slide__diagnoses=diagnosis).count()
+                                                       user=request.user, cell__region__slide__diagnoses=diagnosis, is_most_recent=True).count()
 
     print(cell_counts)
 
@@ -994,20 +1030,21 @@ def add_additional_cellType_to_cell(request):
 
 # Will attempt to assign a new cellType. If one does not exist, it will be created.
 def update_cellType_helper(user, cell, cell_type):
-    try:
-        print("changing cellType")
-        cellType = CellType.objects.filter(
-            user=user, cell=cell).order_by('-date_created')[0]
-        cellType.cell_type = cell_type
-        cellType.save()
-        print(cellType)
-    except CellType.DoesNotExist:
-        print("did not exist")
-        cellType = CellType.objects.create(
-            user=user, cell_type=cell_type, cell=cell)
-    return cellType
 
-# Will attempt to assign a new cellType. If one does not exist, it will be created.
+    # Set old most recent celltype to no longer be most recent. By default new one will have true for this field
+    cellTypes = CellType.objects.filter(
+        user=user, cell=cell, is_most_recent=True)
+    for celltype in cellTypes:
+        celltype.is_most_recent = False
+    CellType.objects.bulk_update(cellTypes, ['is_most_recent'])
+
+    cellType = CellType.objects.create(
+        cell=cell, cell_type=cell_type, user=user)
+
+    print("changing cellType")
+    print(cellType)
+
+    return cellType
 
 
 def get_cellType_helper(user, cell):
@@ -1121,12 +1158,14 @@ def getCellTypeName(cellType):
 def update_cell_class(request):
     #	user = request.user
     POST = request.POST
-    # cell = Cell.objects.get(cid=POST['cid'])
-    # cell.cell_type = POST['cell_label']
-    # cell.save()
-    celltype = CellType.objects.create(cell=Cell.objects.get(
-        cid=POST['cid']), cell_type=POST['cell_label'], user=request.user)
-    print(celltype)
+    print(POST)
+    cell = Cell.objects.get(cid=POST['cid'])
+
+    # cell.cell_type no longer in use WARNING
+    cell.cell_type = POST['cell_label']
+    cell.save()
+
+    # print(celltype)
 
     cellType = update_cellType_helper(
         request.user, Cell.objects.get(cid=POST['cid']), POST['cell_label'])

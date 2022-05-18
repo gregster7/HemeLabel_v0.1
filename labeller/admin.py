@@ -27,7 +27,7 @@ admin.site.register(Region, RegionAdmin)
 class CellAdmin(admin.ModelAdmin):
     list_display = ('cid', 'region', 'created_by', 'date_added')
     list_filter = ('created_by', 'date_added')
-    search_fields = ('region', 'created_by')
+    search_fields = ('region', 'created_by', 'cid')
 
 
 admin.site.register(Cell, CellAdmin)
@@ -43,7 +43,7 @@ admin.site.register(Project, ProjectAdmin)
 class CellTypeAdmin(admin.ModelAdmin):
     list_display = ('id', 'cell_type', 'cell', 'user', 'date_created')
     list_filter = ('cell_type',)
-    search_fields = ('cell_type',)
+    search_fields = ('cell_type', 'cell__id', 'cell__cid')
 
 
 admin.site.register(CellType, CellTypeAdmin)
