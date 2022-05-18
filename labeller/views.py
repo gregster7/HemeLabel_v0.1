@@ -598,7 +598,7 @@ def get_all_cells_generic_helper(request, id_type, id_val):
         # celltypes_json = getAllCellTypesUserRegionJSON(request.user, Region.objects.get(rid=id_val))
     elif (id_type == 'project_pk'):
         project = Project.objects.get(id=id_val)
-        slides = Slide.objects.filter(slides_with_project=project)
+        slides = Slide.objects.filter(project_with_slides=project)
         cells = Cell.objects.filter(region__slide__in=slides)
         cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
     elif (id_type == 'diagnosis_pk'):
@@ -771,36 +771,44 @@ def toggle_region_complete_seg(request):
     return JsonResponse(results)
 
 
-@ login_required
+@login_required
 def add_diagnosis_to_slide(request):
-    try:
-        POST = request.POST
-        print(POST)
-        diagnosis = Diagnosis.objects.get(id=POST['diagnosis_pk'])
-        slide = Slide.objects.get(id=POST['slide_pk'])
-        slide.diagnoses.add(diagnosis)
-        slide.save()
-        print(slide, slide.diagnoses)
-        print('success')
-        return JsonResponse({'success': True})
+    if request.user == Slide.objects.get(id=request.POST['slide_pk']).created_by:
 
-    except Exception as e:
-        print(e)
-        return JsonResponse({'success': False})
+        try:
+            POST = request.POST
+            print(POST)
+            diagnosis = Diagnosis.objects.get(id=POST['diagnosis_pk'])
+            slide = Slide.objects.get(id=POST['slide_pk'])
+            slide.diagnoses.add(diagnosis)
+            slide.save()
+            print(slide, slide.diagnoses)
+            print('success')
+            return JsonResponse({'success': True})
 
+        except Exception as e:
+            print(e)
+            return JsonResponse({'success': False})
 
+    else:
+        return error_403(request)
+
+@login_required
 def remove_diagnosis_from_slide(request):
-    try:
-        POST = request.POST
-        diagnosis = Diagnosis.objects.get(id=POST['diagnosis_pk'])
-        slide = Slide.objects.get(id=POST['slide_pk'])
-        slide.diagnoses.remove(diagnosis)
-        slide.save()
-        return JsonResponse({'success': True})
+    if request.user == Slide.objects.get(id=request.POST['slide_pk']).created_by:
+        try:
+            POST = request.POST
+            diagnosis = Diagnosis.objects.get(id=POST['diagnosis_pk'])
+            slide = Slide.objects.get(id=POST['slide_pk'])
+            slide.diagnoses.remove(diagnosis)
+            slide.save()
+            return JsonResponse({'success': True})
 
-    except Exception as e:
-        print(e)
-        return JsonResponse({'success': False})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'success': False})
+    else:
+        return error_403(request)
 
 # Function to add Notes to Slide + Region
 @login_required
@@ -814,62 +822,74 @@ def add_note_to_slide(request):
     print(value)
     slide = Slide.objects.get(sid=id)
     print(slide)
-    slide.notes = value
-
-    slide.save()
-
-    return JsonResponse({'success': "slide note updated"})
+    if request.user == slide.created_by:
+        slide.notes = value
+        slide.save()
+        return JsonResponse({'success': "slide note updated"})
+    else:
+        return error_403(request)
 
 @login_required
 @csrf_exempt
 def add_tissue_type_to_slide(request):
-    id = request.POST.get('slide_sid')
-    print(id)
-    key = request.POST.get('key')
-    print(key)
-    slide = Slide.objects.get(sid=id)
-    print(slide)
+    if request.user == Slide.objects.get(sid=request.POST.get('slide_sid')).created_by:
+        id = request.POST.get('slide_sid')
+        print(id)
+        key = request.POST.get('key')
+        print(key)
+        slide = Slide.objects.get(sid=id)
+        print(slide)
 
-    slide.tissue = key
+        slide.tissue = key
 
-    print(slide.tissue)
+        print(slide.tissue)
+        
+        slide.save()
+
+        return JsonResponse({'success': "slide tissue updated"})
     
-    slide.save()
-
-    return JsonResponse({'success': "slide tissue updated"})
+    else:
+        return error_403(request)
 
 @login_required
 def remove_tissue_type_from_slide(request):
-    try:
-        POST = request.POST
-        slide = Slide.objects.get(sid=POST['slide_sid'])
-        print('SLIDE === ', slide)
-        slide.tissue = ''
-        slide.save()
-        return JsonResponse({'success': True})
+    if request.user == Slide.objects.get(sid=request.POST['slide_sid']).created_by:
+        try:
+            POST = request.POST
+            slide = Slide.objects.get(sid=POST['slide_sid'])
+            print('SLIDE === ', slide)
+            slide.tissue = ''
+            slide.save()
+            return JsonResponse({'success': True})
 
-    except Exception as e:
-        print(e)
-        return JsonResponse({'success': False})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'success': False})
+    else:
+        return error_403(request)
 
 @login_required
 def add_user_to_project(request):
-    try:
-        POST = request.POST
-        user = User.objects.get(id=POST['user_id'])
-        print(user)
-        project = Project.objects.get(id=POST['project_id'])
-        print(project)
+    if request.user == Project.objects.get(id=request.POST['project_id']).created_by:
+        try:
+            POST = request.POST
+            user = User.objects.get(id=POST['user_id'])
+            print(user)
+            project = Project.objects.get(id=POST['project_id'])
+            print(project)
 
-        project.users.add(user)
-        project.save()
-        print(project, project.users)
-        print("user ", user, " successfully added to project ", project)
-        return JsonResponse({'success': True})
+            project.users.add(user)
+            project.save()
+            print(project, project.users)
+            print("user ", user, " successfully added to project ", project)
+            return JsonResponse({'success': True})
 
-    except Exception as e:
-        print(e)
-        return JsonResponse({'success': False})
+        except Exception as e:
+            print(e)
+            return JsonResponse({'success': False})
+    
+    else:
+        return error_403(request)
 
 
 
@@ -945,15 +965,15 @@ def delete_region(request):
     rid = request.POST['rid']
 
     if user.is_authenticated:
-        if user.id == Region.objects.filter(rid=rid, created_by=user):
-            print(Region.objects.filter(rid=rid, created_by=user))
-            region = Region.objects.filter(rid=rid, created_by=user)
+        if user == Region.objects.get(rid=rid).created_by:
+            print(Region.objects.get(rid=rid, created_by=user))
+            region = Region.objects.get(rid=rid, created_by=user)
             region.delete()
             
-    print('deleting region %s' % rid)
-    # region = Region.objects.filter(rid=rid).delete()
-    results = {'success': True}
-    return JsonResponse(results)
+            print('deleting region %s' % rid)
+            # region = Region.objects.filter(rid=rid).delete()
+            results = {'success': True}
+            return JsonResponse(results)
 
 # Needs updating with celltypes
 
@@ -1441,50 +1461,54 @@ def dropzone_slide(request):
 @login_required
 def project_dropzone_slide(request, project_id):
     print("entering project_dropzone_slide")
-    if request.method == "POST":
-        i = 0
-        slide_list = []
+    if request.user == Project.objects.get(id=project_id).created_by:
+        if request.method == "POST":
+            i = 0
+            slide_list = []
 
-        # project_id = request.GET.get('project_id')
-        print('project_id = ', project_id)
-        project = Project.objects.get(id=project_id)
-        print('project = ', project)
+            # project_id = request.GET.get('project_id')
+            print('project_id = ', project_id)
+            project = Project.objects.get(id=project_id)
+            print('project = ', project)
 
-        for image in request.FILES.getlist('file'):
-            print(image)
-            extension = image.name[-4:]
-            print(extension)
+            for image in request.FILES.getlist('file'):
+                print(image)
+                extension = image.name[-4:]
+                print(extension)
 
-            if extension == ".svs":
-                sid = create_new_cid()+str(i)
-                i += 1
-                print(i)
-                name = image.name
-                image.name = str(sid) + '.svs'
-                # project = request.
-                slide = Slide.objects.create(created_by=request.user, sid=sid, date_added=str(
-                    datetime.now()), name=name, svs_path=image)
+                if extension == ".svs":
+                    sid = create_new_cid()+str(i)
+                    i += 1
+                    print(i)
+                    name = image.name
+                    image.name = str(sid) + '.svs'
+                    # project = request.
+                    slide = Slide.objects.create(created_by=request.user, sid=sid, date_added=str(
+                        datetime.now()), name=name, svs_path=image)
 
-                if (name[:4] == 'nlbx'):
-                    print('normal slide')
-                    diagnosis = Diagnosis.objects.get(id=1)
-                    print(diagnosis)
-                    slide.diagnoses.add(diagnosis)
+                    if (name[:4] == 'nlbx'):
+                        print('normal slide')
+                        diagnosis = Diagnosis.objects.get(id=1)
+                        print(diagnosis)
+                        slide.diagnoses.add(diagnosis)
 
-                print(slide)
-                slide.dzi_path = create_slide_pyramid_with_vips(sid)
-                slide.save()
+                    print(slide)
+                    slide.dzi_path = create_slide_pyramid_with_vips(sid)
+                    slide.save()
 
-                project.slides.add(slide)
-                project.save()
+                    project.slides.add(slide)
+                    project.save()
 
-                slide_list.append(slide)
-        slides_json = serializers.serialize("json", slide_list)
-        print(slides_json)
-        results = {'success': True, 'slides_json': slides_json}
-        return JsonResponse(results)
+                    slide_list.append(slide)
+            slides_json = serializers.serialize("json", slide_list)
+            print(slides_json)
+            results = {'success': True, 'slides_json': slides_json}
+            return JsonResponse(results)
 
-    return
+        return
+
+    else:
+        return error_403(request)
 
 
 @ login_required
@@ -1625,7 +1649,7 @@ def project(request, project_id):
     cells = Cell.objects.filter(region__slide__in=project.slides.all())
     regions = Region.objects.filter(slide__in=project.slides.all())
     cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
-    slides = project.slides.all()
+    slides = project.slides.all().order_by('-date_added')
     # user_list = User.objects.all()
 
     cells_json = serializers.serialize("json", cells)

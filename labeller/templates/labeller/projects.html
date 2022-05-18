@@ -98,39 +98,44 @@
   <h2 class="mb-4">Projects ({{ projects|length }})</h2>
 
   <div class="container-fluid">
-    <div id="projects_list_div col-xl-6">
-      {% for project in projects %}
 
-      <div class="d-flex flex-row align-items-center">
+    <div class="row">
 
-        <p class="p-2">
-          {{ project.name }} ID: {{ project.id }}
-        </p>
-        <a href="{% url 'labeller:project' project.id %}" class="btn btn-prmary p-1">
-          <i class="bi-arrow-right-circle-fill"></i>
-        </a>
+      <div id="projects_list_div" class="col-xl-6 col-l-6 col-md-6 col-sm-6">
+        {% for project in projects %}
 
+        <div class="d-flex align-items-center">
+
+          <p class="p-2">
+            {{ project.name }} ID: {{ project.id }}
+          </p>
+          <a href="{% url 'labeller:project' project.id %}" class="btn btn-prmary p-1">
+            <i class="bi-arrow-right-circle-fill"></i>
+          </a>
+
+        </div>
+        <hr>
+
+        {% empty %}
+        <p>You don't have any projects yet. Start one above!</p>
       </div>
-      <hr>
+        {% endfor %}
 
-      {% empty %}
-      <p>You don't have any projects yet. Start one above!</p>
-    </div>
-      {% endfor %}
+      <div class="shared_projects_list_div col-xl-6 col-l-6 col-md-6 col-sm-6">
+        {% for shared_project in shared_projects %}
+        <div class="d-flex align-items-center">
 
-    <div class="shared_projects_list_div col-xl-6">
-      {% for shared_project in shared_projects %}
-      <div class="d-flex flex-row align-items-center">
+          <p class="p-2">
+            {{ shared_project.name }} ID: {{ shared_project.id }}
+          </p>
+          <a href="{% url 'labeller:project' shared_project.id %}" class="btn btn-primary p-1">
+            <i class="bi-arrow-right-circle-fill"></i>
+          </a>
 
-        <p class="p-2">
-          {{ shared_project.name }} ID: {{ shared_project.id }}
-        </p>
-        <a href="{% url 'labeller:project' shared_project.id %}" class="btn btn-primary p-1">
-          <i class="bi-arrow-right-circle-fill"></i>
-        </a>
-
+        </div>
+        {% endfor %}
       </div>
-      {% endfor %}
+
     </div>
 
   </div>

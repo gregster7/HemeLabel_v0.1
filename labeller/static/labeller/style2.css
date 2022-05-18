@@ -142,7 +142,7 @@ th {
 .btn {
   border-radius: 12px !important;
 
-  font-size: irem !important;
+  font-size: 1rem !important;
   padding: .2rem .5rem .2rem .5rem !important;
 }
 
@@ -703,7 +703,9 @@ img.region_thumb {
 .upload-btn {
   color: white !important;
   background-color: #6648b1 !important;
-  border: none !important;
+  /* border: none !important; */
+  border: solid 1px #6648b1 !important;
+
   font-size: 1rem;
   padding: .2rem .5rem .2rem .5rem !important;
 }
@@ -1017,6 +1019,15 @@ Image height is 665px
   top: 0;
   left: 0;
   z-index: 20;
+}
+
+
+/* PROJECT STYLES */
+.project_slides_wrapper_display, 
+.project_users_wrapper_display, 
+.project_regions_wrapper_display, 
+.project_cells_wrapper_display {
+  display: none;
 }
 
 /* FOOTER STYLES */

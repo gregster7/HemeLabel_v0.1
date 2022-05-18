@@ -35,10 +35,15 @@ Dropzone.options.mySlideDropzone = {
       var mySlideDropzone = this;
 
       submitButton.addEventListener("click", function() {
+        $('#slide_upload_wrapper').css("display", "block");
+        console.log('showing splash screen');
+        $('body').css('top', -(document.documentElement.scrollTop) + 'px').addClass('no-scroll');
+        console.log('preventing body from scrolling');
         mySlideDropzone.processQueue();
       });
 
       mySlideDropzone.on("complete", function(file) {
+        window.location.reload();
         mySlideDropzone.removeFile(file);
 
       });
@@ -101,9 +106,10 @@ Dropzone.options.mySlideDropzone = {
   <h2>Slides ({{ slides|length }}) <i id="slide_collapse" class="bi-caret-down" style="float: right;"></i></h2>
 </div>
 
-<div id="project_slides_wrapper">
+<div id="project_slides_wrapper" class="project_slides_wrapper_display">
 
   <!-- Upload Slides -->
+  {% if request.user == project.created_by %}
   <!-- <h3 id="show_dropzone" style="border-bottom: none !important;">Add Slides</h3> -->
   <div class="d-flex justify-content-center">
     <button class="d-flex justify-content-center btn btn-secondary" id="show_dropzone" style="border-bottom: none !important;">
@@ -127,6 +133,7 @@ Dropzone.options.mySlideDropzone = {
       </div>
     </div>
   </div>
+  {% endif %}
 
   {% for slide in slides %}
   <div id="project_slide_list">
@@ -163,9 +170,10 @@ Dropzone.options.mySlideDropzone = {
   <h2>Users ({{project.users.all|length}}) <i id="user_collapse" class="bi-caret-down" style="float: right;"></i></h2>
 </div>
 
-<div id="project_users_wrapper">
+<div id="project_users_wrapper" class="project_users_wrapper_display">
 
   <!-- ADD USERS -->
+  {% if request.user == project.created_by %}
   <div class="d-flex justify-content-center">
     <button id="add_users_button" class="btn btn-secondary">
       Add Users
@@ -194,10 +202,11 @@ Dropzone.options.mySlideDropzone = {
       </div>
     </div>
   </div>
+  {% endif %}
 
-  <div class="container-fluid slide_box pt-3 mt-2" style="padding-right: 5px !important; padding-left: 5px !important">
+  <div class="container-fluid slide_box pt-3 my-3" style="padding-right: 5px !important; padding-left: 5px !important">
 
-    <div class="container-fluid">
+    <div class="container-fluid text-center">
       <b>Project Creator: </b>{{ project.created_by }}
       <hr>
     </div>
@@ -231,7 +240,7 @@ Dropzone.options.mySlideDropzone = {
   <h2>Regions ({{regions|length}}) <i id="region_collapse" class="bi-caret-down" style="float: right;"></i></h2>
 </div>
 
-<div id="project_regions_wrapper" clas="mb-3">
+<div id="project_regions_wrapper" class="project_regions_wrapper_display">
 
   <div class="container-fluid slide_box mb-3">
 
@@ -241,14 +250,23 @@ Dropzone.options.mySlideDropzone = {
       <ul id="region_list_{{region.rid}}" class="regions_list">
         <li id="region_{{region.id}}" class="region_id"><b>ID: </b>{{ region.id }}</li>
         <li id="region_{{region.rid}}" class="region_rid"><b>RID: </b>{{ region.rid }}</li>
+
+        {% if request.user == region.created_by %}
         <li><button id="delete_region_button_{{region.rid}}" class="btn btn-slide-info delete_region_button rid={{region.rid}}">Delete</button></li>
+        {% endif %}
       </ul>
 
       <ul id="region_{{region.rid}}_link_list" class="region_link_list">
+        {% if request.user == region.created_by %}
         <li id="region_{{region.rid}}_link" calss="region_link mb-2" style="margin-bottom: 1rem;">
         <a href="{% url 'labeller:label_region_fabric' region.rid %}">
           <img src="{{region.image}}" clas="region_thumb" alt="">
         </a></li>
+        {% else %}
+        <li id="region_{{region.rid}}_link" calss="region_link mb-2" style="margin-bottom: 1rem;">
+          <img src="{{region.image}}" clas="region_thumb" alt="">
+        </li>
+        {% endif %}
       </ul>
 
     </div>
@@ -261,7 +279,7 @@ Dropzone.options.mySlideDropzone = {
 
 <!-- Cell Section -->
 <h2>Cells ({{cells|length}}) <i id="cell_collapse" class="bi-caret-down" style="float: right;"></i></h2>
-<div id="project_cells_wrapper">
+<div id="project_cells_wrapper" class="project_cells_wrapper_display">
   <div class="mb-5"></div>
     {% include "labeller/partials/main_lineages_horizontal.html" %}
   </div>
@@ -278,6 +296,7 @@ Dropzone.options.mySlideDropzone = {
         $('#project_slides_wrapper').slideUp();
       } else {
         $this.addClass("clicked_once");
+        // $('#project_slides_wrapper').slideDown();
         $('#project_slides_wrapper').slideDown();
       }
     });
@@ -389,20 +408,20 @@ Dropzone.options.mySlideDropzone = {
     var project_id = '{{project.id}}';
     console.log('project_id = ' + project_id);
 
-    $('#project_slides_wrapper').hide();
+    // $('#project_slides_wrapper').hide();
     slideCollapse();
     $('#dropzone_wrapper').hide();
     showDropzoneOnClick();
 
-    $('#project_users_wrapper').hide();
+    // $('#project_users_wrapper').hide();
     userCollapse();
     $('#add_users_wrapper').hide();
     showAddUserFormOnClick();
 
-    $('#project_regions_wrapper').hide();
+    // $('#project_regions_wrapper').hide();
     regionCollapse();
 
-    $('#project_cells_wrapper').hide();
+    // $('#project_cells_wrapper').hide();
     cellCollapse();
   });
   
