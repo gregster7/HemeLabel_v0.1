@@ -12,7 +12,7 @@
 
 <script>
 
-  function getULForProject(name, pid) {
+  function getULForProject(name, pid, created_by) {
     console.log(name, pid);
 
     console.log("you are in getULForProject")
@@ -21,10 +21,12 @@
     project_path = '/project/'+pid+'/';
 
     var ul = '<ul id="project_list_'+ pid + '" class="project_list project_list_box">';
-    ul += '<li class="project_name"><a class="project_link" href="'+project_path+'">'+name+'</a></li>';
-    ul += '<li class="project_id_' + pid + '">Poject ID: ' + pid + '</li>';
+    // ul += '<li class="project_name"><b>Name: </b>';
+    ul += '<a class="project_link pr-2" href="'+project_path+'">'+name+'</a></li>';
+    ul += '<li class="project_id_' + pid + '"><b>ID: </b>' + pid + '</li>';
     // ul += '<li class="print_total_cells"><button id="total_cells_' + pid + '" class="total_cells_in_project">Total No. Cells</button></li>';
     ul += '<li id="total_num_cells_'+pid+'"></li></ul>';
+    // ul += `<li>${created_by}</li>`;
 
     return ul;
     
@@ -78,39 +80,71 @@
 
 </script>
 
-  <h2>{{ user.get_username }}'s Projects</h2>
+<!-- <div class="container-fluid">
+  <div class="text-center p-4"> -->
+    <h2>{{ user.get_username }}</h2>
+  <!-- </div> -->
 
-  <p>
-    <form action='/create_project' method="POST" class="new_project">
-      {% csrf_token %}
-      New Project: <input type="text" name="project" required />
-      <button id="create_project_button" class="btn upload-btn">Create</button>
-    </form>
-  </p>
-
-  <br>
-
-  <div id="projects">
-
-      {% for project in projects %}
-
-      <script>
-        console.log("{{ project.name }}");
-        $('#projects').append(getULForProject("{{project.name}} | {{project.created_by}}", {{project.id}}))
-      </script>
-
-      {% empty %}
-        <p id="no_projects">No projects have been added yet.</p>
-      {% endfor %}
-
+  <div class="container-fluid p-4 slide_box mt-3 mb-3 p-4">
+    <p>
+      <form action='/create_project' method="POST" class="new_project">
+        {% csrf_token %}
+        New Project: <input type="text" name="project" required />
+        <button id="create_project_button" class="btn upload-btn">Create</button>
+      </form>
+    </p>
   </div>
 
-  <script>
+  <h2 class="mb-4">Projects ({{ projects|length }})</h2>
 
-    
+  <div class="container-fluid">
 
-  </script>
+    <div class="row">
 
+      <div id="projects_list_div" class="col-xl-6 col-l-6 col-md-6 col-sm-6">
+        {% for project in projects %}
+
+        <div class="d-flex align-items-center">
+
+          <p class="p-2">
+            {{ project.name }} ID: {{ project.id }}
+          </p>
+          <a href="{% url 'labeller:project' project.id %}" class="btn btn-prmary p-1">
+            <i class="bi-arrow-right-circle-fill"></i>
+          </a>
+
+        </div>
+        <hr>
+
+        {% empty %}
+        <p>You don't have any projects yet. Start one above!</p>
+      </div>
+        {% endfor %}
+
+      <div class="shared_projects_list_div col-xl-6 col-l-6 col-md-6 col-sm-6">
+        {% for shared_project in shared_projects %}
+        <div class="d-flex align-items-center">
+
+          <p class="p-2">
+            {{ shared_project.name }} ID: {{ shared_project.id }}
+          </p>
+          <a href="{% url 'labeller:project' shared_project.id %}" class="btn btn-primary p-1">
+            <i class="bi-arrow-right-circle-fill"></i>
+          </a>
+
+        </div>
+        {% endfor %}
+      </div>
+
+    </div>
+
+  </div>
+  
+
+
+
+
+  <br>
 
 <script>
   

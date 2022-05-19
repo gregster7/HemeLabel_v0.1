@@ -1,7 +1,8 @@
 {% extends "labeller/base2.html" %}
+{% load static %}
 
 {% block content %}
-
+<script src="{% static 'labeller/Region.js' %}"></script>
 <script>
 
 	function getULForRegion(id, rid, img_path) {
@@ -15,7 +16,7 @@
 		ul += '<ul id="region_list_' +rid+ '" class="regions_list">';
 		ul += '<li id="region_' +id+ '" class="region_id"><b>ID: </b>' +id+ '</li>';
 		ul += '<li id="region_' +rid+ '" class="region_rid"><b>RID: </b>' +rid+ '</li>';
-		ul += '<li><button id="delete_region_button_'+this.rid+'" class="btn btn-slide-info delete_region_button rid=' +this.rid+' ">Delete</button></li>';
+		ul += '<li><button id="delete_region_button_'+rid+'" class="btn btn-slide-info delete_region_button rid=' +rid+' ">Delete</button></li>';
 		ul += '</ul>';
 		ul += '<ul id="region_' +rid+ '_link_list" class="region_link_list">';
 		ul += '<li id="region_' +rid+ '_link" clas="region_link mb-2" style="margin-bottom: 1rem;">';

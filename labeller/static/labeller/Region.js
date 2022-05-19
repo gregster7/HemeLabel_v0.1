@@ -78,4 +78,18 @@ class Region {
 		});
 	}
 
+	// static addRegionDeleteEventListener() {
+	// 	console.log('entering deleteregioneventlistener');
+	// 	$('#delete_region_button_'+rid).click(function() {
+	// 		var rid = this.id.substring(this.id.lastIndexOf('_')+1);
+	// 		console.log(rid);
+
+	// 		$.post("/delete_region/", {'rid': rid}, function(json) {
+	// 			if (json['successs'] == true) {
+	// 				$('#region_list_'+this.rid).remove();
+	// 			}
+	// 		});
+	// 	});
+	// }
+
 }	

@@ -2,7 +2,8 @@
 
 html,
 body {
-  height: 100%;
+  /* height: 100%; */
+  min-height: 100vh;
   width: 100%;
   font-family: "Poppins", serif;
   color: #222;
@@ -35,7 +36,7 @@ h2 {
 
 h3 {
   /* background-color: rgb(224, 224, 224); */
-  border-bottom: 1px solid purple;
+  /* border-bottom: 1px solid purple; */
   padding: 5px;
   color: #663399ff;
   text-align: center;
@@ -64,6 +65,12 @@ hr.center {
   border-top: 2px solid rgb(0, 0, 0, 0.3);
   margin-top: 3rem;
   margin-bottom: 0rem;
+}
+
+footer {
+  position: absolute;
+  /* bottom: 0; */
+  width: 100%;
 }
 
 .navbar {
@@ -135,10 +142,9 @@ th {
 .btn {
   border-radius: 12px !important;
 
-  font-size: irem !important;
+  font-size: 1rem !important;
   padding: .2rem .5rem .2rem .5rem !important;
 }
-
 
 .btn:hover,
 .btnactive,
@@ -445,20 +451,23 @@ figure {
 /* ADDED TO CONVERT REMAINING PAGES TO BASE2.HTML */
 
 /* REGIONS.HTML STYLES */
-.regions_list_div {
+.regions_list_div,
+.projects_list_div {
   border-bottom: 1px solid #663399ff;
   padding: 5px;
 }
 
-.regions_list {
+.regions_list,
+.project_list {
   list-style-type: none;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
 }
 
-.regions_list li {
-  padding-left: 10px;
+.regions_list li,
+.project_list li {
+  padding-left: 10px !important;
 }
 
 .region_link_list {
@@ -578,6 +587,36 @@ img.region_thumb {
 
 /* SLIDES.HTML STYLES */
 
+/* SLIDE UPLOAD SPLASH */
+#slide_upload_wrapper {
+  align-items: center;
+  justify-items: center;
+  position: fixed;
+  /* display: block; */
+  width: 100%;
+  height: 100vh;
+  /* padding-top: auto; */
+  text-align: center;
+  opacity: 0.75;
+  background-color: #663399ff;
+  z-index: 120;
+  display: none;
+}
+
+.slide_upload_wrapper_display {
+  display: none;
+}
+
+#slide_upload_wrapper > div {
+  margin-top: 25vh;
+  opacity: 100% !important;
+}
+
+.no-scroll {
+  position: fixed;
+  overflow-y: scroll;
+}
+
 #slides_container {
   margin-bottom: 12px;
   align-items: center;
@@ -664,7 +703,9 @@ img.region_thumb {
 .upload-btn {
   color: white !important;
   background-color: #6648b1 !important;
-  border: none !important;
+  /* border: none !important; */
+  border: solid 1px #6648b1 !important;
+
   font-size: 1rem;
   padding: .2rem .5rem .2rem .5rem !important;
 }
@@ -979,3 +1020,14 @@ Image height is 665px
   left: 0;
   z-index: 20;
 }
+
+
+/* PROJECT STYLES */
+.project_slides_wrapper_display, 
+.project_users_wrapper_display, 
+.project_regions_wrapper_display, 
+.project_cells_wrapper_display {
+  display: none;
+}
+
+/* FOOTER STYLES */

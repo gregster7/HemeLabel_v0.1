@@ -14,7 +14,7 @@ class Collaborator(models.Model):
     isBlind = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.user + ' (isBlind = '+self.isBlind+') '
+        return str(self.user)
 
     class Meta:
         verbose_name_plural = 'Collaborators'

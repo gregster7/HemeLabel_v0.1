@@ -39,12 +39,11 @@ h2 {
   color: #663399ff;
   text-align: center;
   text-transform: capitalize;
-  /* border-bottom: 1px solid purple; */
 }
 
 h3 {
   /* background-color: rgb(224, 224, 224); */
-  border-bottom: 1px solid purple;
+  /* border-bottom: 1px solid purple; */
   padding: 5px;
   color: #663399ff;
   text-align: center;
