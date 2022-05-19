@@ -2,10 +2,7 @@
 {% load static %}
 
 
-
 {% block content %}
-
-
 <script src="{% static 'labeller/Cell.js' %}"></script>
 <script src="{% static 'labeller/CellCounter.js' %}"></script>
 <script src="{% static 'labeller/CellSummary.js' %}"></script>
@@ -18,8 +15,7 @@
 <link rel="stylesheet" href="{% static 'labeller/dropzone-5.7.0/dist/dropzone.css' %}">
 
 <script>
-  
-  
+
   // My own Dropzone //
   Dropzone.options.mySlideDropzone = {
     
@@ -39,16 +35,22 @@
       var mySlideDropzone = this;
 
       submitButton.addEventListener("click", function() {
+        $('#slide_upload_wrapper').css("display", "block");
+        console.log('showing splash screen')
+        $('body').css('top', -(document.documentElement.scrollTop) + 'px').addClass('no-scroll');
+        console.log('preventing body from scrolling')
         mySlideDropzone.processQueue();
       });
 
       mySlideDropzone.on("complete", function(file) {
+        window.location.reload();
         mySlideDropzone.removeFile(file);
 
       });
 
       mySlideDropzone.on("success", function(file, serverResponse) {
         console.log('entering mydropzone.on("success")');
+
         if (serverResponse['success']) {
           var slides_json = serverResponse['slides_json'];
           console.log(slides_json);
@@ -60,11 +62,15 @@
 
           for (var i=0; i<slides.length; i++) {
             console.log(slides[i]);
-            console.log(slide.fields.name);
             var slide = slides[i];
-            $('#slides').append(getULForSlide(slide.pk, slide.fields.sid, slide.fields.name));
-            $('#bigtable_'+slide.fields.sid).hide();
-            infoButtonOnClick(slide.fields.sid);
+
+            console.log('slide fields = ' + slide.fields.name);
+            console.log('slide fields = ' + slide.fields.sid);
+            var slide_sid = slide.fields.sid;
+            
+            // $('#slide_list').prepend(newSlideDisplay(slide_sid));
+            // $('#bigtable_'+slide.fields.sid).hide();
+            // infoButtonOnClick(slide.fields.sid);
           }
         }
       });
@@ -80,7 +86,7 @@
   <h3 style="border-bottom: 0px">Slide Uploader </h3>
 
   <!-- <div id="slide_dz_div"> -->
-  <form action="dropzone_slide" id="my-slide-dropzone" method="POST" enctype="multipart/form-data" class="dropzone js-reference-dropzone">
+  <form action="dropzone_slide_upload" id="my-slide-dropzone" method="POST" enctype="multipart/form-data" class="dropzone js-reference-dropzone">
     {% csrf_token %}
   </form>
     <!-- <hr style="width: 50%;"> -->
@@ -92,50 +98,97 @@
 
 <script src="{% static 'labeller/Diagnosis.js' %}"></script>
 <!-- Slides -->
-{% for slide in slides %}
-  {% if user.is_authenticated %}
-  {% if user.id == slide.created_by.id %}
+<div id="slide_list">
+  {% for slide in slides %}
+    {% if user.is_authenticated %}
+    {% if user.id == slide.created_by.id %}
 
 
-    <div class="container-fluid slide_box" style="padding-right: 5px  !important; padding-left: 5px !important;">
-      <div class="container-fluid my-3 pt-2 pb-3 mx-0">
-        <!-- Slide Info -->
-        {% include "labeller/partials/slide_diagnoses.html" %}
+      <div class="container-fluid slide_box" style="padding-right: 5px  !important; padding-left: 5px !important;">
+        <div class="container-fluid my-3 pt-2 pb-3 mx-0">
+          <!-- Slide Info -->
+          {% include "labeller/partials/slide_diagnoses.html" %}
 
-        <!-- Cell Summary -->
-        <div class="bigtable-box container-fluid">
-          <div class="row">
-            <div class="px-2" id='slide_cellSummary_sid_{{slide.sid}}'></div>
+          <!-- Cell Summary -->
+          <div class="bigtable-box container-fluid">
+            <div class="row">
+              <div class="px-2" id='slide_cellSummary_sid_{{slide.sid}}'></div>
+            </div>
           </div>
+
+          <script>
+              var cellSummary = new CellSummary('sid', {{slide.sid}});
+              $('#slide_cellSummary_sid_{{slide.sid}}').append(cellSummary.getNewULForSlide());
+              cellSummary.addInfoButtonOnClick();
+              $('#bigtable_sid_{{slide.sid}}').hide()
+          </script>
+
+
+
         </div>
-        
-        <script>
-            var cellSummary = new CellSummary('sid', {{slide.sid}});
-            $('#slide_cellSummary_sid_{{slide.sid}}').append(cellSummary.getNewULForSlide());
-            cellSummary.addInfoButtonOnClick();
-            $('#bigtable_sid_{{slide.sid}}').hide()
-        </script>
-
-
-
       </div>
-    </div>
 
-  {% endif %}
-  {% endif %}
+    {% endif %}
+    {% endif %}
 
 
-{% empty %}
-  <div class="container-fluid justify-content-center">
-    <h3 style="border-bottom: 0px">No Slides</h3>
-  </div>  
-{% endfor %}
-
+  {% empty %}
+    <div class="container-fluid justify-content-center">
+      <h3 style="border-bottom: 0px">No Slides</h3>
+    </div>  
+  {% endfor %}
+</div>
 
 
 <script>
 
-  
+
+function collaboratorsDisplay(slide_pk, collaborator_pk, collaborator) {
+  var collabDisplay = `<p id="collab_display_${slide_pk}" class="slide_collab_${slide_pk}">`;
+  collabDisplay += collaborator;
+  console.log('collaborator ' + collaborator);
+  collabDisplay += `<button id="delete_collab_${slide_pk}" class="${slide_pk} btn p-0">`;
+  collabDisplay += `<i class="bi-trash"></i></button>`;
+  collabDisplay += `</p>`;
+  return collabDisplay;
+}
+
+function addBlindCollabToSlideAJAX(slide_pk, collaborator_pk, collaborator) {
+  console.log('you are now about to enter... addBlindCollabTOSlideAJAX')
+  $.post("/add_blind_collab_to_slide/", {'slide_pk': slide_pk, 'collaborator_pk': collaborator_pk, 'collaborator': collaborator})
+  .done(function(response) {
+    console.log(collaborator);
+    console.log(collaborator_pk);
+    console.log(slide_pk);
+
+    console.log('success ' + response);
+
+    $('#slide_collaborators_'+slide_pk).append(collaboratorsDisplay(slide_pk, collaborator_pk, collaborator));
+  });
+}
+
+$("#blind_collab_form_slide_{{slide.pk}}").submit(function(e) {
+  e.preventDefault();
+  var collaborator_pk = $("#blind_collab_form_slide_{{slide.pk}}").val();
+  console.log("adding colaborator: " + collaborator_pk);
+  var div = $(this).parent("div");
+  var slide_pk = div.data("id");
+  conosle.log(pk);
+
+  var sel = document.getElementById('blind_collab_form_slide_{{slide.pk}}');
+  var index = sel.selectedIndex;
+  console.log(index);
+  var collaborator = sel.options[sel.selectedIndex].text;
+  console.log(collaborator);
+
+  addBlindCollabToSlideAJAX(slide_pk, collaborator_pk, collaborator);
+});
+
+$(document).ready(function() {
+  // $('body').css('top', -($('body').scrollTop()) + 'px').addClass('no-scroll');
+  // console.log('added class no-scroll');
+  // $('#slide_upload_wrapper').hide();
+});
 
 </script>
 {% endblock content %}
