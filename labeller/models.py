@@ -207,14 +207,16 @@ class Project(models.Model):
 
 # Each Cell Classification has one classification, one reviewer and one associated NewCell object.
 class CellType(models.Model):
+    date_created = models.DateTimeField(auto_now_add=True)
     cell_type = models.CharField(max_length=50, default='UL')
     cell = models.ForeignKey('Cell', on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     notes = models.CharField(max_length=10000, blank=True, null=True)
+    is_most_recent = models.BooleanField(default=True)
 
     def __str__(self):
         """Return a string representation of the model."""
-        return str(str(self.id) + " " + self.cell_type + " " + str(self.cell.cid) + " " + str(self.user))
+        return str(str(self.id) + " " + self.cell_type + " " + str(self.cell.cid) + " " + str(self.user) + " is_most_recent="+str(self.is_most_recent))
 
 
 class Cell(models.Model):

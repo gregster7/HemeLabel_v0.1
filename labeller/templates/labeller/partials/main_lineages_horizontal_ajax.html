@@ -1,8 +1,8 @@
 <!-- Used by all_cells_for_diagnosis2.hmtl -->
 {% load static %}
 <script>
-  var GLOBAL_INITIAL_CELL_LOAD = 50
-  var GLOBAL_LOAD_MORE_CELL_LOAD = 100
+  var GLOBAL_INITIAL_CELL_LOAD = 10
+  var GLOBAL_LOAD_MORE_CELL_LOAD = 50
   
 </script>
 
@@ -14,9 +14,10 @@
     lineage_abb = $(e).data('lineage_abb')
     var pathname = window.location.pathname.split('/')
     var context = {}
-    if (pathname[1] == 'all_cells_for_diagnosis2'){
+    if (pathname[1].includes('all_cells_for_diagnosis2') ){
       context = {
         'id_type': 'diagnosis_pk',
+        'requesting_page': pathname[1],     
         'id_val': pathname[2],
         'query_type': 'all_cells_single_type',      
         // 'class_label_name': lineage_name,
@@ -51,12 +52,14 @@
     lineage_abb = $(e).data('lineage_abb')
       var pathname = window.location.pathname.split('/')
       var context = {}
-      if (pathname[1] == 'all_cells_for_diagnosis2'){
+      if (pathname[1].includes('all_cells_for_diagnosis2') ){
+
         old_finish = $('#h2_'+lineage_abb).data('finish');
         console.log(old_finish)
         num_new_cells = GLOBAL_LOAD_MORE_CELL_LOAD;
         context = {
           'id_type': 'diagnosis_pk',
+          'requesting_page': pathname[1],     
           'id_val': pathname[2],
           'query_type': 'more_cells_single_type',
           'old_finish': old_finish,
@@ -93,8 +96,7 @@
     var pathname = window.location.pathname.split('/')
     // console.log(window.location.pathname.split('/'), )
     var context = {}
-    
-    
+        
     var header ='<h3 id="h2_' + lineage_abb +'">'+lineage_name+'</h3>';
     // console.log(temp_div)
     var cells_inline = '<div id="'+lineage_abb + '_cells_inline" class="inline_cells"></div>'
@@ -104,10 +106,11 @@
     $("#"+lineage_abb + '_cells_inline').data('lineage_abb', lineage_abb)
 
     // console.log(context)
-    if (pathname[1] == 'all_cells_for_diagnosis2'){
+    if (pathname[1].includes('all_cells_for_diagnosis2') ){
       context = {
        'id_type': 'diagnosis_pk',
-       'id_val': pathname[2],
+       'requesting_page': pathname[1],     
+        'id_val': pathname[2],
        'query_type': 'count',      
       //  'query_children_model': 'cell',
        'class_label_name': lineage_name,
@@ -118,7 +121,7 @@
 
     $.get('/generic_ajax_get/', context, function(json) {
       if(json['success'] == true) {
-        // console.log('generic_ajax_get successful');
+        console.log('generic_ajax_get successful', json['count']);
         var lineage_name = json['class_label_name']
  
         var temp_div = lineage_name + " (" + json['count'] + ")";
@@ -144,6 +147,15 @@
     console.log('loadMoreButtonClickHandler', e, this);
   }
 
+  function cellListItemClickHandler(jq_obj){
+  		// console.log("this item was clicked on", jq_obj);
+  		var cid = Cell.extractCIDFromJQueryObjectID(jq_obj);
+      // console.log($('.clicked_cell'))
+   		Cell.selectCellByCID(cid);
+      $('.clicked_cell').removeClass('clicked_cell');
+      jq_obj.addClass('clicked_cell');
+  }
+
   function populateCellLists (cells_json, cell_types_json){
 		//console.log('entering populatCellList', cells_json, cell_types_json);
 		// console.log('entering populatCellList');
@@ -167,7 +179,7 @@
     
 
 		$('.cell_list_item').on('click', function (){
-			HorizontalCellList.cellListItemClickHandler($(this))
+			cellListItemClickHandler($(this))
 		});
     //Cell.UpdateHorizontalCellCounts();
 	}
@@ -180,14 +192,15 @@
 
   function populateIndividualHorizontalCellList(lineage_abb, lineage_name, start, finish){
     var pathname = window.location.pathname.split('/')
-    // console.log(window.location.pathname.split('/'), )
+    // console.log ("MMMMMMMMMMMMMM", window.location.pathname.split('/'))
     var context = {}
 
-    if (pathname[1] == 'all_cells_for_diagnosis2'){
+    if (pathname[1].includes('all_cells_for_diagnosis2') ){
       context = {
        'id_type': 'diagnosis_pk',
+       'requesting_page': pathname[1],     
        'id_val': pathname[2],
-       'query_type': 'get_cells_interval',      
+       'query_type': 'get_cells_interval', 
       //  'query_children_model': 'cell',
        'class_label_name': lineage_name,
        'class_label_abb': lineage_abb,
@@ -243,94 +256,94 @@
 
 <!-- <script src="{% static 'labeller/Cell.js' %}"></script>
  -->
-<script>
-  console.log('entering horizontal_cells.html javascript');
+ <script>
+  // console.log('entering horizontal_cells.html javascript');
 
   class HorizontalCellList {
 
 
-  	static nextCell(offset) {
-      console.log('entering next cell');
+  // 	static nextCell(offset) {
+  //     console.log('entering next cell');
 
-  		if (offset !=1 && offset != -1){
-  			console.log("Error in HorizontalCellList:nextCell - wrong offset", offset);
-  			return false;
-  		}
+  // 		if (offset !=1 && offset != -1){
+  // 			console.log("Error in HorizontalCellList:nextCell - wrong offset", offset);
+  // 			return false;
+  // 		}
 
-      if ($('.clicked_cell').length==0) {
-          console.log('No clicked_cell in HorizontalCellList.nextCell')
-          return;
-        }
-      if ($('.clicked_cell').length>1){
-          console.log('Too many clicked_cell objects in HorizontalCellList.nextCell', $('.clicked_cell'))
-          return;
+  //     if ($('.clicked_cell').length==0) {
+  //         console.log('No clicked_cell in HorizontalCellList.nextCell')
+  //         return;
+  //       }
+  //     if ($('.clicked_cell').length>1){
+  //         console.log('Too many clicked_cell objects in HorizontalCellList.nextCell', $('.clicked_cell'))
+  //         return;
+  //     }
+
+  //     var cell = $('.clicked_cell')
+
+  // 		// if (cell.siblings.length == 0) {
+  // 		// 	console.log("cell has no siblings")
+  // 		// 	return false;
+  // 		// } 
+
+  // 		if (offset == 1 && cell.next().length ==1) {
+  // //				var current_cell = cell.next();
+  // 				var cid = Cell.getCIDfromDivID(cell.next()[0]);
+  // 				Cell.selectCellByCID(cid);
+  //         cell.removeClass('clicked_cell');
+  //         cell.next().addClass('clicked_cell');
+  // 				return;
+  // 			}
+
+  // 			else if (offset == -1 && cell.prev().length ==1) {
+  // 				var cid = Cell.getCIDfromDivID(cell.prev()[0]);
+  // 				Cell.selectCellByCID(cid);
+  //         cell.removeClass('clicked_cell');
+  //         cell.prev().addClass('clicked_cell');
+  // 				return;
+  // 		}
+
+  // 		return;
+  // 	}
+
+  // 	static addKeyboardEventListeners(){
+  //     {% comment %} window.addEventListener('keydown', function(e) {
+  //       if(e.key === 'r' && e.ctrlKey) {
+  //         e.preventDefault();
+  //     }
+  //     });
+  // 	{% endcomment %}
+  //     window.addEventListener('keydown', function(e) {
+  //       if(e.keyCode == 32 && e.target == document.body) {
+  //         e.preventDefault();
+  //       }
+  //     });
+
+  // 			window.addEventListener('keyup', (e) => {
+  //         console.log('horizontal key pressed event in main_lineages_horizontal');
+
+
+  // 				var code = e.code;
+
+  // 				switch(code) {
+
+  // 					case "ArrowLeft": HorizontalCellList.nextCell(-1);  break;
+  // 					case "ArrowRight": HorizontalCellList.nextCell(1); break;
+  // 					//case "Enter": nextRegion(); break;
+  //           case "Space": HorizontalCellList.selectFirstUnlabelledCell(); break;
+  //           case "Backslash": Cell.deleteCellByCID(Cell.currentCellCID()); break;
+  // 				}
+  // 			});
+  // 	}
+
+      static cellListItemClickHandler(jq_obj){
+        // console.log("this item was clicked on", jq_obj);
+        var cid = Cell.extractCIDFromJQueryObjectID(jq_obj);
+        // console.log($('.clicked_cell'))
+        Cell.selectCellByCID(cid);
+        $('.clicked_cell').removeClass('clicked_cell');
+        jq_obj.addClass('clicked_cell');
       }
-
-      var cell = $('.clicked_cell')
-
-  		// if (cell.siblings.length == 0) {
-  		// 	console.log("cell has no siblings")
-  		// 	return false;
-  		// } 
-
-  		if (offset == 1 && cell.next().length ==1) {
-  //				var current_cell = cell.next();
-  				var cid = Cell.getCIDfromDivID(cell.next()[0]);
-  				Cell.selectCellByCID(cid);
-          cell.removeClass('clicked_cell');
-          cell.next().addClass('clicked_cell');
-  				return;
-  			}
-
-  			else if (offset == -1 && cell.prev().length ==1) {
-  				var cid = Cell.getCIDfromDivID(cell.prev()[0]);
-  				Cell.selectCellByCID(cid);
-          cell.removeClass('clicked_cell');
-          cell.prev().addClass('clicked_cell');
-  				return;
-  		}
-
-  		return;
-  	}
-
-  	static addKeyboardEventListeners(){
-      {% comment %} window.addEventListener('keydown', function(e) {
-        if(e.key === 'r' && e.ctrlKey) {
-          e.preventDefault();
-      }
-      });
-  	{% endcomment %}
-      window.addEventListener('keydown', function(e) {
-        if(e.keyCode == 32 && e.target == document.body) {
-          e.preventDefault();
-        }
-      });
-
-  			window.addEventListener('keyup', (e) => {
-          console.log('horizontal key pressed event in main_lineages_horizontal');
-
-
-  				var code = e.code;
-
-  				switch(code) {
-
-  					case "ArrowLeft": HorizontalCellList.nextCell(-1);  break;
-  					case "ArrowRight": HorizontalCellList.nextCell(1); break;
-  					//case "Enter": nextRegion(); break;
-            case "Space": HorizontalCellList.selectFirstUnlabelledCell(); break;
-            case "Backslash": Cell.deleteCellByCID(Cell.currentCellCID()); break;
-  				}
-  			});
-  	}
-
-  	static cellListItemClickHandler(jq_obj){
-  		// console.log("this item was clicked on", jq_obj);
-  		var cid = Cell.extractCIDFromJQueryObjectID(jq_obj);
-      // console.log($('.clicked_cell'))
-   		Cell.selectCellByCID(cid);
-      $('.clicked_cell').removeClass('clicked_cell');
-      jq_obj.addClass('clicked_cell');
-  	}
 
 
   	static selectFirstUnlabelledCell(){
@@ -342,41 +355,43 @@
   		}
   	}
 
-  	static populateCellLists (cells_json, cell_types_json){
-  		//console.log('entering populatCellList', cells_json, cell_types_json);
-  		// console.log('entering populatCellList');
-  		var cells = Cell.LoadCellsFromJson(cells_json, cell_types_json);
+  // 	static populateCellLists (cells_json, cell_types_json){
+  // 		//console.log('entering populatCellList', cells_json, cell_types_json);
+  // 		// console.log('entering populatCellList');
+  // 		var cells = Cell.LoadCellsFromJson(cells_json, cell_types_json);
 
-      // console.log('cells', cells)
-  		var counter = 1;
-  		for (var key in cells) {
-  			var cell = cells[key];
-  			// console.log(cell)
-  			var cid = cell.getCID();
-  			var cell_div = cell.getDivForCellList();
-  			var jq_obj = $("#"+cell.getLineage()+"_cells_inline").append(cell_div);
+  //     // console.log('cells', cells)
+  // 		var counter = 1;
+  // 		for (var key in cells) {
+  // 			var cell = cells[key];
+  // 			// console.log(cell)
+  // 			var cid = cell.getCID();
+  // 			var cell_div = cell.getDivForCellList();
+  // 			var jq_obj = $("#"+cell.getLineage()+"_cells_inline").append(cell_div);
 
-  			var jq_obj_celltype = $("#"+cell.cell_type+"_cells_inline").append(cell_div);
-        //console.log(jq_obj, jq_obj_celltype)
-  		}
+  // 			var jq_obj_celltype = $("#"+cell.cell_type+"_cells_inline").append(cell_div);
+  //       //console.log(jq_obj, jq_obj_celltype)
+  // 		}
       
-  		$('.cell_list_item').on('click', function (){
-  			HorizontalCellList.cellListItemClickHandler($(this))
-  		});
-      //Cell.UpdateHorizontalCellCounts();
-  	}
+  // 		$('.cell_list_item').on('click', function (){
+  // 			HorizontalCellList.cellListItemClickHandler($(this))
+  // 		});
+  //     //Cell.UpdateHorizontalCellCounts();
+  // 	}
 
-  	static addCellClassHorizontalRows() {
-  		for (var key in Cell.classLabelDict) {
-  			//console.log('meow', key, Cell.classLabelDict[key])
-  			var temp_div = '<h2 id="h2_'+key+'">'+Cell.classLabelDict[key]+'</h2><div id="'+key+'_cells_inline" class="inline_cells"></div>'
-  			$("#celltype_inline_container").append(temp_div);
-  		}
-  	}
+  // 	static addCellClassHorizontalRows() {
+  // 		for (var key in Cell.classLabelDict) {
+  // 			//console.log('meow', key, Cell.classLabelDict[key])
+  // 			var temp_div = '<h2 id="h2_'+key+'">'+Cell.classLabelDict[key]+'</h2><div id="'+key+'_cells_inline" class="inline_cells"></div>'
+  // 			$("#celltype_inline_container").append(temp_div);
+  // 		}
+  // 	}
 
 
   }
+</script>
 
+  <script>
   $ (document).ready(function() {
   	CreateHorizontalCellLists()
   	// if ('{{cells_json}}'!='none') {

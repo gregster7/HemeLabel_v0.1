@@ -1,5 +1,6 @@
 from distutils.log import error
 from nis import match
+from multiprocessing.spawn import old_main_modules
 from pdb import post_mortem
 import re
 from urllib import request
@@ -37,6 +38,41 @@ import csv
 
 def index(request):
     """The home page for labeller"""
+    # cellTypes = CellType.objects.filter(is_most_recent=True)
+    # print('cell_types_most_recent', cellTypes.count())
+
+    # cells = Cell.objects.all()
+    # print('cell_count', Cell.objects.count())
+
+    # celltypes2 = CellType.objects.all()
+    # print('celltypes2', CellType.objects.count())
+
+    # counter = 0
+    # for cell in cells:
+    #     cellTypes = CellType.objects.filter(
+    #         cell=cell, is_most_recent=True).order_by('-id')
+    #     celltype_counter = 0
+    #     for celltype in cellTypes:
+    #         if celltype_counter == 0:
+    #             celltype_counter += 1
+    #         else:
+    #             celltype.is_most_recent = False
+    #     CellType.objects.bulk_update(cellTypes, ['is_most_recent'])
+    #     counter += 1
+    #     if counter % 1000 == 0:
+    #         print('doing...'+str(counter))
+
+    # for cell in cells:
+    #     cell_type = CellType.objects.filter(
+    #         cell=cell).order_by('-id')[0]
+    #     cell_type.is_most_recent = True
+    #     cell_type.save()
+    #     # print(cell_type)
+    #     counter += 1
+    #     if counter % 1000 == 0:
+    #         print('doing...'+str(counter))
+
+    print('done')
     return render(request, 'labeller/index.html')
 
 
@@ -73,7 +109,7 @@ def generate_cell_image_with_vips(region, cid, left, top, width, height):
     # os.system(command)
 
 
-def export_all_cell_annotations_user(request):
+def export_all_cell_annotations_summary_user(request):
     if (request.user.username != 'admin'):
         print('user access denied in export_all_cell_annotations_user')
         return JsonResponse({'success': False})
@@ -83,7 +119,7 @@ def export_all_cell_annotations_user(request):
     # os.system('mkdir '+export_path)
     export_path = export_path+datetime.now().strftime("%Y%m%d%H%M%S")+'_cellTypes.csv'
 
-    cellTypes = CellType.objects.filter(user=request.user)
+    cellTypes = CellType.objects.filter(user=request.user, is_most_recent=True)
 
     ct_names = cellTypes.values('cell_type').distinct()
     distinct_cell_types = CellType.objects.values_list(
@@ -267,7 +303,8 @@ def regions(request):
     # regions = Region.objects.order_by('rid')
     user = request.user
     if user.is_authenticated:
-        regions = Region.objects.filter(created_by=request.user).order_by('-date_added')
+        regions = Region.objects.filter(
+            created_by=request.user).order_by('-date_added')
 
     regions_json = serializers.serialize("json", regions)
 
@@ -291,7 +328,6 @@ def get_cell_feature_form(request):
 def slides(request):
     """Show all regions."""
     # print(request.user.username)
-    
 
     # if request.user.is_authenticated:
     #     if request.user == Slide.objects.filter(created_by=request.user):
@@ -323,7 +359,7 @@ def getAllCellTypesUserRegionJSON(user, region):
 
 
 def getAllCellTypesUserHelper(user):
-    return CellType.objects.filter(user=user)
+    return CellType.objects.filter(user=user, is_most_recent=True)
 
 
 def getAllCellTypesUserJSON(user):
@@ -332,7 +368,7 @@ def getAllCellTypesUserJSON(user):
 
 
 def getAllCellTypesUserSlideHelper(user, slide):
-    return CellType.objects.filter(cell__region__slide=slide, user=user)
+    return CellType.objects.filter(cell__region__slide=slide, user=user, is_most_recent=True)
 
 
 def getAllCellTypesSlideUserJSON(user, slide):
@@ -385,6 +421,7 @@ def label_slide(request, slide_id):
 
                 diagnoses = slide.diagnoses
 
+
                 cells = Cell.objects.filter(created_by=request.user, region__slide=slide)
                 cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
 
@@ -404,7 +441,6 @@ def label_slide(request, slide_id):
 
         else:
             return error_403(request)
-
 
     # slide = Slide.objects.get(sid=slide_id)
 
@@ -484,60 +520,56 @@ def generic_ajax_get(request):
         if (GET['query_type'] == 'count'):
             cells = Cell.objects.filter(region__slide__in=slides)
             count = CellType.objects.filter(
-                user=request.user, cell__in=cells, cell_type=GET['class_label_abb']).count()
+                user=request.user, cell__in=cells, cell_type=GET['class_label_abb'], is_most_recent=True).count()
             # print(count)
             results = {'success': True, 'count': count,
                        'class_label_name': GET['class_label_name']}
             return JsonResponse(results)
         elif(GET['query_type'] == 'get_cells_interval'):
-            # cells = Cell.objects.filter(region__slide__in=slides)
-            # cell_types = CellType.objects.filter(
-            #     user=request.user, cell__in=cells, cell_type=GET['class_label_abb']).order_by('id')[int(GET['start']):int(GET['finish'])]
-            cell_types = CellType.objects.filter(
-                user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb']).order_by('id')[int(GET['start']):int(GET['finish'])]
+            count = cell_types = CellType.objects.filter(
+                user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb'], is_most_recent=True).count()
+
+            if (GET['requesting_page'] == 'all_cells_for_diagnosis2_collab'):
+                cell_types = CellType.objects.filter(
+                    cell__region__slide__in=slides, cell_type=GET['class_label_abb'], is_most_recent=True).order_by('id')[int(GET['start']):int(GET['finish'])]
+
+            elif (GET['requesting_page'] == 'all_cells_for_diagnosis2'):
+                cell_types = CellType.objects.filter(
+                    user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb'], is_most_recent=True).order_by('id')[int(GET['start']):int(GET['finish'])]
+
             new_cells = Cell.objects.filter(celltype__in=cell_types)
-
-            # for ct in cell_types:
-            #     print(str(ct))
-
-            # for cell in new_cells:
-            #     print(cell)
-            # print('counts')
-            # print('cell_types: ' + str(cell_types.count()))
-            # print('new_cells: ' + str(new_cells.count()))
-            # print('class_label_name', GET['class_label_name'])
-
             results = {'success': True, 'cell_types_json': serializers.serialize("json", cell_types),
                        'cells_json': serializers.serialize("json", new_cells),
                        'class_label_name': GET['class_label_name'],
                        'start': GET['start'], 'finish': GET['finish'],
+                       'count': count,
                        'class_label_abb': GET['class_label_abb']}
             return JsonResponse(results)
 
         elif(GET['query_type'] == 'all_cells_single_type'):
             cell_types = CellType.objects.filter(
-                user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb']).order_by('id')
-            print('cell_types', cell_types)
+                user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb'], is_most_recent=True).order_by('id')
+            # print('cell_types', cell_types)
             new_cells = Cell.objects.filter(celltype__in=cell_types)
-            print('new_cells', new_cells)
+            # print('new_cells', new_cells)
             results = {'success': True, 'cell_types_json': serializers.serialize("json", cell_types),
                        'cells_json': serializers.serialize("json", new_cells),
+                       'count': new_cells.count(),
                        #    'class_label_name': GET['class_label_name'],
                        'class_label_abb': GET['class_label_abb']}
             return JsonResponse(results)
 
         elif(GET['query_type'] == 'more_cells_single_type'):
-            print('more_cells_single_type')
-            print(GET['old_finish'])
-            print(GET['num_new_cells'])
             old_finish = int(GET['old_finish'])
             new_finish = old_finish+int(GET['num_new_cells'])
-            # if (new_finish > CellType.objects.filter(
-            #     user=request.user, cell__in=cells, cell_type=GET['class_label_abb']).count()){
 
-            # }
-            cell_types = CellType.objects.filter(
-                user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb']).order_by('id')[old_finish:new_finish]
+            if (GET['requesting_page'] == 'all_cells_for_diagnosis2_collab'):
+                cell_types = CellType.objects.filter(
+                    cell__region__slide__in=slides, cell_type=GET['class_label_abb'], is_most_recent=True).order_by('id')[old_finish:new_finish]
+
+            if (GET['requesting_page'] == 'all_cells_for_diagnosis2'):
+                cell_types = CellType.objects.filter(
+                    user=request.user, cell__region__slide__in=slides, cell_type=GET['class_label_abb'], is_most_recent=True).order_by('id')[old_finish:new_finish]
             new_cells = Cell.objects.filter(celltype__in=cell_types)
             results = {'success': True, 'cell_types_json': serializers.serialize("json", cell_types),
                        'cells_json': serializers.serialize("json", new_cells),
@@ -570,59 +602,131 @@ def generic_ajax_get(request):
 
 
 @ login_required
-def get_all_cells_generic(request):
+def get_all_cell_counts_generic(request):
     GET = request.GET
     id_type = GET['id_type']
     id_val = GET['id_val']
-    print(id_type, id_val)
-    results = get_all_cells_generic_helper(request, id_type, id_val)
+    cell_counts = {}
+
+    for key in classLabelDict:
+        # print(key, classLabelDict[key])
+        if (id_type == 'sid'):
+            slide = Slide.objects.get(sid=id_val)
+            cell_counts[key] = CellType.objects.filter(cell_type=key,
+                                                       user=request.user, cell__region__slide=slide, is_most_recent=True).count()
+        elif (id_type == 'rid'):
+            region = Region.objects.get(rid=id_val)
+            cell_counts[key] = CellType.objects.filter(cell_type=key,
+                                                       user=request.user, cell__region=region, is_most_recent=True).count()
+        elif (id_type == 'project_pk'):
+            project = Project.objects.get(id=id_val)
+            cell_counts[key] = CellType.objects.filter(cell_type=key,
+                                                       user=request.user, cell__region__slide__project=project, is_most_recent=True).count()
+        elif (id_type == 'diagnosis_pk'):
+            diagnosis = Diagnosis.objects.get(id=id_val)
+            cell_counts[key] = CellType.objects.filter(cell_type=key,
+                                                       user=request.user, cell__region__slide__diagnoses=diagnosis, is_most_recent=True).count()
+
+    print(cell_counts)
+
+    total = 0
+    for key in cell_counts:
+        total += cell_counts[key]
+
+    results = {'cell_counts': cell_counts, 'total': total}
+
+    # print(id_type, id_val)
+    # results = get_all_cells_generic_helper(request, id_type, id_val)
     return JsonResponse(results)
 
-# Used by slide_summary.html
 
 
-@ login_required
-def get_all_cells_generic_helper(request, id_type, id_val):
-    # GET = request.GET
-    # id_type = GET['id_type']
-    # id_val = GET['id_val']
-    print(id_type, id_val)
-    if (id_type == 'sid'):
-        cells = Cell.objects.filter(region__slide__sid=id_val)
-        cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
-        # celltypes_json = getAllCellTypesSlideUserJSON(request.user, Slide.objects.get(sid=id_val))
-    elif (id_type == 'rid'):
-        cells = Cell.objects.filter(region__rid=id_val)
-        cellTypes = CellType.objects.filter(
-            cell__region=id_val, user=request.user)
-        # celltypes_json = getAllCellTypesUserRegionJSON(request.user, Region.objects.get(rid=id_val))
-    elif (id_type == 'project_pk'):
-        project = Project.objects.get(id=id_val)
-        slides = Slide.objects.filter(project_with_slides=project)
-        cells = Cell.objects.filter(region__slide__in=slides)
-        cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
-    elif (id_type == 'diagnosis_pk'):
-        diagnosis = Diagnosis.objects.get(id=id_val)
-        slides = Slide.objects.filter(diagnoses=diagnosis, created_by=request.user)
-        cells = Cell.objects.filter(region__slide__in=slides)
-        cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
-        print('diagnosis', diagnosis)
-        print('slides', slides)
-        print('cells', cells)
-        print('cellTypes', cellTypes)
-    else:
-        results = {'success': False}
-        return results
-
-    results = {'success': True, 'cells_json': serializers.serialize(
-        "json", cells), 'celltypes_json': serializers.serialize("json", cellTypes)}
-    print('results', results)
-    # print('get all cells generic results', results['cells_json'])
-    return results
-
+# @ login_required
+# def get_all_cells_generic_helper(request, id_type, id_val):
+#     # GET = request.GET
+#     # id_type = GET['id_type']
+#     # id_val = GET['id_val']
+#     print(id_type, id_val)
+#     if (id_type == 'sid'):
+#         cells = Cell.objects.filter(region__slide__sid=id_val)
+#         cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+#         # celltypes_json = getAllCellTypesSlideUserJSON(request.user, Slide.objects.get(sid=id_val))
+#     elif (id_type == 'rid'):
+#         cells = Cell.objects.filter(region__rid=id_val)
+#         cellTypes = CellType.objects.filter(
+#             cell__region=id_val, user=request.user)
+#         # celltypes_json = getAllCellTypesUserRegionJSON(request.user, Region.objects.get(rid=id_val))
+#     elif (id_type == 'project_pk'):
+#         project = Project.objects.get(id=id_val)
+#         slides = Slide.objects.filter(slides_with_project=project)
+#         cells = Cell.objects.filter(region__slide__in=slides)
+#         cellTypes = CellType.objects.filter(
+#             user=request.user, cell__in=cells)
+#     elif (id_type == 'diagnosis_pk'):
+#         diagnosis = Diagnosis.objects.get(id=id_val)
+#         slides = Slide.objects.filter(
+#             diagnoses=diagnosis, created_by=request.user)
+#         cells = Cell.objects.filter(region__slide__in=slides)
+#         cellTypes = CellType.objects.filter(
+#             user=request.user, cell__in=cells)
+#         print('diagnosis', diagnosis)
+#         print('slides', slides)
+#         print('cells', cells)
+#         print('cellTypes', cellTypes)
+#     else:
+#         results = {'success': False}
+#         return results
+#     results = {'success': True, 'cells_json': serializers.serialize(
+#         "json", cells), 'celltypes_json': serializers.serialize("json", cellTypes)}
+#     print('results', results)
+#     # print('get all cells generic results', results['cells_json'])
+#     return results
+# def get_all_cells_generic(request):
+#     GET = request.GET
+#     id_type = GET['id_type']
+#     id_val = GET['id_val']
+#     print(id_type, id_val)
+#     results = get_all_cells_generic_helper(request, id_type, id_val)
+#     return JsonResponse(results)
+# @ login_required
+# def get_all_cells_generic_helper(request, id_type, id_val):
+#     # GET = request.GET
+#     # id_type = GET['id_type']
+#     # id_val = GET['id_val']
+#     print(id_type, id_val)
+#     if (id_type == 'sid'):
+#         cells = Cell.objects.filter(region__slide__sid=id_val)
+#         cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+#         # celltypes_json = getAllCellTypesSlideUserJSON(request.user, Slide.objects.get(sid=id_val))
+#     elif (id_type == 'rid'):
+#         cells = Cell.objects.filter(region__rid=id_val)
+#         cellTypes = CellType.objects.filter(
+#             cell__region=id_val, user=request.user)
+#         # celltypes_json = getAllCellTypesUserRegionJSON(request.user, Region.objects.get(rid=id_val))
+#     elif (id_type == 'project_pk'):
+#         project = Project.objects.get(id=id_val)
+#         slides = Slide.objects.filter(slides_with_project=project)
+#         cells = Cell.objects.filter(region__slide__in=slides)
+#         cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+#     elif (id_type == 'diagnosis_pk'):
+#         diagnosis = Diagnosis.objects.get(id=id_val)
+#         slides = Slide.objects.filter(
+#             diagnoses=diagnosis, created_by=request.user)
+#         cells = Cell.objects.filter(region__slide__in=slides)
+#         cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+#         print('diagnosis', diagnosis)
+#         print('slides', slides)
+#         print('cells', cells)
+#         print('cellTypes', cellTypes)
+#     else:
+#         results = {'success': False}
+#         return results
+#     results = {'success': True, 'cells_json': serializers.serialize(
+#         "json", cells), 'celltypes_json': serializers.serialize("json", cellTypes)}
+#     print('results', results)
+#     # print('get all cells generic results', results['cells_json'])
+#     return results
 # Used by CellCounter.js
-
-
 @ login_required
 def get_all_cells_in_region(request):
     #	print("get_all_cells_in_region", request)
@@ -811,8 +915,10 @@ def remove_diagnosis_from_slide(request):
         return error_403(request)
 
 # Function to add Notes to Slide + Region
-@login_required
-@csrf_exempt
+
+
+@ login_required
+@ csrf_exempt
 def add_note_to_slide(request):
     id = request.POST.get('slide_sid')
     print(id)
@@ -829,8 +935,9 @@ def add_note_to_slide(request):
     else:
         return error_403(request)
 
-@login_required
-@csrf_exempt
+
+@ login_required
+@ csrf_exempt
 def add_tissue_type_to_slide(request):
     if request.user == Slide.objects.get(sid=request.POST.get('slide_sid')).created_by:
         id = request.POST.get('slide_sid')
@@ -841,6 +948,7 @@ def add_tissue_type_to_slide(request):
         print(slide)
 
         slide.tissue = key
+
 
         print(slide.tissue)
         
@@ -919,11 +1027,6 @@ def add_blind_collab_to_slide(request):
         print(e)
         return JsonResponse({'success': False})
 
-
-
-
-
-
 # @login_required
 # def add_note_to_slide(request):
 #     try:
@@ -944,7 +1047,7 @@ def add_blind_collab_to_slide(request):
 #         print('fail')
 
 #         return JsonResponse({'success': False})
-        
+
 
 # @login_required
 # def add_new_cell(request):
@@ -1038,25 +1141,28 @@ def add_additional_cellType_to_cell(request):
 
 # Will attempt to assign a new cellType. If one does not exist, it will be created.
 def update_cellType_helper(user, cell, cell_type):
-    try:
-        print("changing cellType")
-        cellType = CellType.objects.get(user=user, cell=cell)
-        cellType.cell_type = cell_type
-        cellType.save()
-        print(cellType)
-    except CellType.DoesNotExist:
-        print("did not exist")
-        cellType = CellType.objects.create(
-            user=user, cell_type=cell_type, cell=cell)
-    return cellType
 
-# Will attempt to assign a new cellType. If one does not exist, it will be created.
+    # Set old most recent celltype to no longer be most recent. By default new one will have true for this field
+    cellTypes = CellType.objects.filter(
+        user=user, cell=cell, is_most_recent=True)
+    for celltype in cellTypes:
+        celltype.is_most_recent = False
+    CellType.objects.bulk_update(cellTypes, ['is_most_recent'])
+
+    cellType = CellType.objects.create(
+        cell=cell, cell_type=cell_type, user=user)
+
+    print("changing cellType")
+    print(cellType)
+
+    return cellType
 
 
 def get_cellType_helper(user, cell):
     try:
         print("getting cellType")
-        cellType = CellType.objects.get(user=user, cell=cell)
+        cellType = CellType.objects.filter(
+            user=user, cell=cell).order_by('-date_created')[0]
         print(cellType)
     except CellType.DoesNotExist:
         print("did not exist. creating one")
@@ -1064,46 +1170,93 @@ def get_cellType_helper(user, cell):
     return cellType
 
 
+classLabelDict = {
+    "M1": "Blast",
+    "M2": "Promyelocyte",
+    "M3": "Myelocyte",
+    "M4": "Metamyelocyte",
+    "M5": "Band neutrophil",
+    "M6": "Segmented netrophil",
+
+    "E1": "Eosinophil myelocyte",
+    "E2": "Eosinophil metamyelocyte",
+    "E3": "Eosinophil band",
+    "E4": "Eosinophil seg",
+    "B1": "Mast Cell",
+    "B2": "Basophil",
+    "MO1": "Monoblast",
+    "MO2": "Monocyte",
+
+    "L0": "Lymphoblast",
+    "L1": "Hematogone",
+    "L2": "Small Mature Lymphocyte",
+    "L3": "Reactive lymphocyte/LGL",
+    "L4": "Plasma Cell",
+
+    "ER1": "Pronormoblast",
+    "ER2": "Basophilic Normoblast",
+    "ER3": "Polychromatophilic Normoblast",
+    "ER4": "Orthochromic Normoblast",
+    "ER5": "Polychromatophilic Erythrocyte",
+    "ER6": "Mature Erythrocyte",
+
+    "U1": "Artifact",
+    "U2": "Unknown",
+    "U3": "Other",
+    "U4": "Mitotic Body/karyorrhexis",
+    "UL": "Unlabelled",
+
+    "PL1": "Immature Megakaryocyte",
+    "PL2": "Mature Megakaryocyte",
+    "PL3": "Platelet Clump",
+    "PL4": "Giant Platelet",
+
+
+}
+
+
 def getCellTypeNameFromStringCode(cell_type_code):
-    classLabelDict = {
-        "M1": "Blast",
-        "M2": "Promyelocyte",
-        "M3": "Myelocyte",
-        "M4": "Metamyelocyte",
-        "M5": "Band neutrophil",
-        "M6": "Segmented netrophil",
+    # classLabelDict = {
+    #     "M1": "Blast",
+    #     "M2": "Promyelocyte",
+    #     "M3": "Myelocyte",
+    #     "M4": "Metamyelocyte",
+    #     "M5": "Band neutrophil",
+    #     "M6": "Segmented netrophil",
 
-        "E1": "Immature Eosinophil",
-        "E2": "Mature Eosinophil",
-        "B1": "Mast Cell",
-        "B2": "Basophil",
-        "MO1": "Monoblast",
-        "MO2": "Monocyte",
+    #     "E1": "Eosinophil myelocyte",
+    #     "E2": "Eosinophil metamyelocyte",
+    #     "E3": "Eosinophil band",
+    #     "E4": "Eosinophil seg",
+    #     "B1": "Mast Cell",
+    #     "B2": "Basophil",
+    #     "MO1": "Monoblast",
+    #     "MO2": "Monocyte",
 
-        "L0": "Lymphoblast",
-        "L1": "Hematogone",
-        "L2": "Small Mature Lymphocyte",
-        "L3": "Reactive lymphocyte/LGL",
-        "L4": "Plasma Cell",
+    #     "L0": "Lymphoblast",
+    #     "L1": "Hematogone",
+    #     "L2": "Small Mature Lymphocyte",
+    #     "L3": "Reactive lymphocyte/LGL",
+    #     "L4": "Plasma Cell",
 
-        "ER1": "Pronormoblast",
-        "ER2": "Basophilic Normoblast",
-        "ER3": "Polychromatophilic Normoblast",
-        "ER4": "Orthochromic Normoblast",
-        "ER5": "Polychromatophilic Erythrocyte",
-        "ER6": "Mature Erythrocyte",
+    #     "ER1": "Pronormoblast",
+    #     "ER2": "Basophilic Normoblast",
+    #     "ER3": "Polychromatophilic Normoblast",
+    #     "ER4": "Orthochromic Normoblast",
+    #     "ER5": "Polychromatophilic Erythrocyte",
+    #     "ER6": "Mature Erythrocyte",
 
-        "U1": "Artifact",
-        "U2": "Unknown",
-        "U3": "Other",
-        "U4": "Mitotic Body/karyorrhexis",
-        "UL": "Unlabelled",
+    #     "U1": "Artifact",
+    #     "U2": "Unknown",
+    #     "U3": "Other",
+    #     "U4": "Mitotic Body/karyorrhexis",
+    #     "UL": "Unlabelled",
 
-        "PL1": "Immature Megakaryocyte",
-        "PL2": "Mature Megakaryocyte",
-        "PL3": "Platelet Clump",
-        "PL4": "Giant Platelet",
-    }
+    #     "PL1": "Immature Megakaryocyte",
+    #     "PL2": "Mature Megakaryocyte",
+    #     "PL3": "Platelet Clump",
+    #     "PL4": "Giant Platelet",
+    # }
 
     return classLabelDict[cell_type_code]
 
@@ -1116,9 +1269,15 @@ def getCellTypeName(cellType):
 def update_cell_class(request):
     #	user = request.user
     POST = request.POST
-    # cell = Cell.objects.get(cid=POST['cid'])
-    # cell.cell_type = POST['cell_label']
-    # cell.save()
+    print(POST)
+    cell = Cell.objects.get(cid=POST['cid'])
+
+    # cell.cell_type no longer in use WARNING
+    cell.cell_type = POST['cell_label']
+    cell.save()
+
+    # print(celltype)
+
     cellType = update_cellType_helper(
         request.user, Cell.objects.get(cid=POST['cid']), POST['cell_label'])
 
@@ -1196,7 +1355,7 @@ def label_region_fabric(request, region_id):
             print('region: ', region.created_by)
         else:
             return error_403(request)
-            
+
     region = Region.objects.get(rid=region_id)
     slide = region.slide
     cells = region.cell_set.all()
@@ -1582,10 +1741,10 @@ def all_cells_for_diagnosis(request, diagnosis_id):
     if user.is_authenticated:
         slides = Slide.objects.filter(diagnoses=diagnosis, created_by=user)
         cells = Cell.objects.filter(region__slide__in=slides.all())
-        cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
+        cellTypes = CellType.objects.filter(
+            user=request.user, cell__in=cells)
         cells_json = serializers.serialize("json", cells)
         celltypes_json = serializers.serialize("json", cellTypes)
-
 
     # slides = Slide.objects.filter(diagnoses=diagnosis)
     # cells = Cell.objects.filter(region__slide__in=slides.all())
@@ -1610,6 +1769,34 @@ def all_cells_for_diagnosis2(request, diagnosis_id):
     #            'cells_json': cells_json, 'celltypes_json': celltypes_json}
 
     return render(request, 'labeller/all_cells_for_diagnosis2.html', context)
+
+
+@ login_required
+def all_cells_for_diagnosis2_collab(request, diagnosis_id):
+    diagnosis = Diagnosis.objects.get(id=diagnosis_id)
+    context = {'diagnosis': diagnosis}
+    return render(request, 'labeller/all_cells_for_diagnosis2_collab.html', context)
+
+
+# @ login_required
+# @ login_required
+# def diagnosis_tissue(request, tissue_id, diagnosis_id):
+#     user = request.user
+#     print("tissue id: " + tissue_id)
+#     if user.is_authenticated:
+#         diagnosis = Diagnosis.objects.get(id=diagnosis_id)
+#         slides = Slide.objects.filter(diagnoses=diagnosis, created_by=user)
+#         for slide in slides:
+#             print(slide.tissue, slide.getTissueString())
+#         # diagnosis = diagnosis.slides_with_diagnosis.all()
+#         print(diagnosis)
+
+#         context = {'diagnosis': diagnosis, 'slides': slides,
+#                    'dx_options': Diagnosis.objects.all()}
+
+#         return render(request, 'labeller/diagnosis.html', context)
+#     else:
+#         return render(request, 'labeller/index.html')
 
 
 @ login_required
@@ -1686,7 +1873,40 @@ def label_cells_in_project(request, project_id):
 
 # CUSTOM ERROR PAGES - WILL NEED SOME WORK. IE NOT SURE WHAT ERROR CODES TO USE, ETC....
 def error_403(request):
-    return render(request, 'errormsgs/error_403.html')    
+    return render(request, 'errormsgs/error_403.html')
+
+
+# def test(request):
+#     # create_slide_div(1)
+#     # context = {'html_code': create_slide_div(1)}
+#     #
+#     return render(request, 'labeller/test.html')
+
+
+# def test_ajax(request):
+#     context = {'success': True, 'html_code': create_slide_div(1)}
+#     context = {'success': True}
+#     print(context)
+#     return JsonResponse({'success': True, 'html_code': str(create_slide_div(1))})
+
+
+# def create_slide_div(slide_pk):
+#     slide = Slide.objects.get(id=slide_pk)
+#     print(slide)
+#     html = '\
+#         <div class="container-fluid slide_box" style="padding-right: 5px  !important; padding-left: 5px !important;">\
+#             <div class="container-fluid my-3 pt-2 pb-3 mx-0">\
+#                 <!-- Slide Info -->\
+#                 <!-- Cell Summary -->\
+#                 <div class="bigtable-box container-fluid">\
+#                     <div class="row">\
+#                         <div class="px-2" id="slide_cellSummary_sid_'+str(slide.sid)+'></div>\
+#                     </div>\
+#                 </div>\
+#          </div>\
+#         </div>'
+#     print(html)
+#     return html
 
 # def update_cell_class(request):
 # 	results = {'success':False}

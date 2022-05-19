@@ -13,6 +13,7 @@ class CellSummary {
       var table = '<table style="border:none" class="slide_page_table text-capitalize" id="classification_table_' +this.printMe()+'">';
       table += '<tr class="class_table_row">';
       table += '<th class="class_table_td">Neutrophilic';
+      table += '<th class="class_table_td">Eosinophilic';
       table += '<th class="class_table_td">Other granulocytic';
       table += '<th class="class_table_td">Lymphoid';
       table += '<th class="class_table_td">Erythroid';
@@ -21,7 +22,8 @@ class CellSummary {
 
       table += '<tr class="class_table_row">';
       table += '<td class="class_table_td count_M1 '+this.printMe()+'">Blast (1):';
-      table += '<td class="class_table_td count_E1 '+this.printMe()+'">Immature Eo (q):';
+      table += '<td class="class_table_td count_E1 '+this.printMe()+'">Eo myelocyte (q):';
+      table += '<td class="class_table_td count_MO1 '+this.printMe()+'">Monoblast (t):';
       table += '<td class="class_table_td count_L0 '+this.printMe()+'">Lymphoblast (a):';
       table += '<td class="class_table_td count_ER1 '+this.printMe()+'">Pronormoblast (z):';
       table += '<td class="class_table_td count_PL1 '+this.printMe()+'">Immature Megakaryocyte (m):';         
@@ -29,7 +31,8 @@ class CellSummary {
 
       table += '<tr class="class_table_row">';
       table += '<td class="class_table_td count_M2 '+this.printMe()+'">Promyelocyte (2):';
-      table += '<td class="class_table_td count_E2 '+this.printMe()+'">Eosinophil (w):';
+      table += '<td class="class_table_td count_E2 '+this.printMe()+'">Eo metamyelocyte (w):';
+      table += '<td class="class_table_td count_MO2 '+this.printMe()+'">Monocyte (y):';
       table += '<td class="class_table_td count_L1 '+this.printMe()+'">Hematogone (s):';
       table += '<td class="class_table_td count_ER2 '+this.printMe()+'">Basophilic normoblast (x):'; 
       table += '<td class="class_table_td count_PL2 '+this.printMe()+'">Mature Megakaryocyte (,):';         
@@ -37,7 +40,8 @@ class CellSummary {
 
       table += '<tr class="class_table_row">';
       table += '<td class="class_table_td count_M3 '+this.printMe()+'">Myelocyte (3):';
-      table += '<td class="class_table_td count_B1 '+this.printMe()+'">Mast Cell (e):';
+      table += '<td class="class_table_td count_E3 '+this.printMe()+'">Eo band (e):';
+      table += '<td class="class_table_td count_B1 '+this.printMe()+'">Mast Cell (u):';
       table += '<td class="class_table_td count_L2 '+this.printMe()+'">Mature Lymphocyte (d):';
       table += '<td class="class_table_td count_ER3 '+this.printMe()+'">Polychromatophilic Normoblast (c):';            
       table += '<td class="class_table_td count_PL3 '+this.printMe()+'">Platelet Clump (.):';  
@@ -46,30 +50,35 @@ class CellSummary {
 
       table += '<tr class="class_table_row">';
       table += '<td class="class_table_td count_M4 '+this.printMe()+'">Metamyelocyte (4):';
-      table += '<td class="class_table_td count_B2 '+this.printMe()+'">Basophil (r):';
+      table += '<td class="class_table_td count_E4 '+this.printMe()+'">Eo seg (r):';
+      table += '<td class="class_table_td count_B2 '+this.printMe()+'">Basophil (i):';
       table += '<td class="class_table_td count_L3 '+this.printMe()+'">Reactive Lymphocyte/LGL (f):';
       table += '<td class="class_table_td count_ER4 '+this.printMe()+'">Orthochromic Normoblast (v):';            
       table += '<td class="class_table_td count_PL4 '+this.printMe()+'">Giant Platelet (/):';
-      table += '<td class="class_table_td count_UL '+this.printMe()+'">Unlabelled (u):';         
+      table += '<td class="class_table_td count_U4 '+this.printMe()+'">Mitotic body/Karyorrhexis (0):';          
+            
       // table += '<td class="class_table_td count_U4 '+this.printMe()+'">Histiocyte (0):';
 
       table += '<tr class="class_table_row">';
       table += '<td class="class_table_td count_M5 '+this.printMe()+'">Band (5):';
-      table += '<td class="class_table_td count_MO1 '+this.printMe()+'">Monoblast (t):';
+      table += '<td class="class_table_td">';
+      table += '<td class="class_table_td">';
       table += '<td class="class_table_td count_L4 '+this.printMe()+'">Plasma cell (g):';
       table += '<td class="class_table_td count_ER5 '+this.printMe()+'">Polychromatophilic erythrocyte (b):';   
       table += '<td class="class_table_td">';
-      table += '<td class="class_table_td count_U4 '+this.printMe()+'">Mitotic body/Karyorrhexis (0):';          
-      
+      table += '<td class="class_table_td count_UL '+this.printMe()+'">Unlabelled (-):';   
 
+  
       table += '<tr class="class_table_row">';
       table += '<td class="class_table_td count_M6 '+this.printMe()+'">Seg (6):';
-      table += '<td class="class_table_td count_MO2 '+this.printMe()+'">Monocyte (y):';
+      table += '<td class="class_table_td">';
+      table += '<td class="class_table_td">';
       table += '<td class="class_table_td">';
       table += '<td class="class_table_td count_ER6 '+this.printMe()+'">Mature Erythrocyte (n):';
 
       table += '<td class="class_table_td">';
       table += '<td class="class_table_td">';
+  
       table += '</table>';
 
       return table;
@@ -104,16 +113,16 @@ class CellSummary {
       return ul;
     }
 
-    static UpdateCountsOnPage(cells_json, celltypes_json, id_val, id_type) {
-      // var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig, '"'));
-      var cells = Cell.LoadCellsFromJson(cells_json, celltypes_json);
-      var counts = CellCounter.countCells(cells);
-      console.log(counts)
+    // static UpdateCountsOnPage(cells_json, celltypes_json, id_val, id_type) {
+    //   // var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig, '"'));
+    //   var cells = Cell.LoadCellsFromJson(cells_json, celltypes_json);
+    //   var counts = CellCounter.countCells(cells);
+    //   console.log(counts)
 
-      for (var key in Cell.classLabelDict) {
-        CellCounter.replaceOldCountWithNewCount(".class_table_td.count_"+key+'.'+id_val+'.'+id_type, counts[key]);
-      };
-    };
+    //   for (var key in Cell.classLabelDict) {
+    //     CellCounter.replaceOldCountWithNewCount(".class_table_td.count_"+key+'.'+id_val+'.'+id_type, counts[key]);
+    //   };
+    // };
     
     addInfoButtonOnClick() {
       var id_type = this.id_type
@@ -136,24 +145,30 @@ class CellSummary {
         } else {
 
 
-          $.get('/get_all_cells_generic/', {'id_type':id_type, 'id_val':id_val}, function(json) {
-              console.log('/get_all_cells_generic/');
+          $.get('/get_all_cell_counts_generic/', {'id_type':id_type, 'id_val':id_val}, function(json) {
+              console.log('/get_all_cell_counts_generic/');
+              
+              var cell_counts = json['cell_counts']
+              console.log('cell counts', json['cell_counts'])
+              // var cell_counts_json = json['cell_counts_json'];
+              // console.log(cell_counts_json)
+              // cells_counts_json = $.parseJSON(cell_counts_json.replace(/&quot;/ig, '"'));
+              // console.log(cell_counts_json)
 
-              var cells_json = json['cells_json'];
-              var celltypes_json = json['celltypes_json']
-              // console.log(cells_json)
-              // console.log(celltypes_json)
-              //console.log(cells_json);
-              var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig, '"'));
-              //console.log(cells_json_reformat);
+
+              // var cells_json = json['cells_json'];
+              // var celltypes_json = json['celltypes_json']
+              // var cells_json_reformat = $.parseJSON(cells_json.replace(/&quot;/ig, '"'));
 
               $this.addClass("clicked_once");
-              // $this.addClass('slide_info_down');
               $('#slide_list_' +id_type+'_'+id_val).removeClass("slide_list_box");
               $('#bigtable_' +id_type+'_'+id_val).slideDown().addClass("bigtable_box");
-              $('#cell_total_'+id_type+'_'+id_val).html('Total: ' + cells_json_reformat.length).fadeIn();
-
-              CellSummary.UpdateCountsOnPage(cells_json, celltypes_json, id_val, id_type);
+              $('#cell_total_'+id_type+'_'+id_val).html('Total: ' + json['total']).fadeIn();
+              for (var key in cell_counts) {
+                CellCounter.replaceOldCountWithNewCount(".class_table_td.count_"+key+'.'+id_val+'.'+id_type, cell_counts[key]);
+                console.log(".class_table_td.count_"+key+'.'+id_val+'.'+id_type, cell_counts[key])
+              };
+              // CellSummary.UpdateCountsOnPage(cells_json, celltypes_json, id_val, id_type);
 
           });
 

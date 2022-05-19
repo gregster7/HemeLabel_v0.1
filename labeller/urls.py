@@ -19,12 +19,14 @@ from django.urls import path, include, re_path
 from . import views
 urlpatterns = [
 
+
         path('add_note_to_slide', views.add_note_to_slide, name='add_note_to_slide'),
         path('add_tissue_type_to_slide/', views.add_tissue_type_to_slide, name='add_tissue_type_to_slide'),
         path('remove_tissue_type_from_slide/', views.remove_tissue_type_from_slide, name='remove_tissue_type_from_slide'),
         path('add_blind_collab_to_slide/', views.add_blind_collab_to_slide, name='add_blind_collab_to_slide'),
         path('add_user_to_project/', views.add_user_to_project, name='add_user_to_project'),
         re_path(r'^all_cells_for_project/(?P<project_id>\d+)/', views.get_all_cells_for_project, name='all_cells_for_project'),
+
 
     ############################################################################################
     ################################ URLS THAT SERVE HTML PAGES ################################
@@ -53,11 +55,17 @@ urlpatterns = [
     re_path(r'^diagnosis/(?P<diagnosis_id>\d+)/',
             views.diagnosis, name='diagnosis'),
 
+    #     re_path(r'^diagnosis_tissue/(?P<tissue_id>\d+)/(?P<diagnosis_id>\d+)/',
+    #             views.diagnosis_tissue, name='diagnosis_tissue'),
+
+
     re_path(r'^all_cells_for_diagnosis/(?P<diagnosis_id>\d+)/',
             views.all_cells_for_diagnosis, name='all_cells_for_diagnosis'),
 
     re_path(r'^all_cells_for_diagnosis2/(?P<diagnosis_id>\d+)/',
             views.all_cells_for_diagnosis2, name='all_cells_for_diagnosis2'),
+    re_path(r'^all_cells_for_diagnosis2_collab/(?P<diagnosis_id>\d+)/',
+            views.all_cells_for_diagnosis2_collab, name='all_cells_for_diagnosis2_collab'),
 
     re_path(r'^cell_redirect/(?P<cell_pk>\d+)/',
             views.cell_redirect, name='cell_redirect'),
@@ -88,14 +96,23 @@ urlpatterns = [
 
     re_path(r'export_all_cell_annotations_for_user/$',
             views.export_all_cell_annotations_for_user, name='export_all_cell_annotations_for_user'),
+
+    re_path(r'export_all_cell_annotations_summary_user/$',
+            views.export_all_cell_annotations_summary_user, name='export_all_cell_annotations_summary_user'),
+
     # Experimental
     # Page for exporting Project Data
     re_path(r'^export/', views.export_cell_data, name='export_cell_data'),
 
-    re_path(r'^export_cells/$', views.export_all_cell_annotations_user,
-            name='export_all_cell_annotations_user'),
+    #     re_path(r'^export_cells/$', views.export_all_cell_annotations_user,
+    #             name='export_all_cell_annotations_user'),
 
 
+    #     re_path(r'test/$',
+    #             views.test, name='test'),
+
+    #     re_path(r'test_ajax/$',
+    #             views.test_ajax, name='test_ajax'),
 
     #******************************************************************************************#
 
@@ -117,12 +134,13 @@ urlpatterns = [
     re_path(r'^generic_ajax_get/', views.generic_ajax_get,
             name='generic_ajax_get'),
 
-#***************************** ADD NOTES ***************************#
-        # path('add_note_to_slide/', views.add_note_to_slide, name='add_note_to_slide'),
-        # path('slides/add_note_to_slide/', views.CreateSlideNoteView.as_view(), name="add_note_to_slide"),
-        # re_path(r'^add_note_to_slide/', views.CreateSlideNoteView.as_view(), name='add_note_to_slide'),
-        # path('slides/get_slide_notes/', views.get_slide_notes, name='get_slide_notes'),
-    re_path(r'^add_note_to_slide/', views.add_note_to_slide, name='add_note_to_slide'),
+    #***************************** ADD NOTES ***************************#
+    # path('add_note_to_slide/', views.add_note_to_slide, name='add_note_to_slide'),
+    # path('slides/add_note_to_slide/', views.CreateSlideNoteView.as_view(), name="add_note_to_slide"),
+    # re_path(r'^add_note_to_slide/', views.CreateSlideNoteView.as_view(), name='add_note_to_slide'),
+    # path('slides/get_slide_notes/', views.get_slide_notes, name='get_slide_notes'),
+    re_path(r'^add_note_to_slide/', views.add_note_to_slide,
+            name='add_note_to_slide'),
     #************************* SLIDE POSTS *************************#
     re_path(r'^add_diagnosis_to_slide/',
             views.add_diagnosis_to_slide, name='add_diagnosis_to_slide'),
@@ -154,8 +172,8 @@ urlpatterns = [
 
     re_path(r'^get_cell_json/', views.get_cell_json, name='get_cell_json'),
 
-    re_path(r'^get_all_cells_generic/', views.get_all_cells_generic,
-            name='get_all_cells_generic'),
+    re_path(r'^get_all_cell_counts_generic/', views.get_all_cell_counts_generic,
+            name='get_all_cell_counts_generic'),
 
     re_path(r'^get_all_cells_in_project/',
             views.get_all_cells_in_project, name='get_all_cells_in_project'),
@@ -201,7 +219,7 @@ urlpatterns = [
 
     #***********************************************************************************#
 
-        # CUSTOM ERROR PAGES
+    # CUSTOM ERROR PAGES
     path('403/', views.error_403, name='403_forbidden'),
 
 ]
