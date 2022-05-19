@@ -622,12 +622,47 @@ def label_slide_bootstrap(request, slide_id):
 def label_slide(request, slide_id):
     print('label_slide', request, slide_id)
 
+    slide = Slide.objects.get(sid=slide_id)
+    projects = Project.objects.filter(slides=slide)
+    collaborators = User.objects.filter(projects_with_user__in=projects)
+    print(projects)
+    print(collaborators)
+
+    if request.user in collaborators:
+        print('in collaborators')
+    else:
+        print('not in collaborators')
+
+    # if slide.created_by == request.user or (request.user in collaborators):
+
+    if slide.created_by == request.user:
+
+        regions = slide.region_set.all()
+        # cells = Cell.objects.filter(
+        #     created_by=request.user, region__slide=slide)
+        cells = Cell.objects.filter(
+            region__slide=slide)
+
+        print(cells)
+        cellTypes = CellType.objects.filter(
+            is_most_recent=True, cell__in=cells)
+
+        context = {'slide': slide, 'regions': regions, 'dx_options': Diagnosis.objects.all(
+        ), 'cells': cells, 'cells_json': serializers.serialize("json", cells), 'celltypes_json': serializers.serialize("json", cellTypes), 'collaborators': collaborators}
+        return render(request, 'labeller/label_slide.html', context)
+
+    else:
+        return error_403(request)
+
     # project = Project.objects.filter(slides=slide_id).values('name')
     # project = Project.objects.filter(slides__in=slide_id)
-    project = Project.objects.filter(slides__project_with_slides__in=slide_id).values('name')
+    project = Project.objects.filter(
+        slides__project_with_slides__in=slide_id).values('name')
     print('project = ', project)
 
-    shared_projects = Project.objects.get(~Q(created_by=request.user), users=request.user)
+    # shared_projects = Project.objects.get(
+    #     ~Q(created_by=request.user), users=request.user)
+    shared_projects = Project.objects.get(users=request.user)
     print('shared projects == ', shared_projects)
 
     collaborators = shared_projects.users.all()
@@ -636,29 +671,32 @@ def label_slide(request, slide_id):
 
     if request.user.is_authenticated:
 
-        if request.user == Slide.objects.get(sid=slide_id).created_by :
+        if request.user == Slide.objects.get(sid=slide_id).created_by:
 
-                slide = Slide.objects.get(sid=slide_id)
-                # slide = Slide.objects.filter(create_by=request.user)
-                # regions = Region.objects.filter(created_by=request.user)
-                regions = slide.region_set.all()
+            slide = Slide.objects.get(sid=slide_id)
+            # slide = Slide.objects.filter(create_by=request.user)
+            # regions = Region.objects.filter(created_by=request.user)
+            regions = slide.region_set.all()
 
-                diagnoses = slide.diagnoses
+            diagnoses = slide.diagnoses
 
+            cells = Cell.objects.filter(
+                created_by=request.user, region__slide=slide)
+            cellTypes = CellType.objects.filter(
+                user=request.user, cell__in=cells)
 
-                cells = Cell.objects.filter(created_by=request.user, region__slide=slide)
-                cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
-
-                cells_json = serializers.serialize("json", cells)
-                celltypes_json = serializers.serialize("json", cellTypes)
+            cells_json = serializers.serialize("json", cells)
+            celltypes_json = serializers.serialize("json", cellTypes)
 
         elif request.user in shared_projects.users.all():
-        # .values('users'):
+            # .values('users'):
             slide = Slide.objects.get(sid=slide_id)
             regions = slide.region_set.all().filter(created_by__in=collaborators)
             diagnoses = slide.diagnoses
-            cells = Cell.objects.filter(region__slide=slide, created_by__in=collaborators)
-            cellTypes = CellType.objects.filter(cell__in=cells, user__in=collaborators)
+            cells = Cell.objects.filter(
+                region__slide=slide, created_by__in=collaborators)
+            cellTypes = CellType.objects.filter(
+                cell__in=cells, user__in=collaborators)
 
             cells_json = serializers.serialize("json", cells)
             celltypes_json = serializers.serialize("json", cellTypes)
@@ -700,7 +738,7 @@ def get_all_celltypes_json_project(project):
     return cells_json
 
 
-@login_required
+@ login_required
 def change_cell_location(request):
     POST = request.POST
     cid = POST['cid']
@@ -733,7 +771,7 @@ def change_cell_location_helper(cid, left, top, width, height):
         return results
 
 
-@login_required
+@ login_required
 def generic_ajax_get(request):
     GET = request.GET
     # print(GET)
@@ -862,7 +900,6 @@ def get_all_cell_counts_generic(request):
     # print(id_type, id_val)
     # results = get_all_cells_generic_helper(request, id_type, id_val)
     return JsonResponse(results)
-
 
 
 # @ login_required
@@ -1099,7 +1136,7 @@ def toggle_region_complete_seg(request):
     return JsonResponse(results)
 
 
-@login_required
+@ login_required
 def add_diagnosis_to_slide(request):
     if request.user == Slide.objects.get(id=request.POST['slide_pk']).created_by:
 
@@ -1121,7 +1158,8 @@ def add_diagnosis_to_slide(request):
     else:
         return error_403(request)
 
-@login_required
+
+@ login_required
 def remove_diagnosis_from_slide(request):
     if request.user == Slide.objects.get(id=request.POST['slide_pk']).created_by:
         try:
@@ -1173,17 +1211,17 @@ def add_tissue_type_to_slide(request):
 
         slide.tissue = key
 
-
         print(slide.tissue)
-        
+
         slide.save()
 
         return JsonResponse({'success': "slide tissue updated"})
-    
+
     else:
         return error_403(request)
 
-@login_required
+
+@ login_required
 def remove_tissue_type_from_slide(request):
     if request.user == Slide.objects.get(sid=request.POST['slide_sid']).created_by:
         try:
@@ -1200,7 +1238,8 @@ def remove_tissue_type_from_slide(request):
     else:
         return error_403(request)
 
-@login_required
+
+@ login_required
 def add_user_to_project(request):
     if request.user == Project.objects.get(id=request.POST['project_id']).created_by:
         try:
@@ -1219,14 +1258,13 @@ def add_user_to_project(request):
         except Exception as e:
             print(e)
             return JsonResponse({'success': False})
-    
+
     else:
         return error_403(request)
 
 
-
 # ADD COLLABORATORS TO SLIDE
-@login_required
+@ login_required
 def add_blind_collab_to_slide(request):
     try:
         POST = request.POST
@@ -1246,7 +1284,7 @@ def add_blind_collab_to_slide(request):
         # collaborator = Collaborator.objects.create()
 
         return JsonResponse({'success': True})
-    
+
     except Exception as e:
         print(e)
         return JsonResponse({'success': False})
@@ -1296,7 +1334,7 @@ def delete_region(request):
             print(Region.objects.get(rid=rid, created_by=user))
             region = Region.objects.get(rid=rid, created_by=user)
             region.delete()
-            
+
             print('deleting region %s' % rid)
             # region = Region.objects.filter(rid=rid).delete()
             results = {'success': True}
@@ -1635,7 +1673,7 @@ def diagnoses(request):
     slides = Slide.objects.filter(created_by=request.user)
 
     diagnosis_counts = calculate_slide_diagnosis_counts(request,
-        slides, diagnoses)
+                                                        slides, diagnoses)
     serializers.serialize
 
     context = {'diagnoses': diagnoses,
@@ -1653,11 +1691,12 @@ def projects(request):
     # user_projects = Project.objects.filter(user=request.user.get_username()).order_by('id')
     # context = {'user_projects': user_projects}
 
-    shared_projects = Project.objects.filter(~Q(created_by=request.user), users=request.user)
-    print('shared project === ',shared_projects)
+    shared_projects = Project.objects.filter(
+        ~Q(created_by=request.user), users=request.user)
+    print('shared project === ', shared_projects)
     projects = Project.objects.filter(created_by=request.user).order_by('id')
     print(projects)
-    context = {'projects': projects, 'shared_projects': shared_projects }
+    context = {'projects': projects, 'shared_projects': shared_projects}
     print(Project.id)
 
     return render(request, 'labeller/projects.html', context)
@@ -1690,8 +1729,6 @@ def create_project(request):
     # return render(request, 'labeller/project.html', context)
 
     return HttpResponseRedirect('project/'+str(project_id)+'/')
-
-
 
 
 # Needs updating with celltypes
@@ -1800,7 +1837,8 @@ def dropzone_slide(request):
         # Do something else to be written
     return
 
-@login_required
+
+@ login_required
 def project_dropzone_slide(request, project_id):
     print("entering project_dropzone_slide")
     if request.user == Project.objects.get(id=project_id).created_by:
@@ -1899,7 +1937,8 @@ def dropzone_image_w_projectID(request, project_id):
 
     return HttpResponse()
 
-@login_required
+
+@ login_required
 def get_all_cells_for_project(request, project_id):
     project = Project.objects.get(id=project_id)
     users = project.users.all()
@@ -1912,7 +1951,8 @@ def get_all_cells_for_project(request, project_id):
         cells_json = serializers.serialize("json", cells)
         celltypes_json = serializers.serialize("json", cellTypes)
 
-    context = {'project': project, 'users': users, 'cells': cells, 'cells_json': cells_json, 'cellTypes': cellTypes, 'celltypes_json': celltypes_json}
+    context = {'project': project, 'users': users, 'cells': cells,
+               'cells_json': cells_json, 'cellTypes': cellTypes, 'celltypes_json': celltypes_json}
     return render(request, 'labeller/all_cells_for_project.html', context)
 
 
@@ -2026,7 +2066,7 @@ def project(request, project_id):
     celltypes_json = serializers.serialize("json", cellTypes)
 
     context = {'project': project, 'regions': regions, 'cells': cells, 'slides': slides,
-        'cells_json': cells_json, 'celltypes_json': celltypes_json, 'dx_options': Diagnosis.objects.all(), 'user_list': User.objects.all()}
+               'cells_json': cells_json, 'celltypes_json': celltypes_json, 'dx_options': Diagnosis.objects.all(), 'user_list': User.objects.all()}
     return render(request, 'labeller/project.html', context)
 
 # Not currently in use - may require fixing

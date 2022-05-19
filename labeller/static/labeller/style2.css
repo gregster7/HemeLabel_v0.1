@@ -143,7 +143,7 @@ th {
   border-radius: 12px !important;
 
   font-size: 1rem !important;
-  padding: .2rem .5rem .2rem .5rem !important;
+  padding: 0.2rem 0.5rem 0.2rem 0.5rem !important;
 }
 
 .btn:hover,
@@ -155,7 +155,7 @@ th {
   color: white !important;
   background-color: #6648b1 !important;
   font-size: 1rem !important;
-  padding: .2rem .5rem .2rem .5rem !important;
+  padding: 0.2rem 0.5rem 0.2rem 0.5rem !important;
 }
 
 .btn,
@@ -167,7 +167,7 @@ th {
   /* border: 1px solid #6648b1; */
 
   font-size: 1rem !important;
-  padding: .2rem .5rem .2rem .5rem !important;
+  padding: 0.2rem 0.5rem 0.2rem 0.5rem !important;
 }
 
 .btn-primary:hover,
@@ -182,7 +182,7 @@ th {
   /* background-color: #563d7c; */
   /* border: 1px solid #563d7c; */
   font-size: 1rem !important;
-  padding: .2rem .5rem .2rem .5rem !important;
+  padding: 0.2rem 0.5rem 0.2rem 0.5rem !important;
 }
 
 .btn-secondary {
@@ -191,7 +191,7 @@ th {
   border: none !important;
 
   font-size: 1rem;
-  padding: .2rem .5rem .2rem .5rem !important;
+  padding: 0.2rem 0.5rem 0.2rem 0.5rem !important;
 }
 
 .btn-secondary:hover,
@@ -203,7 +203,7 @@ th {
   color: white !important;
   background-color: #6648b1 !important;
   font-size: 1rem !important;
-  padding: .2rem .5rem .2rem .5rem !important;
+  padding: 0.2rem 0.5rem 0.2rem 0.5rem !important;
 }
 
 .basic-link-btn:hover,
@@ -215,10 +215,9 @@ th {
   color: white !important;
   background-color: #6648b1 !important;
   font-size: 1rem !important;
-  padding: .2rem .5rem .2rem .5rem !important;
+  padding: 0.2rem 0.5rem 0.2rem 0.5rem !important;
   font-weight: normal !important;
 }
-
 
 /* .btn-slide-info {
   color: black !important ;
@@ -237,14 +236,14 @@ th {
   padding: 0.3rem 0.5rem !important;
 } */
 
-.dropzone_box{
+.dropzone_box {
   width: 90% !important;
 }
 
 .slide_box {
   width: 90%;
   background-color: rgb(0, 0, 0, 0.05);
-  padding-right: 5px  !important;
+  padding-right: 5px !important;
   padding-left: 5px !important;
 }
 
@@ -260,6 +259,7 @@ th {
   padding: 4rem;
   border-radius: 0;
   margin-bottom: 0;
+  background-color: transparent;
 }
 
 .padding {
@@ -422,7 +422,8 @@ figure {
   margin: 0 !important;
 }
 .fixed-wrap {
-  clip: rect(0, auto, auto, 0);
+  /* clip: rect(0, auto, auto, 0); */
+  z-index: -1;
   position: absolute;
   top: 0;
   left: 0;
@@ -504,9 +505,9 @@ img.region_thumb {
 /* .btn, .btn-primary {
   color: black !important ;
   background-color: transparent !important ; */
-  /* border: 1px solid #6648b1 !important; */
-  /* border: transparent !important; */
-  /* border: 1px solid #6648b1; */
+/* border: 1px solid #6648b1 !important; */
+/* border: transparent !important; */
+/* border: 1px solid #6648b1; */
 /* } */
 
 /* .btn-primary:hover,
@@ -516,10 +517,10 @@ img.region_thumb {
   color: black !important ;
   background-color: #6648b1 !important;
   color: white !important; */
-  /* background-color: white !important ; */
-  /* border: 1px solid #6648b1; */
-  /* background-color: #563d7c; */
-  /* border: 1px solid #563d7c; */
+/* background-color: white !important ; */
+/* border: 1px solid #6648b1; */
+/* background-color: #563d7c; */
+/* border: 1px solid #563d7c; */
 /* } */
 
 .btn-info-congrol-group {
@@ -707,7 +708,7 @@ img.region_thumb {
   border: solid 1px #6648b1 !important;
 
   font-size: 1rem;
-  padding: .2rem .5rem .2rem .5rem !important;
+  padding: 0.2rem 0.5rem 0.2rem 0.5rem !important;
 }
 
 .upload-btn:hover,
@@ -720,9 +721,8 @@ img.region_thumb {
   background-color: white !important;
   border: solid 1px #6648b1 !important;
   font-size: 1rem;
-  padding: .2rem .5rem .2rem .5rem !important;
+  padding: 0.2rem 0.5rem 0.2rem 0.5rem !important;
 }
-
 
 #upload-btn:hover {
   background-color: #663399ff;
@@ -901,7 +901,7 @@ img.region_thumb {
 }
 
 .region-info > li {
-  font-size: .9rem;
+  font-size: 0.9rem;
 }
 
 /********** Classification Table and Test keyboard **********/
@@ -1021,11 +1021,10 @@ Image height is 665px
   z-index: 20;
 }
 
-
 /* PROJECT STYLES */
-.project_slides_wrapper_display, 
-.project_users_wrapper_display, 
-.project_regions_wrapper_display, 
+.project_slides_wrapper_display,
+.project_users_wrapper_display,
+.project_regions_wrapper_display,
 .project_cells_wrapper_display {
   display: none;
 }
