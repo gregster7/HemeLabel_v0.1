@@ -68,7 +68,7 @@ def index(request):
     #     if counter % 1000 == 0:
     #         print('doing...'+str(counter))
 
-    print('done')
+    # print('done')
     return render(request, 'labeller/index.html')
 
 
@@ -138,9 +138,229 @@ def export_all_cell_annotations_summary_user(request):
     return JsonResponse({'success': True})
 
 
-def export_all_cell_annotations_for_user(request):
+@login_required
+def export_page(request):
+    return render(request, 'labeller/export_page.html')
+
+
+final_slide_list = ['19.svs',
+                    'nlbx2-5.svs',
+                    '40.svs',
+                    '21.svs',
+                    '25.svs',
+                    '29.svs',
+                    '23.svs',
+                    '31-001.svs',
+                    '35.svs',
+                    'nlbx3-17.svs',
+                    'nlbx3-4.svs',
+                    'nlbx1-4.svs',
+                    'nlbx3-2.svs',
+                    '8.svs',
+                    'nlbx2-8.svs',
+                    's8.svs',
+                    'nlbx1-2.svs',
+                    '5.svs',
+                    'nlbx2-11.svs',
+                    'nlbx2-7.svs',
+                    'nlbx2-2.svs',
+                    'nlbx1-15.svs',
+                    'nlbx1-14.svs',
+                    'nlbx2-9.svs',
+                    'nlbx2-17.svs',
+                    'nlbx1-17.svs',
+                    'nlbx1-18.svs',
+                    's7.svs',
+                    'nlbx2-3.svs',
+                    'nlbx2-6.svs',
+                    'nlbx3-3.svs',
+                    'nlbx3-10.svs',
+                    'nlbx1-11.svs',
+                    'nlbx1-24.svs',
+                    'nlbx3-8.svs',
+                    's2.svs',
+                    'nlbx1-9.svs',
+                    'nlbx3-1.svs',
+                    'nlbx3-9.svs',
+                    'nlbx1-13.svs',
+                    'nlbx2-20.svs',
+                    'nlbx3-7.svs',
+                    'nlbx1-3.svs',
+                    'nlbx2-19.svs',
+                    'nlbx2-18.svs',
+                    's1.svs.svs',
+                    'nlbx3-5.svs',
+                    'nlbx1-12.svs',
+                    'nlbx2-4.svs',
+                    's4.svs', ]
+
+no_include_list = ['L0', 'L1', 'L3', 'M01', 'U2', 'U3', 'U4', 'UL', 'PL1']
+
+
+image_label_include_list = ['B1',
+                            'B2',
+                            'E1',
+                            'E2',
+                            'E3',
+                            'E4',
+                            'ER1',
+                            'ER2',
+                            'ER3',
+                            'ER4',
+                            'ER5',
+                            'ER6',
+                            'L2',
+                            'L4',
+                            'M1',
+                            'M2',
+                            'M3',
+                            'M4',
+                            'M5',
+                            'M6',
+                            'MO1',
+                            'MO2',
+                            'PL2',
+                            'PL3',
+                            'PL4',
+                            'U1', ]
+image_label_include_list.sort()
+final_slide_list.sort()
+
+
+@login_required
+def export_all_cell_images_for_slide_list_limited_types(request):
+    print('export_all_cell_images_for_slide_list_limited_types')
+    export_path = settings.MEDIA_ROOT + '/export/'
+    export_path = export_path+datetime.now().strftime("%Y%m%d%H%M%S") + \
+        '_export_all_cell_images_for_slide_list_limited_types/'
+    # sizes = [48, 64, 96]
+    sizes = [48]
+    for size in sizes:
+        for slide_name in final_slide_list:
+            print('Size=' + str(size) + ", Slide="+slide_name)
+            for cell_type in image_label_include_list:
+                print("\tCell_Type="+cell_type)
+
+                if cell_type in ['E1', 'E2', 'E3']:
+                    cell_folder = export_path + \
+                        str(size)+'/'+slide_name.split('.')[0]+'/E0/'
+                else:
+                    cell_folder = export_path + \
+                        str(size)+'/' + \
+                        slide_name.split('.')[0]+'/'+cell_type+'/'
+                os.system('mkdir -p '+cell_folder)
+
+                # cellTypes = CellType.objects.filter(
+                #     user=request.user, is_most_recent=True, cell__region__slide__name__in=final_slide_list, cell_type=cell_type)
+                cellTypes = CellType.objects.filter(
+                    user=request.user, is_most_recent=True, cell__region__slide__name=slide_name, cell_type=cell_type)
+                print("\t\tcount="+str(cellTypes.count()))
+
+                for ct in cellTypes:
+                    cell_path = cell_folder + str(ct.cell.id)+'.png'
+                    export_cell_image(ct.cell, cell_path, size)
+
+    return JsonResponse({'success': True})
+
+
+@login_required
+def export_all_cell_annotations_for_slide_list_limited_types(request):
+    print('export_all_cell_annotations_for_slide_list_limited_types')
+    print(final_slide_list)
+
     cellTypes = CellType.objects.filter(
-        user=request.user).order_by('cell_type')
+        user=request.user, is_most_recent=True, cell__region__slide__name__in=final_slide_list, ).order_by('cell_type')
+
+    print(slides)
+    print(cellTypes.count())
+
+    cellTypes = CellType.objects.filter(
+        user=request.user, is_most_recent=True, cell__region__slide__name__in=final_slide_list).exclude(cell_type__in=no_include_list).order_by('cell_type')
+    print(cellTypes.count())
+
+    # return JsonResponse({'success': True})
+
+    export_path = settings.MEDIA_ROOT + '/export/'
+    export_path = export_path+datetime.now().strftime("%Y%m%d%H%M%S") + \
+        '_all_cell_annotations_for_final_50_limited.csv'
+
+    with open(export_path, 'w', newline='') as f:
+        writer = csv.writer(f)
+        outputRow = ['cell_id', 'annotation_code', 'annotation_name', 'region',
+                     'slide', 'slide_diagnoses', 'annotator', 'time_labelled', 'label_id', 'is_most_recent']
+        writer.writerow(outputRow)
+
+        counter = 0
+        for ct in cellTypes:
+            counter += 1
+            # if counter > 1001:
+            #     break
+            if (counter % 1000) == 0:
+                print('outputing celltype...'+str(counter))
+            dx_str = ''
+
+            for dx in ct.cell.region.slide.diagnoses.all().order_by('name'):
+                dx_str += str(dx) + ", "
+
+            if ct.cell_type in ['E1', 'E2', 'E3']:
+                outputRow = [ct.cell.id, 'E0', 'Immature eosinophil', ct.cell.region.id,
+                             ct.cell.region.slide.name, dx_str, request.user.username, ct.date_created, ct.id, ct.is_most_recent]
+            elif ct.cell_type == 'E4':
+                outputRow = [ct.cell.id, ct.cell_type, 'Segmented eosinophil', ct.cell.region.id,
+                             ct.cell.region.slide.name, dx_str, request.user.username, ct.date_created, ct.id, ct.is_most_recent]
+
+            else:
+                outputRow = [ct.cell.id, ct.cell_type, getCellTypeName(ct), ct.cell.region.id,
+                             ct.cell.region.slide.name, dx_str, request.user.username, ct.date_created, ct.id, ct.is_most_recent]
+            writer.writerow(outputRow)
+
+    print(slides)
+    print(cellTypes.count())
+    return JsonResponse({'success': True})
+
+
+@login_required
+def export_all_cell_annotations_for_slide_list(request):
+    print(final_slide_list)
+
+    # slides = Slide.objects.filter(name__in=final_slide_list)
+
+    cellTypes = CellType.objects.filter(
+        user=request.user, is_most_recent=True, cell__region__slide__name__in=final_slide_list).order_by('cell_type')
+
+    export_path = settings.MEDIA_ROOT + '/export/'
+    export_path = export_path+datetime.now().strftime("%Y%m%d%H%M%S") + \
+        '_all_cell_annotations_for_final_50.csv'
+
+    with open(export_path, 'w', newline='') as f:
+        writer = csv.writer(f)
+        outputRow = ['cell_id', 'annotation_code', 'annotation_name', 'region',
+                     'slide', 'slide_diagnoses', 'annotator', 'time_labelled', 'label_id', 'is_most_recent']
+        writer.writerow(outputRow)
+
+        counter = 0
+        for ct in cellTypes:
+            counter += 1
+            if (counter % 1000) == 0:
+                print('outputing celltype...'+str(counter))
+            dx_str = ''
+            for dx in ct.cell.region.slide.diagnoses.all().order_by('name'):
+                dx_str += str(dx) + ", "
+
+            outputRow = [ct.cell.id, ct.cell_type, getCellTypeName(ct), ct.cell.region.id,
+                         ct.cell.region.slide.name, dx_str, request.user.username, ct.date_created, ct.id, ct.is_most_recent]
+            writer.writerow(outputRow)
+
+    print(slides)
+    print(cellTypes.count())
+    return JsonResponse({'success': True})
+
+
+@login_required
+def export_all_cell_annotations_for_user(request):
+
+    cellTypes = CellType.objects.filter(
+        user=request.user, is_most_recent=True).order_by('cell_type')
 
     export_path = settings.MEDIA_ROOT + '/export/'
     export_path = export_path+datetime.now().strftime("%Y%m%d%H%M%S") + \
@@ -171,6 +391,7 @@ def export_all_cell_annotations_for_user(request):
     return JsonResponse({'success': True})
 
 
+@login_required
 def export_csv_user_slides(user, slides, export_path):
     # If we later want to output it as a HttpResponse
     #	https://stackoverflow.com/questions/29672477/django-export-current-queryset-to-csv-by-button-click-in-browser
@@ -185,6 +406,7 @@ def export_csv_user_slides(user, slides, export_path):
                 ct), ct.cell.region.id, ct.cell.region.slide.id, diagnosis.name, diagnosis.abbreviation])
 
 
+@login_required
 def export_each_slide_csv_cellTypes_slides(user, slides, export_path):
     cells = Cell.objects.filter(region__slide__in=slides.all())
     cellTypes = CellType.objects.filter(user=user, cell__in=cells)
@@ -228,6 +450,7 @@ def export_each_slide_csv_cellTypes_slides(user, slides, export_path):
                 ct), ct.cell.region.id, ct.cell.region.slide.id, diagnosis.name, diagnosis.abbreviation])
 
 
+@login_required
 def export_cell_images_flat(cells, export_path, sizes):
     sizes = [48, 64, 96]
     for size in sizes:
@@ -242,12 +465,13 @@ def export_cell_images_flat(cells, export_path, sizes):
             export_cell_image(cell, cell_path, size)
 
 
+@login_required
 def export_cell_images_celltype_folders(cellTypes, export_path, sizes):
     distinct_cell_types = CellType.objects.values_list(
         'cell_type', flat=True).distinct()
     # print(cellTypes.values('cell_type').distinct())
     # print(len(cellTypes.values('cell_type').distinct()))
-
+    sizes = [48, 64, 96]
     for size in sizes:
         cell_folder_outer = export_path+str(size)+'_sorted/'
         os.system('mkdir '+cell_folder_outer)
@@ -1105,47 +1329,6 @@ classLabelDict = {
 
 
 def getCellTypeNameFromStringCode(cell_type_code):
-    # classLabelDict = {
-    #     "M1": "Blast",
-    #     "M2": "Promyelocyte",
-    #     "M3": "Myelocyte",
-    #     "M4": "Metamyelocyte",
-    #     "M5": "Band neutrophil",
-    #     "M6": "Segmented netrophil",
-
-    #     "E1": "Eosinophil myelocyte",
-    #     "E2": "Eosinophil metamyelocyte",
-    #     "E3": "Eosinophil band",
-    #     "E4": "Eosinophil seg",
-    #     "B1": "Mast Cell",
-    #     "B2": "Basophil",
-    #     "MO1": "Monoblast",
-    #     "MO2": "Monocyte",
-
-    #     "L0": "Lymphoblast",
-    #     "L1": "Hematogone",
-    #     "L2": "Small Mature Lymphocyte",
-    #     "L3": "Reactive lymphocyte/LGL",
-    #     "L4": "Plasma Cell",
-
-    #     "ER1": "Pronormoblast",
-    #     "ER2": "Basophilic Normoblast",
-    #     "ER3": "Polychromatophilic Normoblast",
-    #     "ER4": "Orthochromic Normoblast",
-    #     "ER5": "Polychromatophilic Erythrocyte",
-    #     "ER6": "Mature Erythrocyte",
-
-    #     "U1": "Artifact",
-    #     "U2": "Unknown",
-    #     "U3": "Other",
-    #     "U4": "Mitotic Body/karyorrhexis",
-    #     "UL": "Unlabelled",
-
-    #     "PL1": "Immature Megakaryocyte",
-    #     "PL2": "Mature Megakaryocyte",
-    #     "PL3": "Platelet Clump",
-    #     "PL4": "Giant Platelet",
-    # }
 
     return classLabelDict[cell_type_code]
 
