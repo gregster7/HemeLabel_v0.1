@@ -98,7 +98,7 @@ footer {
   color: white;
   font-size: 600%;
   text-shadow: 3px 3px 15px #000;
-  background-color: transparent;
+  background-color:rgb(75,0,130, 0.3)
 }
 
 .carousel-caption > h3 {
@@ -108,6 +108,8 @@ footer {
   text-shadow: 3px 3px 15px #000;
   padding-bottom: 1rem;
   border-bottom: 0px;
+  background-color:rgb(75,0,130, 0.3)
+
 }
 
 .carousel .carousel-indicators li {
@@ -119,6 +121,8 @@ footer {
 .carousel .carousel-indicators .active {
   background-color: rgba(70, 70, 70, 0.8);
 }
+
+
 
 .class_table_row {
   border-left: 1px solid #000;
@@ -256,10 +260,23 @@ th {
 } */
 
 .jumbotron {
-  padding: 4rem;
+  padding: 10rem 0rem;
+
+  margin-right: 0 !important;
+  margin-left: 0 !important;
   border-radius: 0;
   margin-bottom: 0;
   background-color: transparent;
+}
+
+.jumbotron-backgroud{
+  background-color: whitesmoke
+}
+.jumbotron-text { 
+  color: whitesmoke;
+  color: black;
+  text-decoration: bold;
+  text-align: center;
 }
 
 .padding {
@@ -332,6 +349,7 @@ Image height is 665px
   background-color: none !important;
 }
 
+
 h3.horizontal_list_category {
   background-color: #bfbfbfff;
   padding: 10px;
@@ -374,6 +392,11 @@ h3.horizontal_list_category {
     font-size: 2.5em;
     padding: 1.2rem;
   }
+
+  .jumbotron {
+    padding: 4rem 0rem;
+  }
+
 }
 @media (max-width: 576px) {
   .carousel-caption {
@@ -403,6 +426,11 @@ h3.horizontal_list_category {
     padding: 2rem;
     margin: 2rem;
   }
+
+  .jumbotron {
+    padding: 2rem 0rem;
+  }
+  
 
   /* .display-4 {
     font-size: 160%;

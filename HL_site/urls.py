@@ -25,4 +25,8 @@ urlpatterns = [
 
     re_path(r'', include(('labeller.urls', 'labeller'), namespace='labeller')),
     re_path(r'', include(('export.urls', 'export'), namespace='export')),
+    # re_path(r'', include(('demo.urls', 'demo'), namespace='demo')),
+    re_path(r'', include(('demo.urls', 'demo'), namespace='demo')),
+    re_path(r'', include(('labwebsite.urls', 'labwebsite'), namespace='labwebsite')),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

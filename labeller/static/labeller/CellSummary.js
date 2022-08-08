@@ -55,7 +55,7 @@ class CellSummary {
       table += '<td class="class_table_td count_L3 '+this.printMe()+'">Reactive Lymphocyte/LGL (f):';
       table += '<td class="class_table_td count_ER4 '+this.printMe()+'">Orthochromic Normoblast (v):';            
       table += '<td class="class_table_td count_PL4 '+this.printMe()+'">Giant Platelet (/):';
-      table += '<td class="class_table_td count_U4 '+this.printMe()+'">Mitotic body/Karyorrhexis (0):';          
+      table += '<td class="class_table_td count_U4 '+this.printMe()+'">Mitotic body (0):';          
             
       // table += '<td class="class_table_td count_U4 '+this.printMe()+'">Histiocyte (0):';
 
@@ -75,9 +75,9 @@ class CellSummary {
       table += '<td class="class_table_td">';
       table += '<td class="class_table_td">';
       table += '<td class="class_table_td count_ER6 '+this.printMe()+'">Mature Erythrocyte (n):';
-
       table += '<td class="class_table_td">';
-      table += '<td class="class_table_td">';
+      table += '<td class="class_table_td count_U5 '+this.printMe()+'">Karyorrhexis (=):';          
+      // table += '<td class="class_table_td">';
   
       table += '</table>';
 

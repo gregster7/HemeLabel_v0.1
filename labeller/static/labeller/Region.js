@@ -78,6 +78,45 @@ class Region {
 		});
 	}
 
+	static getULForRegion(id, rid, x, y, width, height) {
+		var x = x.substr(0, x.indexOf('.'));
+		var y = y.substr(0, y.indexOf('.'));
+		var width = width.substr(0, width.indexOf('.'));
+		var height = height.substr(0, height.indexOf('.'));
+
+		var ul = '<ul class="py-3 justify-content-center region-info">';
+		ul = ul + '<li class="region-info-header"><b>Region Information:</b></li>';
+		ul = ul + '<li class="slide_id pl-2"> <b>ID: </b>'+ id +'</li>';
+		ul = `${ul}<li class="slide_sid pl-2"> <b>RID: </b>${rid}</li>`;
+		ul = ul + '<li class="pl-2"> <b>x: </b>' +x+ '</li>';
+		ul = ul + '<li class="pl-2"> <b>y: </b>' +y+ '</li>';
+		ul = ul + '<li class="pl-2"> <b>width: </b>' +width+ '</li>';
+		ul = ul + '<li class="pl-2"> <b>height: </b>' +height+ '</li>';
+		ul = ul + '</ul>'
+		return ul;
+
+	}
+
+	// static getULForRegion(id, rid, x, y, width, height) {
+
+	// 	x = x.substr(0, x.indexOf('.'));
+	// 	y = y.substr(0, y.indexOf('.'));
+	// 	width = width.substr(0, width.indexOf('.'));
+	// 	height = height.substr(0, height.indexOf('.'));
+
+	// 	var ul = '<ul class="py-3 justify-content-center region-info">';
+	// 	ul = ul + '<li class="region-info-header"><b>Region Information:</b></li>';
+	// 	ul = ul + '<li class="slide_id pl-2"> <b>ID: </b>'+ id +'</li>';
+	// 	ul = `${ul}<li class="slide_sid pl-2"> <b>RID: </b>${rid}</li>`;
+	// 	ul = ul + '<li class="pl-2"> <b>x: </b>' +x+ '</li>';
+	// 	ul = ul + '<li class="pl-2"> <b>y: </b>' +y+ '</li>';
+	// 	ul = ul + '<li class="pl-2"> <b>width: </b>' +width+ '</li>';
+	// 	ul = ul + '<li class="pl-2"> <b>height: </b>' +height+ '</li>';
+	// 	ul = ul + '</ul>'
+	// 	return ul;
+	// }
+
+
 	// static addRegionDeleteEventListener() {
 	// 	console.log('entering deleteregioneventlistener');
 	// 	$('#delete_region_button_'+rid).click(function() {

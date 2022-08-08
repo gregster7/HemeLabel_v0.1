@@ -20,12 +20,17 @@ from . import views
 urlpatterns = [
 
 
-        path('add_note_to_slide', views.add_note_to_slide, name='add_note_to_slide'),
-        path('add_tissue_type_to_slide/', views.add_tissue_type_to_slide, name='add_tissue_type_to_slide'),
-        path('remove_tissue_type_from_slide/', views.remove_tissue_type_from_slide, name='remove_tissue_type_from_slide'),
-        path('add_blind_collab_to_slide/', views.add_blind_collab_to_slide, name='add_blind_collab_to_slide'),
-        path('add_user_to_project/', views.add_user_to_project, name='add_user_to_project'),
-        re_path(r'^all_cells_for_project/(?P<project_id>\d+)/', views.get_all_cells_for_project, name='all_cells_for_project'),
+    path('add_note_to_slide', views.add_note_to_slide, name='add_note_to_slide'),
+    path('add_tissue_type_to_slide/', views.add_tissue_type_to_slide,
+         name='add_tissue_type_to_slide'),
+    path('remove_tissue_type_from_slide/', views.remove_tissue_type_from_slide,
+         name='remove_tissue_type_from_slide'),
+    path('add_blind_collab_to_slide/', views.add_blind_collab_to_slide,
+         name='add_blind_collab_to_slide'),
+    path('add_user_to_project/', views.add_user_to_project,
+         name='add_user_to_project'),
+    re_path(r'^all_cells_for_project/(?P<project_id>\d+)/',
+            views.get_all_cells_for_project, name='all_cells_for_project'),
 
 
     ############################################################################################
@@ -34,6 +39,9 @@ urlpatterns = [
     ################################ base.html nav bar ################################
 
     re_path(r'^$', views.index, name='index'),
+
+    re_path(r'^lab/$', views.lab,
+            name='lab'),
 
     re_path(r'^regions/$', views.regions, name='regions'),
 
@@ -84,37 +92,16 @@ urlpatterns = [
     re_path(r'^label_region_fabric/(?P<region_id>\d+)/$',
             views.label_region_fabric, name='label_region_fabric'),
 
+    # Page for labelling a region of interest
+    re_path(r'^label_region_segmentation/(?P<region_id>\d+)/$',
+            views.label_region_segmentation, name='label_region_segmentation'),
+
+
     # Not currently in use - may require fixing
     # Page for labelling a cell in given project
     re_path(r'^label_cells_in_project/(?P<project_id>\d+)/$',
             views.label_cells_in_project, name='label_cells_in_project'),
 
-    # Page for exporting Project Data
-    re_path(r'^export_project_data/$', views.export_project_data,
-            name='export_project_data'),
-
-
-    # 5/18/22 Exports all annotations for 50 normal list
-    re_path(r'export_all_cell_annotations_for_slide_list/$',
-            views.export_all_cell_annotations_for_slide_list, name='export_all_cell_annotations_for_slide_list'),
-    re_path(r'export_all_cell_annotations_for_slide_list_limited_types/$',
-            views.export_all_cell_annotations_for_slide_list_limited_types, name='export_all_cell_annotations_for_slide_list_limited_types'),
-    re_path(r'export_all_cell_images_for_slide_list_limited_types/$',
-            views.export_all_cell_images_for_slide_list_limited_types, name='export_all_cell_images_for_slide_list_limited_types'),
-
-
-
-    re_path(r'export_all_cell_annotations_for_user/$',
-            views.export_all_cell_annotations_for_user, name='export_all_cell_annotations_for_user'),
-
-    re_path(r'export_all_cell_annotations_summary_user/$',
-            views.export_all_cell_annotations_summary_user, name='export_all_cell_annotations_summary_user'),
-
-    # Experimental
-    # Page for exporting Project Data
-    re_path(r'^export/', views.export_cell_data, name='export_cell_data'),
-
-    re_path(r'^export_page.html', views.export_page, name='export_page'),
 
 
     #     re_path(r'^export_cells/$', views.export_all_cell_annotations_user,
@@ -221,9 +208,10 @@ urlpatterns = [
     re_path(r'^label_cells_in_project/(?P<project_id>\d+)/dropzone_image',
             views.dropzone_image_w_projectID, name='dropzone_image_w_projectID'),
 
-        # re_path(r'^project/(?P<project_id>\d+)/project_dropzone_slide', views.project_dropzone_slide, name='project_dropzone_slide'),
+    # re_path(r'^project/(?P<project_id>\d+)/project_dropzone_slide', views.project_dropzone_slide, name='project_dropzone_slide'),
 
-        re_path(r'^project_dropzone_slide/(?P<project_id>\d+)/', views.project_dropzone_slide, name='project_dropzone_slide'),
+    re_path(r'^project_dropzone_slide/(?P<project_id>\d+)/',
+            views.project_dropzone_slide, name='project_dropzone_slide'),
 
     # Handles dropzone uploaded slides or slide spreadsheets
     #re_path(r'^label_cells_in_project/dropzone_slide', views.dropzone_slide, name='dropzone_slide_upload'),

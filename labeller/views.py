@@ -76,6 +76,10 @@ def index(request):
     return render(request, 'labeller/index.html')
 
 
+def lab(request):
+    return render(request, 'labeller/lab.html')
+
+
 def export_cell_image(cell, cell_path, size):
     svs_path = settings.MEDIA_ROOT + cell.region.slide.svs_path.url
     left = cell.region.x + cell.center_x - size/2
@@ -109,419 +113,7 @@ def generate_cell_image_with_vips(region, cid, left, top, width, height):
     # os.system(command)
 
 
-def export_all_cell_annotations_summary_user(request):
-    if (request.user.username != 'admin'):
-        print('user access denied in export_all_cell_annotations_user')
-        return JsonResponse({'success': False})
-
-    export_path = settings.MEDIA_ROOT + '/export/'
-    # export_path += datetime.now().strftime("%Y%m%d%H%M%S") + '/'
-    # os.system('mkdir '+export_path)
-    export_path = export_path+datetime.now().strftime("%Y%m%d%H%M%S")+'_cellTypes.csv'
-
-    cellTypes = CellType.objects.filter(user=request.user, is_most_recent=True)
-
-    ct_names = cellTypes.values('cell_type').distinct()
-    distinct_cell_types = CellType.objects.values_list(
-        'cell_type', flat=True).distinct().order_by('cell_type')
-    with open(export_path, 'w', newline='') as f:
-        writer = csv.writer(f)
-        outputRow = ['user', 'slides', 'regions', 'cells']
-        for ct_name in distinct_cell_types:
-            outputRow = outputRow + [getCellTypeNameFromStringCode(ct_name)]
-        writer.writerow(outputRow)
-
-        outputRow = [request.user.username,  Slide.objects.all().count(
-        ), Region.objects.all().count(), Cell.objects.all().count()]
-        for ct_name in distinct_cell_types:
-            count = CellType.objects.filter(
-                user=request.user, cell_type=ct_name).count()
-            outputRow = outputRow + [count]
-        writer.writerow(outputRow)
-
-    return JsonResponse({'success': True})
-
-
-@login_required
-def export_page(request):
-    return render(request, 'labeller/export_page.html')
-
-
-final_slide_list = ['19.svs',
-                    'nlbx2-5.svs',
-                    '40.svs',
-                    '21.svs',
-                    '25.svs',
-                    '29.svs',
-                    '23.svs',
-                    '31-001.svs',
-                    '35.svs',
-                    'nlbx3-17.svs',
-                    'nlbx3-4.svs',
-                    'nlbx1-4.svs',
-                    'nlbx3-2.svs',
-                    '8.svs',
-                    'nlbx2-8.svs',
-                    's8.svs',
-                    'nlbx1-2.svs',
-                    '5.svs',
-                    'nlbx2-11.svs',
-                    'nlbx2-7.svs',
-                    'nlbx2-2.svs',
-                    'nlbx1-15.svs',
-                    'nlbx1-14.svs',
-                    'nlbx2-9.svs',
-                    'nlbx2-17.svs',
-                    'nlbx1-17.svs',
-                    'nlbx1-18.svs',
-                    's7.svs',
-                    'nlbx2-3.svs',
-                    'nlbx2-6.svs',
-                    'nlbx3-3.svs',
-                    'nlbx3-10.svs',
-                    'nlbx1-11.svs',
-                    'nlbx1-24.svs',
-                    'nlbx3-8.svs',
-                    's2.svs',
-                    'nlbx1-9.svs',
-                    'nlbx3-1.svs',
-                    'nlbx3-9.svs',
-                    'nlbx1-13.svs',
-                    'nlbx2-20.svs',
-                    'nlbx3-7.svs',
-                    'nlbx1-3.svs',
-                    'nlbx2-19.svs',
-                    'nlbx2-18.svs',
-                    's1.svs.svs',
-                    'nlbx3-5.svs',
-                    'nlbx1-12.svs',
-                    'nlbx2-4.svs',
-                    's4.svs', ]
-
-no_include_list = ['L0', 'L1', 'L3', 'M01', 'U2', 'U3', 'U4', 'UL', 'PL1']
-
-
-image_label_include_list = ['B1',
-                            'B2',
-                            'E1',
-                            'E2',
-                            'E3',
-                            'E4',
-                            'ER1',
-                            'ER2',
-                            'ER3',
-                            'ER4',
-                            'ER5',
-                            'ER6',
-                            'L2',
-                            'L4',
-                            'M1',
-                            'M2',
-                            'M3',
-                            'M4',
-                            'M5',
-                            'M6',
-                            'MO1',
-                            'MO2',
-                            'PL2',
-                            'PL3',
-                            'PL4',
-                            'U1', ]
-image_label_include_list.sort()
-final_slide_list.sort()
-
-
-@login_required
-def export_all_cell_images_for_slide_list_limited_types(request):
-    print('export_all_cell_images_for_slide_list_limited_types')
-    export_path = settings.MEDIA_ROOT + '/export/'
-    export_path = export_path+datetime.now().strftime("%Y%m%d%H%M%S") + \
-        '_export_all_cell_images_for_slide_list_limited_types/'
-    # sizes = [48, 64, 96]
-    sizes = [48]
-    for size in sizes:
-        for slide_name in final_slide_list:
-            print('Size=' + str(size) + ", Slide="+slide_name)
-            for cell_type in image_label_include_list:
-                print("\tCell_Type="+cell_type)
-
-                if cell_type in ['E1', 'E2', 'E3']:
-                    cell_folder = export_path + \
-                        str(size)+'/'+slide_name.split('.')[0]+'/E0/'
-                else:
-                    cell_folder = export_path + \
-                        str(size)+'/' + \
-                        slide_name.split('.')[0]+'/'+cell_type+'/'
-                os.system('mkdir -p '+cell_folder)
-
-                # cellTypes = CellType.objects.filter(
-                #     user=request.user, is_most_recent=True, cell__region__slide__name__in=final_slide_list, cell_type=cell_type)
-                cellTypes = CellType.objects.filter(
-                    user=request.user, is_most_recent=True, cell__region__slide__name=slide_name, cell_type=cell_type)
-                print("\t\tcount="+str(cellTypes.count()))
-
-                for ct in cellTypes:
-                    cell_path = cell_folder + str(ct.cell.id)+'.png'
-                    export_cell_image(ct.cell, cell_path, size)
-
-    return JsonResponse({'success': True})
-
-
-@login_required
-def export_all_cell_annotations_for_slide_list_limited_types(request):
-    print('export_all_cell_annotations_for_slide_list_limited_types')
-    print(final_slide_list)
-
-    cellTypes = CellType.objects.filter(
-        user=request.user, is_most_recent=True, cell__region__slide__name__in=final_slide_list, ).order_by('cell_type')
-
-    print(slides)
-    print(cellTypes.count())
-
-    cellTypes = CellType.objects.filter(
-        user=request.user, is_most_recent=True, cell__region__slide__name__in=final_slide_list).exclude(cell_type__in=no_include_list).order_by('cell_type')
-    print(cellTypes.count())
-
-    # return JsonResponse({'success': True})
-
-    export_path = settings.MEDIA_ROOT + '/export/'
-    export_path = export_path+datetime.now().strftime("%Y%m%d%H%M%S") + \
-        '_all_cell_annotations_for_final_50_limited.csv'
-
-    with open(export_path, 'w', newline='') as f:
-        writer = csv.writer(f)
-        outputRow = ['cell_id', 'annotation_code', 'annotation_name', 'region',
-                     'slide', 'slide_diagnoses', 'annotator', 'time_labelled', 'label_id', 'is_most_recent']
-        writer.writerow(outputRow)
-
-        counter = 0
-        for ct in cellTypes:
-            counter += 1
-            # if counter > 1001:
-            #     break
-            if (counter % 1000) == 0:
-                print('outputing celltype...'+str(counter))
-            dx_str = ''
-
-            for dx in ct.cell.region.slide.diagnoses.all().order_by('name'):
-                dx_str += str(dx) + ", "
-
-            if ct.cell_type in ['E1', 'E2', 'E3']:
-                outputRow = [ct.cell.id, 'E0', 'Immature eosinophil', ct.cell.region.id,
-                             ct.cell.region.slide.name, dx_str, request.user.username, ct.date_created, ct.id, ct.is_most_recent]
-            elif ct.cell_type == 'E4':
-                outputRow = [ct.cell.id, ct.cell_type, 'Segmented eosinophil', ct.cell.region.id,
-                             ct.cell.region.slide.name, dx_str, request.user.username, ct.date_created, ct.id, ct.is_most_recent]
-
-            else:
-                outputRow = [ct.cell.id, ct.cell_type, getCellTypeName(ct), ct.cell.region.id,
-                             ct.cell.region.slide.name, dx_str, request.user.username, ct.date_created, ct.id, ct.is_most_recent]
-            writer.writerow(outputRow)
-
-    print(slides)
-    print(cellTypes.count())
-    return JsonResponse({'success': True})
-
-
-@login_required
-def export_all_cell_annotations_for_slide_list(request):
-    print(final_slide_list)
-
-    # slides = Slide.objects.filter(name__in=final_slide_list)
-
-    cellTypes = CellType.objects.filter(
-        user=request.user, is_most_recent=True, cell__region__slide__name__in=final_slide_list).order_by('cell_type')
-
-    export_path = settings.MEDIA_ROOT + '/export/'
-    export_path = export_path+datetime.now().strftime("%Y%m%d%H%M%S") + \
-        '_all_cell_annotations_for_final_50.csv'
-
-    with open(export_path, 'w', newline='') as f:
-        writer = csv.writer(f)
-        outputRow = ['cell_id', 'annotation_code', 'annotation_name', 'region',
-                     'slide', 'slide_diagnoses', 'annotator', 'time_labelled', 'label_id', 'is_most_recent']
-        writer.writerow(outputRow)
-
-        counter = 0
-        for ct in cellTypes:
-            counter += 1
-            if (counter % 1000) == 0:
-                print('outputing celltype...'+str(counter))
-            dx_str = ''
-            for dx in ct.cell.region.slide.diagnoses.all().order_by('name'):
-                dx_str += str(dx) + ", "
-
-            outputRow = [ct.cell.id, ct.cell_type, getCellTypeName(ct), ct.cell.region.id,
-                         ct.cell.region.slide.name, dx_str, request.user.username, ct.date_created, ct.id, ct.is_most_recent]
-            writer.writerow(outputRow)
-
-    print(slides)
-    print(cellTypes.count())
-    return JsonResponse({'success': True})
-
-
-@login_required
-def export_all_cell_annotations_for_user(request):
-
-    cellTypes = CellType.objects.filter(
-        user=request.user, is_most_recent=True).order_by('cell_type')
-
-    export_path = settings.MEDIA_ROOT + '/export/'
-    export_path = export_path+datetime.now().strftime("%Y%m%d%H%M%S") + \
-        '_all_cell_annotations_'+request.user.username+'.csv'
-
-    with open(export_path, 'w', newline='') as f:
-        writer = csv.writer(f)
-        outputRow = ['cell_id', 'annotation_code', 'annotation_name', 'region',
-                     'slide', 'slide_diagnoses', 'annotator']
-        writer.writerow(outputRow)
-        # print(outputRow)
-
-        # counter = 0
-
-        for ct in cellTypes:
-            dx_str = ''
-            for dx in ct.cell.region.slide.diagnoses.all().order_by('name'):
-                dx_str += str(dx) + ", "
-
-            outputRow = [ct.cell.id, ct.cell_type, getCellTypeName(ct), ct.cell.region.id,
-                         ct.cell.region.slide.name, dx_str, request.user.username]
-            writer.writerow(outputRow)
-            # print(outputRow)
-            # counter += 1
-            # if (counter > 500):
-            #     break
-
-    return JsonResponse({'success': True})
-
-
-@login_required
-def export_csv_user_slides(user, slides, export_path):
-    # If we later want to output it as a HttpResponse
-    #	https://stackoverflow.com/questions/29672477/django-export-current-queryset-to-csv-by-button-click-in-browser
-    cells = Cell.objects.filter(region__slide__in=slides.all())
-    cellTypes = CellType.objects.filter(user=user, cell__in=cells)
-    with open(export_path, 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(['labeller_username', 'Cell_pk', 'cell_class',
-                        'cell_class_long', 'region_pk', 'slide_pk', 'slide_dx', 'slide_dx_abbrev'])
-        for ct in cellTypes:
-            writer.writerow([user.username, ct.cell.id, ct.cell_type, getCellTypeName(
-                ct), ct.cell.region.id, ct.cell.region.slide.id, diagnosis.name, diagnosis.abbreviation])
-
-
-@login_required
-def export_each_slide_csv_cellTypes_slides(user, slides, export_path):
-    cells = Cell.objects.filter(region__slide__in=slides.all())
-    cellTypes = CellType.objects.filter(user=user, cell__in=cells)
-    ct_names = cellTypes.values('cell_type').distinct()
-    distinct_cell_types = CellType.objects.values_list(
-        'cell_type', flat=True).distinct().order_by('cell_type')
-    with open(export_path, 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(['slide_id', 'slide_name', 'diagnoses',
-                        'total']+list(distinct_cell_types))
-
-        # for ct_name in distinct_cell_types:
-
-        for slide in slides:
-            print("####" + str(slide))
-            dx_str = ''
-            for dx in slide.diagnoses.all().order_by('name'):
-                dx_str += " " + str(dx)
-            cells = Cell.objects.filter(region__slide=slide)
-            outputRow = [slide.id, slide.name, dx_str, len(cells)]
-            for ct_name in distinct_cell_types:
-                count = CellType.objects.filter(
-                    user=user, cell__in=cells, cell_type=ct_name).count()
-                outputRow = outputRow + [count]
-                # print (ct_name + ": "+ str(count))
-            writer.writerow(outputRow)
-
-    return
-
-    with open(export_path, 'w', newline='') as f:
-        # add header
-        writer = csv.writer(f)
-        for slide in slides:
-            cells = Cell.objects.filter(slide=slide)
-            # cellTypes = CellType.objects.filter(user=user, cell__in=cells).values('cell_type').distinct().count()
-
-        writer.writerow(['labeller_username', 'Cell_pk', 'cell_class',
-                        'cell_class_long', 'region_pk', 'slide_pk', 'slide_dx', 'slide_dx_abbrev'])
-        for ct in cellTypes:
-            writer.writerow([user.username, ct.cell.id, ct.cell_type, getCellTypeName(
-                ct), ct.cell.region.id, ct.cell.region.slide.id, diagnosis.name, diagnosis.abbreviation])
-
-
-@login_required
-def export_cell_images_flat(cells, export_path, sizes):
-    sizes = [48, 64, 96]
-    for size in sizes:
-        cell_folder = export_path+str(size)+'/'
-        os.system('mkdir '+cell_folder)
-        counter = 0
-        for cell in cells:
-            counter += 1
-            if (counter > 10):
-                break
-            cell_path = cell_folder + str(cell.id) + '.jpg'
-            export_cell_image(cell, cell_path, size)
-
-
-@login_required
-def export_cell_images_celltype_folders(cellTypes, export_path, sizes):
-    distinct_cell_types = CellType.objects.values_list(
-        'cell_type', flat=True).distinct()
-    # print(cellTypes.values('cell_type').distinct())
-    # print(len(cellTypes.values('cell_type').distinct()))
-    sizes = [48, 64, 96]
-    for size in sizes:
-        cell_folder_outer = export_path+str(size)+'_sorted/'
-        os.system('mkdir '+cell_folder_outer)
-        for ctlabel in distinct_cell_types:
-            cell_folder = cell_folder_outer + ctlabel + '/'
-            os.system('mkdir '+cell_folder)
-
-            # counter = 0
-            for ct in cellTypes.filter(cell_type=ctlabel):
-                # counter += 1
-                # if (counter > 10):
-                #     break
-
-                cell = ct.cell
-                cell_path = cell_folder + str(cell.id) + '.jpg'
-                export_cell_image(cell, cell_path, size)
-
-
-# Currently just exports for normal diagnosis
-@login_required
-def export_cell_data(request):
-    if (request.user.username != 'admin'):
-        print('user access denied in export_cell_data')
-        return JsonResponse({'success': False})
-
-    export_path = settings.MEDIA_ROOT + '/export/'
-    export_path += datetime.now().strftime("%Y%m%d%H%M%S") + '/'
-    os.system('mkdir '+export_path)
-
-    diagnosis = Diagnosis.objects.get(abbreviation='nl')
-    slides = Slide.objects.filter(diagnoses=diagnosis)
-    # export_csv_user_slides(request.user, slides, export_path+'classes.csv')
-    export_each_slide_csv_cellTypes_slides(
-        request.user, slides, export_path+'slides_with_cellTypes.csv')
-    sizes = [48, 64, 96]
-    # cells = Cell.objects.filter(region__slide__in=slides.all()) <-- to delete after testing
-    cells = Cell.objects.filter(region__slide__in=slides)
-    # export_cell_images_flat(cells, export_path, sizes)
-
-    cellTypes = CellType.objects.filter(user=request.user, cell__in=cells)
-    export_cell_images_celltype_folders(cellTypes, export_path, sizes)
-
-    return JsonResponse({'success': True})
-
-
-@login_required
+@ login_required
 def regions(request):
     """Show all regions."""
     # regions = Region.objects.order_by('rid')
@@ -537,7 +129,7 @@ def regions(request):
     return render(request, 'labeller/regions.html', context)
 
 
-@login_required
+@ login_required
 def get_cell_feature_form(request):
     print('entering get_cell_feature_form', request)
     GET = request.GET
@@ -548,7 +140,7 @@ def get_cell_feature_form(request):
     return HttpResponse(form.as_p())
 
 
-@login_required
+@ login_required
 def slides(request):
     """Show all regions."""
     # print(request.user.username)
@@ -602,14 +194,14 @@ def getAllCellTypesSlideUserJSON(user, slide):
 # Under construction - used for testing bootstrap
 
 
-@login_required
+@ login_required
 def bootstrap_test(request):
     return render(request, 'labeller/bootstrap_test.html')
 
 # Under construction - used for testing bootstrap
 
 
-@login_required
+@ login_required
 def label_slide_bootstrap(request, slide_id):
     slide = Slide.objects.get(sid=slide_id)
     diagnoses = slide.diagnoses
@@ -618,7 +210,7 @@ def label_slide_bootstrap(request, slide_id):
     return render(request, 'labeller/label_slide.html', context)
 
 
-@login_required
+@ login_required
 def label_slide(request, slide_id):
     print('label_slide', request, slide_id)
 
@@ -1465,7 +1057,8 @@ classLabelDict = {
     "U1": "Artifact",
     "U2": "Unknown",
     "U3": "Other",
-    "U4": "Mitotic Body/karyorrhexis",
+    "U4": "Mitotic Body",
+    "U5": "Karyorrhexis",
     "UL": "Unlabelled",
 
     "PL1": "Immature Megakaryocyte",
@@ -1549,6 +1142,31 @@ def cell_redirect(request, cell_pk):
     # return label_region_fabric(request, cell.region.rid)
 #	return redirect('/label_region_fabric/'+str(cell.region.rid))
     return HttpResponseRedirect('/label_region_fabric/'+str(cell.region.rid)+'/')
+
+
+@ login_required
+def label_region_segmentation(request, region_id):
+    print('Entering label_region_fabric', request.user)
+    if request.user.is_authenticated:
+        if request.user == Region.objects.get(rid=region_id).created_by:
+            region = Region.objects.get(rid=region_id)
+            print('region: ', region.created_by)
+        else:
+            return error_403(request)
+
+    region = Region.objects.get(rid=region_id)
+    slide = region.slide
+    cells = region.cell_set.all()
+    if (cells.count() == 0):
+        cells_json = "none"
+    else:
+        cells_json = serializers.serialize("json", region.cell_set.all())
+
+    celltypes_in_region = getAllCellTypesUserRegionJSON(request.user, region)
+    context = {'region': region, 'cells': cells, 'dx_options': Diagnosis.objects.all(
+    ), 'cells_json': cells_json, 'slide': slide, 'celltypes_json': celltypes_in_region}
+    # print('label_region_fabric context', context)
+    return render(request, 'labeller/label_region_segmentation.html', context)
 
 
 @ login_required
@@ -1729,31 +1347,6 @@ def create_project(request):
     # return render(request, 'labeller/project.html', context)
 
     return HttpResponseRedirect('project/'+str(project_id)+'/')
-
-
-# Needs updating with celltypes
-@ login_required
-def export_project_data(request):
-    GET = request.GET
-    project_id = GET['project_id']
-    print(request, project_id)
-    project = Project.objects.get(id=project_id)
-    all_cells = project.cell_set.all()
-    list_of_cell_dicts = []
-    for cell in all_cells:
-        print(cell)
-        list_of_cell_dicts.append(cell.asdict())
-    print(list_of_cell_dicts)
-    df = pd.DataFrame(list_of_cell_dicts)
-    print(df)
-
-    now = datetime.now()
-    date_time = now.strftime("%Y%m%d%H%M%S")
-    filename = project_id + '_' + date_time + '.xlsx'
-    df.to_excel(DATA_EXPORT_ROOT + '/' + filename, index=False)
-
-    results = {'success': True, 'filename': '/data_export/' + filename}
-    return JsonResponse(results)
 
 
 def create_slide_pyramid_with_vips(sid):

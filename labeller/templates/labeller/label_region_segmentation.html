@@ -1,0 +1,35 @@
+{% extends "labeller/base2.html" %}
+{% load static %}
+
+{% block title %}Label Region{% endblock %}
+
+{% block content %}
+<script src="{% static 'labeller/Cell.js' %}"></script>
+<script src="{% static 'labeller/CellCounter.js' %}"></script>
+
+<h2>Select & Segment Cells</h2>
+
+
+<div class="mb-5 mt-3">
+{% include "labeller/partials/region_annotator_fabric.html" %}
+
+
+<!-- <div id="test_keyboard">Last Key Pressed: </div>  -->
+
+<div id="region_info_headline"></div>
+
+<script src="{% static 'labeller/Diagnosis.js' %}"></script>
+
+<div class="container-fluid slide_box pb-3">
+{% include "labeller/partials/slide_diagnoses.html" %}
+{% include "labeller/partials/cell_summary2.html" %}
+</div>
+
+<script src="{% static 'labeller/Region.js' %}"></script>
+<script> 	
+	$('#region_info_headline').append(Region.getULForRegion('{{region.pk}}', '{{region.rid}}', '{{region.x}}', '{{region.y}}', '{{region.width}}', '{{region.height}}'));
+</script>
+
+
+
+{% endblock %}

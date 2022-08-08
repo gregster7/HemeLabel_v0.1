@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     # My apps
     'labeller',
     'export',
+    'demo',
+    'labwebsite',
     # 'inplaceeditform',
 
     'django.contrib.admin',
@@ -142,7 +144,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATIC_URL = '/static/'
+#STATIC_URL = '/static/'
+STATIC_URL = path.join(BASE_DIR, '/static/')
 
 # Media file handling
 MEDIA_ROOT = path.join(BASE_DIR, 'media')

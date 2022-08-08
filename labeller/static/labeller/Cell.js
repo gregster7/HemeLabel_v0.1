@@ -329,7 +329,8 @@ class Cell {
 			"U1": "Artifact",
 			"U2": "Unknown",
 			"U3": "Other",
-			"U4": "Mitotic Body/karyorrhexis",
+			"U4": "Mitotic Body",
+			"U5": "Karyorrhexis",
 			"UL": "Unlabelled", 
 
 			"PL1": "Megakaryoblast/Promegakaryocyte",
@@ -531,6 +532,7 @@ class Cell {
 					case "Digit8": Cell.labelCurrentCell('U2'); break;
 					case "Digit9": Cell.labelCurrentCell('U3'); break;
 					case "Digit0": Cell.labelCurrentCell('U4'); break;
+					case "Equal": Cell.labelCurrentCell('U5'); break;
 
 					case "Subtract": Cell.labelCurrentCell('UL'); break;
 					case "KeyM": Cell.labelCurrentCell('PL1'); break;

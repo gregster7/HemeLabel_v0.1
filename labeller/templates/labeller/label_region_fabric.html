@@ -34,44 +34,12 @@
 {% include "labeller/partials/main_lineages_horizontal.html" %}
 </div>
 
-<script> 
-	// function getULForSlide(id, sid, slide_name) {
-
-	// 	slide_path = '/label_slide/'+sid+ '/';
-	// 	var ul = '<ul class="slide_list slide_list_box">';
-	// 	ul = ul + '<li ><b>Parent slide information</b></li>';
-	// 	ul = ul + '<li class="slide_id">ID: '+ id +'</li>';
-	// 	ul = ul + '<li class="slide_sid">SID: '+ sid +'</li>';
-	// 	ul = ul + '<li class="slide_name" id="slide_name_' +sid+ '">Name: ' +slide_name+ '</li>';
-	// 	ul = ul + '<li class="label_btn"><a class="slide_label_btn" href= "'+ slide_path+'">Go to slide</a></li>';
-	// 	ul = ul + '</ul>'
-	// 	return ul;
-	// };
-
-	
-
-	function getULForRegion(id, rid, x, y, width, height) {
-
-		x = x.substr(0, x.indexOf('.'));
-		y = y.substr(0, y.indexOf('.'));
-		width = width.substr(0, width.indexOf('.'));
-		height = height.substr(0, height.indexOf('.'));
-
-		var ul = '<ul class="py-3 justify-content-center region-info">';
-		ul = ul + '<li class="region-info-header"><b>Region Information:</b></li>';
-		ul = ul + '<li class="slide_id pl-2"> <b>ID: </b>'+ id +'</li>';
-		ul = ul + '<li class="slide_sid pl-2"> <b>RID: </b>'+ rid +'</li>';
-		ul = ul + '<li class="pl-2"> <b>x: </b>' +x+ '</li>';
-		ul = ul + '<li class="pl-2"> <b>y: </b>' +y+ '</li>';
-		ul = ul + '<li class="pl-2"> <b>width: </b>' +width+ '</li>';
-		ul = ul + '<li class="pl-2"> <b>height: </b>' +height+ '</li>';
-		ul = ul + '</ul>'
-		return ul;
-	};
-
-	$('#region_info_headline').append(getULForRegion('{{region.pk}}', '{{region.rid}}', '{{region.x}}', '{{region.y}}', '{{region.width}}', '{{region.height}}'));
-	// $('#slide_back_link').append(getULForSlide('{{slide.pk}}', '{{slide.sid}}', '{{slide.name}}'));
+<script src="{% static 'labeller/Region.js' %}"></script>
+<script> 	
+	$('#region_info_headline').append(Region.getULForRegion('{{region.pk}}', '{{region.rid}}', '{{region.x}}', '{{region.y}}', '{{region.width}}', '{{region.height}}'));
 </script>
+
+
 
 <script>
 
