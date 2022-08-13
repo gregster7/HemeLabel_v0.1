@@ -14,6 +14,9 @@
   <div>
     <button id="add_new_region_button" class="btn px-1"><i class="bi-crop mx-2"></i>Crop New Region<span class="px-1"></span></button>
   </div>
+  <!-- <div>
+    <button id="add_new_fixed_region_button" class="btn px-1"><i class="bi-crop mx-2"></i>Crop Fixed Region<span class="px-1"></span></button>
+  </div> -->
 </div>
  
 
@@ -123,6 +126,38 @@ if (document.getElementById('add_new_region_button')!=null) {
     viewer.setMouseNavEnabled(false);
   });
 }
+
+
+// ******************************* UNDER CONTRUCTION *******************************
+// if (document.getElementById('add_new_fixed_region_button')!=null) {
+//   document.getElementById('add_new_fixed_region_button').addEventListener('click', function() {
+//     // selectionMode = true;
+//     console.log('fixed region button pressed');
+//     // viewer.setMouseNavEnabled(false);
+
+//     number_of_overlay_boxes++;
+//     var overlayElement = document.createElement('div');
+//     overlayElement.id = 'box' + String(number_of_overlay_boxes+1)
+//     overlayElement.class = "box_selection"
+//     overlayElement.style.border = "4px solid green"
+//     // var viewportPos = viewer.viewport.pointFromPixel(event.position);
+//     viewer.addOverlay(overlayElement, new OpenSeadragon.Rect(0.4, 0.4, 1000, 1000));
+    
+//     imagePointPos = viewer.viewport.viewportToImageCoordinates(viewportPos); 
+//     console.log('imagePointPos', imagePointPos) 
+//     // drag = {
+//     //   overlayElement: overlayElement, 
+//     //   startPos: viewportPos,
+//     //   startPosImagePoint: imagePointPos,
+//     //   endPosImagePoint: imagePointPos,
+//     // };
+    
+
+//   });
+// }
+
+
+
 
 </script>
 

@@ -35,7 +35,224 @@ from django.core.files.images import ImageFile
 import pandas as pd
 import csv
 
-# Create your views here.
+from labeller.views import getCellTypeNameFromStringCode, classLabelDict
+from labeller.models import Collaborator, Region, Cell, Slide, Project, CellType, Diagnosis
+
+
+def export_cell_image(cell, cell_path, size):
+    svs_path = settings.MEDIA_ROOT + cell.region.slide.svs_path.url
+    left = cell.region.x + cell.center_x - size/2
+    top = cell.region.y + cell.center_y - size/2
+    command = "vips crop " + svs_path + " " + cell_path + " " + \
+        str(left) + " " + str(top) + " " + \
+        str(size) + " " + str(size)
+    os.system(command)
+
+
+def format_col_width(ws, workbook):
+    wrap_format = workbook.add_format({'text_wrap': True, 'align': 'center'})
+    ws.set_column('A:A', 20, cell_format=wrap_format)
+
+    ws.set_column('B:D', 20, cell_format=wrap_format)
+    ws.set_column('E:E', 25, cell_format=wrap_format)
+
+
+@login_required
+def export_msk_normal_excel(request):
+    if (request.user.username != 'admin'):
+        print('user access denied')
+        return JsonResponse({'success': False})
+
+    print('export_msk_normal_excel')
+    diagnosis = Diagnosis.objects.get(name='Normal MSK')
+    slides = diagnosis.slides_with_diagnosis.all()
+
+    slide_list = []
+    i = 0
+    for slide in slides:
+        i += 1
+        # print(i, slide)
+        if (slide.id not in [197, 195, 191]):
+            slide_list.append(slide)
+
+    image_label_include_list = ['B1',
+                                'B2',
+                                'E1',
+                                # 'E2',
+                                # 'E3',
+                                'E4',
+                                'ER1',
+                                'ER2',
+                                'ER3',
+                                'ER4',
+                                'ER5',
+                                'ER6',
+                                'L2',
+                                'L4',
+                                'M1',
+                                'M2',
+                                'M3',
+                                'M4',
+                                'M5',
+                                'M6',
+                                # 'MO1',
+                                'MO2',
+                                'PL2',
+                                'PL3',
+                                # 'PL4',
+                                'U1',
+                                'U4', ]
+    image_label_include_list.sort(reverse=False)
+
+    export_path = settings.MEDIA_ROOT + '/export/'
+    filename = export_path+datetime.now().strftime("%Y%m%d%H%M%S") + \
+        '_msk_normal.xlsx'
+
+    with pd.ExcelWriter(filename, engine='xlsxwriter') as writer:
+        workbook = writer.book
+        columns_list = ['filename', 'IsCorrect [1 or 0]', 'IsCentered [1 or 0]',
+                        'Correct and Centered [computed]', 'alternative label', ]
+        condense_eos = True
+
+        for cell_type in image_label_include_list:
+            if (condense_eos and (cell_type in ['E1'])):
+                cellTypes = CellType.objects.filter(
+                    user=request.user, is_most_recent=True, cell__region__slide__in=slide_list, cell_type__in=['E1', 'E2'])
+            else:
+                cellTypes = CellType.objects.filter(
+                    user=request.user, is_most_recent=True, cell__region__slide__in=slide_list, cell_type=cell_type)
+
+            print("\tCell_Type="+cell_type)
+            print("\t\tcount="+str(cellTypes.count()))
+
+            counter = 2
+            df = pd.DataFrame(columns=columns_list)
+            for ct in cellTypes:
+                counter += 1
+
+                formula = '=FLOOR(SUM(B'+str(counter) + \
+                    ':C'+str(counter)+')/2, 1)'
+                df2 = pd.DataFrame(
+                    [[str(ct.cell.id)+'.png', 1, 1, formula, '', ]], columns=columns_list)
+                df = pd.concat([df, df2])
+            n = str(counter)
+            n2 = str(counter-2)
+            df2 = pd.DataFrame([['% correct', '=SUM(B3:B'+n+')/'+n2+'*100', '=SUM(C3:C'+n+')/'+n2+'*100',
+                               '=SUM(D3:D'+n+')/'+n2+'*100', '']], columns=columns_list)
+            df = pd.concat([df, df2])
+
+            if (condense_eos and cell_type == 'E1'):
+                sheet_name = 'E0'
+            else:
+                sheet_name = cell_type
+
+            df.to_excel(writer, sheet_name=sheet_name,
+                        startrow=1, index=False, )
+
+            # Insert extra text at beginning that translates the label into medical language
+            if (condense_eos and cell_type == 'E1'):
+                extra_text = cell_type + \
+                    ' (Eosinophil promyelocyte - metamyelocyte)'
+            else:
+                extra_text = cell_type+' ('+classLabelDict[cell_type]+')'
+            df_extra_text = pd.DataFrame(columns=[extra_text])
+            df_extra_text.to_excel(writer, sheet_name=sheet_name, index=False)
+
+            worksheet = writer.sheets[sheet_name]
+            format_col_width(worksheet, workbook)
+
+
+# Exports images
+
+
+@login_required
+def export_msk_normal(request):
+    if (request.user.username != 'admin'):
+        print('user access denied')
+        return JsonResponse({'success': False})
+
+    print('export_msk_normal')
+
+    diagnosis = Diagnosis.objects.get(name='Normal MSK')
+    slides = diagnosis.slides_with_diagnosis.all()
+
+    slide_list = []
+
+    i = 0
+    for slide in slides:
+        i += 1
+        print(i, slide)
+        if (slide.id not in [197, 195, 191]):
+            slide_list.append(slide)
+
+    i = 0
+    for slide in slide_list:
+        i += 1
+        print(i, slide)
+
+    sizes = [96]
+
+    image_label_include_list = ['B1',
+                                'B2',
+                                'E1',
+                                'E2',
+                                # 'E3',
+                                'E4',
+                                'ER1',
+                                'ER2',
+                                'ER3',
+                                'ER4',
+                                'ER5',
+                                'ER6',
+                                'L2',
+                                'L4',
+                                'M1',
+                                'M2',
+                                'M3',
+                                'M4',
+                                'M5',
+                                'M6',
+                                # 'MO1',
+                                'MO2',
+                                'PL2',
+                                'PL3',
+                                # 'PL4',
+                                'U1',
+                                'U4', ]
+    image_label_include_list.sort(reverse=True)
+
+    export_path = settings.MEDIA_ROOT + '/export/'
+    export_path = export_path+datetime.now().strftime("%Y%m%d%H%M%S") + \
+        '_msk_normal/'
+
+    size = 96
+    for cell_type in image_label_include_list:
+
+        condense_eos = True
+        if (condense_eos and cell_type == 'E1'):
+            cell_folder = export_path + \
+                str(size)+'/E0/'
+        else:
+            cell_folder = export_path + \
+                str(size)+'/'+cell_type+'/'
+        os.system('mkdir -p '+cell_folder)
+
+        # cellTypes = CellType.objects.filter(
+        #     user=request.user, is_most_recent=True, cell__region__slide__name__in=final_slide_list, cell_type=cell_type)
+        # if (condense_eos and (cell_type in ['E1', 'E2'])):
+        #     cellTypes = CellType.objects.filter(
+        #         user=request.user, is_most_recent=True, cell__region__slide__in=slide_list, cell_type__in=['E1', 'E2'])
+        # else:
+        cellTypes = CellType.objects.filter(
+            user=request.user, is_most_recent=True, cell__region__slide__in=slide_list, cell_type=cell_type)
+
+        # E2 is included in E1 list so without this if they would all be printed twice
+        # if (cell_type != 'E2'):
+        print("\tCell_Type="+cell_type)
+        print("\t\tcount="+str(cellTypes.count()))
+        for ct in cellTypes:
+            cell_path = cell_folder + str(ct.cell.id)+'.png'
+            # export_cell_image(ct.cell, cell_path, size)
 
 
 @login_required
@@ -57,7 +274,7 @@ def export_all_cell_images_for_slide_list_limited_types(request):
                 print("\tCell_Type="+cell_type)
 
                 condense_eos = False
-                if (condense_eos and (cell_type in ['E1', 'E2', 'E3'])):
+                if (condense_eos and (cell_type in ['E1', 'E2'])):
                     cell_folder = export_path + \
                         str(size)+'/'+slide_name.split('.')[0]+'/E0/'
 
@@ -84,12 +301,9 @@ def export_all_cell_images_for_slide_list_limited_types(request):
 
 
 def export_all_cell_annotations_summary_user(request):
-    if (request.user.username != 'admin'):
-        print('user access denied')
-        return JsonResponse({'success': False})
 
     if (request.user.username != 'admin'):
-        print('user access denied in export_all_cell_annotations_user')
+        print('user access denied in export_all_cell_annotations_summary_user')
         return JsonResponse({'success': False})
 
     export_path = settings.MEDIA_ROOT + '/export/'
@@ -200,11 +414,11 @@ image_label_include_list = ['B1',
                             'M4',
                             'M5',
                             'M6',
-                            'MO1',
+                            # 'MO1',
                             'MO2',
                             'PL2',
                             'PL3',
-                            'PL4',
+                            # 'PL4',
                             'U1',
                             'U4', ]
 image_label_include_list.sort()
@@ -545,3 +759,16 @@ def export_project_data(request):
 
     results = {'success': True, 'filename': '/data_export/' + filename}
     return JsonResponse(results)
+
+
+@login_required
+def export_regions_random(request):
+    if (request.user.username != 'admin'):
+        print('user access denied')
+        return JsonResponse({'success': False})
+
+    print('export_regions_random')
+
+    for slide in final_slide_list:
+        slide_obj = Slide.objects.get(name=slide)
+        print(slide, slide_obj.svs_path)

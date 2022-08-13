@@ -20,6 +20,13 @@ urlpatterns = [
             views.export_all_regions_for_slide_list_limited_types, name='export_all_cell_images_for_slide_list_limited_types'),
 
 
+    re_path(r'export_regions_random/$',
+            views.export_regions_random, name='export_regions_random'),
+
+    re_path(r'export_msk_normal/$',
+            views.export_msk_normal, name='export_msk_normal'),
+    re_path(r'export_msk_normal_excel/$',
+            views.export_msk_normal_excel, name='export_msk_normal_excel'),
 
     re_path(r'export_all_cell_annotations_for_user/$',
             views.export_all_cell_annotations_for_user, name='export_all_cell_annotations_for_user'),
