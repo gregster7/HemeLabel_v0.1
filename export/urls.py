@@ -20,6 +20,12 @@ urlpatterns = [
             views.export_all_regions_for_slide_list_limited_types, name='export_all_cell_images_for_slide_list_limited_types'),
 
 
+#################### For region selection AI project ####################
+    re_path(r'sort_regions_random_into_folders_by_label/$',
+            views.sort_regions_random_into_folders_by_label, name='sort_regions_random_into_folders_by_label'),
+    re_path(r'sort_regions_random_into_folders_by_slide_and_label/$',
+            views.sort_regions_random_into_folders_by_slide_and_label, name='sort_regions_random_into_folders_by_slide_and_label'),
+
     re_path(r'export_regions_random/$',
             views.export_regions_random, name='export_regions_random'),
 

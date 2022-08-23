@@ -34,6 +34,10 @@ from django.core.files.images import ImageFile
 
 import pandas as pd
 import csv
+import openslide 
+import random
+import shutil
+
 
 from labeller.views import getCellTypeNameFromStringCode, classLabelDict
 from labeller.models import Collaborator, Region, Cell, Slide, Project, CellType, Diagnosis
@@ -393,6 +397,16 @@ final_slide_list = ['19.svs',
 
 no_include_list = ['L0', 'L1', 'L3', 'U2', 'U3', 'UL', 'PL1']
 
+
+slide_list_CMML = [
+    '20210421-1.svs', '20210421-3.svs', '20210421-5.svs', '20210421-12.svs', '20210421-10.svs', 
+    '20210421-15.svs', '20210421-17.svs', '20210421-21.svs','20210421-23.svs', '20210421-25.svs', 
+    '20210421-27.svs', '20210421-31.svs', '20210421-32.svs', '20210421-34.svs', '20210421-36.svs', 
+    '20210421-38.svs', '20210421-40.svs']
+
+slide_list_pcm = ['s9.svs']
+
+abn_slide_list = slide_list_CMML
 
 image_label_include_list = ['B1',
                             'B2',
@@ -761,14 +775,218 @@ def export_project_data(request):
     return JsonResponse(results)
 
 
+def export_random_region(svs_path, output_path, left, top, size):
+    # svs_path = settings.MEDIA_ROOT + slide.svs_path.url
+    command = "vips crop " + svs_path + " " + output_path + " " + \
+        str(left) + " " + str(top) + " " + \
+        str(size) + " " + str(size)
+    os.system(command)
+
+
+@login_required
+def sort_regions_random_into_folders_by_slide_and_label(request):
+    if (request.user.username != 'admin'):
+        print('user access denied')
+        return JsonResponse({'success': False})
+
+    print("sort_regions_random_into_folders_by_slide_and_label")
+
+    # For Normal Slide
+    input_path = '/Users/disco/MSKFacultyPosition/BoneMarrowAspirateResearchProject/RegionClassification/20220813192347_random_regions_normal_seed10/'
+    input_excel_path = input_path+'region-list.xlsx'
+    label_dict = {'c':'clot', 'b':'blood', 'a':'adequate'}
+
+
+    # For CMML Slides
+    # input_path = '/Users/disco/MSKFacultyPosition/BoneMarrowAspirateResearchProject/RegionClassification/20220816184901_random_regions_CMML/'
+    # input_excel_path = input_path+ '20220816184901-region-list.xlsx'
+    # label_dict = {'c':'clot', 'b':'blood', 'a':'adequate_cmml'}
+
+    df = pd.read_excel(input_excel_path, index_col=None, na_values=[''], usecols="A:J", skiprows=[0])
+    # Remove unlabelled classes 
+    df = df[ (df['class']=='a') | (df['class']=='b') | (df['class']=='c')]
+
+    export_path = settings.MEDIA_ROOT + '/export/'
+    export_path = export_path+datetime.now().strftime("%Y%m%d%H%M%S") + \
+        '_random_regions_sorted_by_slide_and_label_normal_seed10/'
+    output_excel_path = export_path+datetime.now().strftime("%Y%m%d%H%M%S")+'-region-list-sorted.xlsx'
+    output_excel_path = export_path+datetime.now().strftime("%Y%m%d%H%M%S")+'-region-list-sorted.xlsx'
+  
+    # Sort by slide_id and then label
+    for slide_id in df['slide_id'].unique():
+        for label in label_dict.values():
+            os.system('mkdir -p '+export_path + str(slide_id) + '/' + label + '/')
+
+    i=0
+    for index, row in df.iterrows():
+        # i +=1
+        # if (i%100 == 0):
+        #     print(i)
+        #     print('src', input_path+row['region name'])
+        #     print('dst', export_path+str(row['slide_id']) +'/'+ label_dict[row['class']] +'/'+ row['region name'])
+
+        dst = export_path+str(row['slide_id']) +'/'+ label_dict[row['class']] +'/'+ row['region name']
+        src = input_path+row['region name']
+        shutil.copyfile(src, dst)
+
+
+    with pd.ExcelWriter(output_excel_path, engine='xlsxwriter') as writer:
+        workbook = writer.book
+        sheet_name = 'region_list'
+        df.to_excel(writer, sheet_name=sheet_name, startrow=1, index=False, )
+        extra_text = 'A: adequate, B: periph blood, C: clotted, E: Export error, I: Inadequate (low cellularity), O: Other'
+        df_extra_text = pd.DataFrame(columns=[extra_text])
+        df_extra_text.to_excel(writer, sheet_name=sheet_name, index=False)
+        worksheet = writer.sheets[sheet_name]
+        wrap_format = workbook.add_format({'text_wrap': True, 'align': 'center'})
+        worksheet.set_column('A:A', 20, cell_format=wrap_format)
+        worksheet.set_column('B:H', 10, cell_format=wrap_format)
+        worksheet.set_column('I:I', 20, cell_format=wrap_format)
+
+    return JsonResponse({'success': True})
+
+
+
+@login_required
+def sort_regions_random_into_folders_by_label(request):
+    if (request.user.username != 'admin'):
+        print('user access denied')
+        return JsonResponse({'success': False})
+
+    print("sort_regions_ransort_regions_random_into_folders_by_labeldom_into_folders")
+
+#    input_path = '/Users/disco/MSKFacultyPosition/BoneMarrowAspirateResearchProject/RegionClassification/20220813192347_random_regions/'
+    input_path = '/Users/disco/MSKFacultyPosition/BoneMarrowAspirateResearchProject/RegionClassification/20220816184901_random_regions_CMML/'
+    # input_excel_path = input_path+'region-list.xlsx'
+    input_excel_path = input_path+ '20220816184901-region-list.xlsx'
+
+    df = pd.read_excel(input_excel_path, index_col=None, na_values=[''], usecols="A:J", skiprows=[0])
+    print(df)
+
+    df = df[ (df['class']=='a') | (df['class']=='b') | (df['class']=='c')]
+
+
+
+    export_path = settings.MEDIA_ROOT + '/export/'
+    export_path = export_path+datetime.now().strftime("%Y%m%d%H%M%S") + \
+        '_random_regions_sorted/'
+    output_excel_path = export_path+datetime.now().strftime("%Y%m%d%H%M%S")+'-region-list-sorted.xlsx'
+  
+
+    os.system('mkdir -p '+export_path)
+
+    label_dict = {'c':'clot', 'b':'blood', 'a':'adequate'}
+
+    for label in label_dict.values():
+        os.system('mkdir -p '+export_path + label + '/')
+
+    i=0
+    for index, row in df.iterrows():
+        i +=1
+        if (i%100 == 0):
+            print(i)
+            print('src', input_path+row['region name'])
+            print('dst', export_path+row['class']+'/'+row['region name'])
+
+
+        dst = export_path+label_dict[row['class']]+'/'+row['region name']
+        src = input_path+row['region name']
+        shutil.copyfile(src, dst)
+
+
+    with pd.ExcelWriter(output_excel_path, engine='xlsxwriter') as writer:
+        workbook = writer.book
+        sheet_name = 'region_list'
+        df.to_excel(writer, sheet_name=sheet_name, startrow=1, index=False, )
+        extra_text = 'A: adequate, B: periph blood, C: clotted, E: Export error, I: Inadequate (low cellularity), O: Other'
+        df_extra_text = pd.DataFrame(columns=[extra_text])
+        df_extra_text.to_excel(writer, sheet_name=sheet_name, index=False)
+        worksheet = writer.sheets[sheet_name]
+        wrap_format = workbook.add_format({'text_wrap': True, 'align': 'center'})
+        worksheet.set_column('A:A', 20, cell_format=wrap_format)
+        worksheet.set_column('B:H', 10, cell_format=wrap_format)
+        worksheet.set_column('I:I', 20, cell_format=wrap_format)
+
+    return JsonResponse({'success': True})
+
+
 @login_required
 def export_regions_random(request):
     if (request.user.username != 'admin'):
         print('user access denied')
         return JsonResponse({'success': False})
 
-    print('export_regions_random')
+    slide_list = final_slide_list 
+    # slide_list = abn_slide_list
 
-    for slide in final_slide_list:
-        slide_obj = Slide.objects.get(name=slide)
-        print(slide, slide_obj.svs_path)
+    print('export_regions_random')
+    random.seed(11)
+    reg_size = 1000
+    
+    export_path = settings.MEDIA_ROOT + '/export/'
+    export_path = export_path+datetime.now().strftime("%Y%m%d%H%M%S") + \
+        '_random_regions/'
+
+    os.system('mkdir -p '+export_path)
+
+    filename = export_path+datetime.now().strftime("%Y%m%d%H%M%S")+'-region-list-nl-randomseed11.xlsx'
+    with pd.ExcelWriter(filename, engine='xlsxwriter') as writer:
+        workbook = writer.book
+        columns_list = ['region name', 'class', 'usable', 'left', 'top', 'width', 'height', 'slide_id', 'slide_name']
+        df = pd.DataFrame(columns=columns_list)
+
+        counter=0
+        num_regs_per_slide = 40
+        for slide in slide_list:
+            for i in range(num_regs_per_slide):
+                slide_obj = Slide.objects.get(name=slide)
+                counter+=1
+                if (counter%100==1):
+                    print(slide_obj)
+                    print('\texporting region number', str(counter))
+
+                # print(slide, slide_obj.svs_path)
+            
+
+                svs_path = settings.MEDIA_ROOT+'/'+str(slide_obj.svs_path)
+                # print(svs_path)
+                current_slide = openslide.OpenSlide(svs_path)
+                csp = current_slide.properties
+
+                # for slide_property in csp:
+                #     print (slide_property, csp[slide_property])
+
+                # print('HEIGHT',csp['openslide.level[0].height'])
+                # print('WIDTH', csp['openslide.level[0].width'])
+                height = int(csp['openslide.level[0].height'])
+                width = int(csp['openslide.level[0].width'])
+                # print(height, width)
+
+                left= random.randint(0,width-reg_size)
+                top= random.randint(0,height-reg_size)
+
+                # print('(left,top)', left, top)
+                export_random_region(svs_path,export_path+str(counter)+'.png', left, top, reg_size )
+
+                df2 = pd.DataFrame([[str(counter)+'.png', '', '1' ,left, top,  reg_size, reg_size, slide_obj.id, slide_obj.name]], columns=columns_list)
+                df = pd.concat([df, df2])
+
+
+        sheet_name = 'region_list'
+        df.to_excel(writer, sheet_name=sheet_name, startrow=1, index=False, )
+
+        
+
+        extra_text = 'A: adequate, B: periph blood, C: clotted, E: Export error, I: Inadequate (low cellularity), O: Other'
+        df_extra_text = pd.DataFrame(columns=[extra_text])
+        df_extra_text.to_excel(writer, sheet_name=sheet_name, index=False)
+
+
+        worksheet = writer.sheets[sheet_name]
+        wrap_format = workbook.add_format({'text_wrap': True, 'align': 'center'})
+        worksheet.set_column('A:A', 20, cell_format=wrap_format)
+        worksheet.set_column('B:H', 10, cell_format=wrap_format)
+        worksheet.set_column('I:I', 20, cell_format=wrap_format)
+
+        return JsonResponse({'success': True})
+
